@@ -1,5 +1,9 @@
-import Layout from '../components/layout/layout';
+import AuthLayout from '../components/auth/auth-layout';
 
 export default function SignInRoute() {
-    return <Layout title='Sign In'></Layout>;
+    return (
+        <AuthLayout title='Sign In'>
+            <h2>Hi</h2>
+        </AuthLayout>
+    );
 }

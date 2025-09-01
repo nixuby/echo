@@ -28,7 +28,7 @@ export default function NavBar({ mobile }: NavBarProps) {
         >
             <div className='flex flex-col'>
                 <Link
-                    to='/profile'
+                    to='/signin'
                     className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
                 >
                     <div className='aspect-square size-12 rounded-full bg-gray-500' />

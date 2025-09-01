@@ -24,14 +24,14 @@ export default function MobileNavBar() {
                 <span>Messages</span>
             </Link>
             <Link
-                to='/messages'
+                to='/notifications'
                 className='flex flex-col items-center gap-1 px-4 py-3 text-sm transition-colors hover:bg-gray-900'
             >
                 <BellIcon className='size-6' />
                 <span>Notifications</span>
             </Link>
             <Link
-                to='/messages'
+                to='/signin'
                 className='flex flex-col items-center gap-1 px-4 py-3 text-sm transition-colors hover:bg-gray-900'
             >
                 <UserIcon className='size-6' />
