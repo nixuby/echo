@@ -18,7 +18,7 @@ export default function AuthLayout({ title, children }: AuthLayoutProps) {
                         </h1>
                     </Link>
                 </header>
-                <div className='flex w-[min(100%,350px)] flex-col gap-2 border border-zinc-800 bg-zinc-950 px-6 py-3'>
+                <div className='flex w-[min(100%,350px)] flex-col gap-2 border border-gray-800 bg-gray-950 px-6 py-3'>
                     <h2 className='text-xl font-bold'>{title}</h2>
                     <main>{children}</main>
                 </div>
