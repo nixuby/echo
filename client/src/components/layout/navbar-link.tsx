@@ -12,7 +12,7 @@ export default function NavBarLink({ children, to, active }: NavBarLinkProps) {
         <Link
             to={to}
             className={clsx(
-                'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-800',
+                'flex items-center gap-3 px-4 py-3 transition-colors hover:bg-gray-900',
                 active && 'font-bold',
             )}
         >

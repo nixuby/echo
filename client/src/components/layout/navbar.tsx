@@ -29,7 +29,7 @@ export default function NavBar({ mobile }: NavBarProps) {
             <div className='flex flex-col'>
                 <Link
                     to='/profile'
-                    className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-800'
+                    className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
                 >
                     <div className='aspect-square size-12 rounded-full bg-gray-500' />
                     <div className='flex flex-col'>
