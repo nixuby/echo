@@ -12,7 +12,7 @@ export default function Layout({ title, children }: LayoutProps) {
     return (
         <>
             <title>{title ? `${title} — Echo` : 'Echo'}</title>
-            <div className='flex h-full min-h-screen flex-col'>
+            <div className='_bg-pattern-wave flex h-full min-h-screen flex-col bg-gray-950 text-white'>
                 <div className='flex w-full max-w-screen-lg flex-1 flex-col self-center border-x border-gray-800 bg-gray-950'>
                     <Header />
                     <div className='flex grow items-start'>
