@@ -5,3 +5,10 @@
 @theme {
     --font-sans: "Noto Sans", sans-serif;
 }
+
+._bg-pattern-wave {
+    background: repeating-linear-gradient(135deg, var(--color-gray-950) 0, var(--color-gray-950) 10%, transparent 0, transparent 50%);
+    background-size: 8px 8px;
+    background-color: var(--color-black);
+    opacity: 1
+}

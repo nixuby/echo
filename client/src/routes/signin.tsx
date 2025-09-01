@@ -1,3 +1,5 @@
+import Layout from '../components/layout/layout';
+
 export default function SignInRoute() {
-    return 'SignIn';
+    return <Layout title='Sign In'></Layout>;
 }

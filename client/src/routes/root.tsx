@@ -1,3 +1,5 @@
+import Layout from '../components/layout/layout';
+
 export default function RootRoute() {
-    return 'Root';
+    return <Layout>Home</Layout>;
 }
