@@ -126,6 +126,19 @@ export default function SignInRoute() {
                 <Button submit disabled={isLoading}>
                     Sign In
                 </Button>
+                <div className='relative h-px w-full bg-gray-800 text-sm'>
+                    <span className='absolute left-1/2 top-0 -mx-2 -translate-y-1/2 bg-gray-950 px-2 text-gray-400'>
+                        or
+                    </span>
+                </div>
+                <div className='w-full text-center'>
+                    <Link
+                        to='/sign-in'
+                        className='text-gray-400 transition-colors hover:text-gray-300 hover:underline'
+                    >
+                        Sign In
+                    </Link>
+                </div>
             </form>
         </AuthLayout>
     );
