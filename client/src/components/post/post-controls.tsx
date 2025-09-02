@@ -1,7 +1,7 @@
 import {
+    ArrowPathRoundedSquareIcon,
     BookmarkIcon,
     ChatBubbleLeftIcon,
-    EyeIcon,
     HeartIcon,
     ShareIcon,
 } from '@heroicons/react/20/solid';
@@ -21,6 +21,11 @@ export default function PostControls() {
         navigate('post/123?reply');
     }
 
+    function handleRepost(ev: React.MouseEvent<HTMLButtonElement>) {
+        ev.stopPropagation();
+        console.log('Repost');
+    }
+
     function handleBookmark(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
         console.log('Bookmark');
@@ -32,12 +37,12 @@ export default function PostControls() {
     }
 
     return (
-        <div className='grid grid-cols-4'>
+        <div className='grid grid-cols-4 text-gray-500'>
             <div>
                 <button
                     type='button'
                     onClick={handleLike}
-                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-rose-200'
+                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <HeartIcon className='size-5' />
                     <span>143</span>
@@ -47,15 +52,21 @@ export default function PostControls() {
                 <button
                     type='button'
                     onClick={handleReply}
-                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-sky-200'
+                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ChatBubbleLeftIcon className='size-5' />
                     <span>42</span>
                 </button>
             </div>
             <div className='flex items-center gap-1.5'>
-                <EyeIcon className='size-5' />
-                <span>123</span>
+                <button
+                    type='button'
+                    onClick={handleRepost}
+                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
+                >
+                    <ArrowPathRoundedSquareIcon className='size-5' />
+                    <span>42</span>
+                </button>
             </div>
             <div className='flex items-center justify-end gap-1'>
                 <button type='button' onClick={handleBookmark}>
