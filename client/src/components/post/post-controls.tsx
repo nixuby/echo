@@ -5,9 +5,14 @@ import {
     HeartIcon,
     ShareIcon,
 } from '@heroicons/react/20/solid';
+import type { PostStats } from '@shared/types';
 import { useNavigate } from 'react-router';
 
-export default function PostControls() {
+export type PostControlsProps = {
+    stats: PostStats;
+};
+
+export default function PostControls({ stats }: PostControlsProps) {
     const navigate = useNavigate();
 
     function handleLike(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -45,7 +50,7 @@ export default function PostControls() {
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <HeartIcon className='size-5' />
-                    <span>143</span>
+                    <span>{stats.likes}</span>
                 </button>
             </div>
             <div>
@@ -55,7 +60,7 @@ export default function PostControls() {
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ChatBubbleLeftIcon className='size-5' />
-                    <span>42</span>
+                    <span>{stats.comments}</span>
                 </button>
             </div>
             <div className='flex items-center gap-1.5'>
@@ -65,7 +70,7 @@ export default function PostControls() {
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ArrowPathRoundedSquareIcon className='size-5' />
-                    <span>42</span>
+                    <span>{stats.reposts}</span>
                 </button>
             </div>
             <div className='flex items-center justify-end gap-1'>
