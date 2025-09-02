@@ -41,8 +41,6 @@ export default function SignInRoute() {
     const navigate = useNavigate();
 
     function submitForm(data: SignInForm) {
-        console.log(data);
-
         setIsLoading(true);
 
         mockSignIn(data).then((response) => {
