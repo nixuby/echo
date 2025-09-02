@@ -86,7 +86,7 @@ export default function SignInRoute() {
     }
 
     return (
-        <AuthLayout title='Sign In'>
+        <AuthLayout title='Create Account'>
             <form
                 action=''
                 onSubmit={handleSubmit(submitForm)}
@@ -124,7 +124,7 @@ export default function SignInRoute() {
                     </div>
                 )}
                 <Button submit disabled={isLoading}>
-                    Sign In
+                    Create Account
                 </Button>
                 <div className='relative h-px w-full bg-gray-800 text-sm'>
                     <span className='absolute left-1/2 top-0 -mx-2 -translate-y-1/2 bg-gray-950 px-2 text-gray-400'>
