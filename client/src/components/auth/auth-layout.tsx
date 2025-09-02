@@ -1,3 +1,4 @@
+import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
 
 export type AuthLayoutProps = {
@@ -19,7 +20,12 @@ export default function AuthLayout({ title, children }: AuthLayoutProps) {
                     </Link>
                 </header>
                 <div className='flex w-[min(100%,350px)] flex-col gap-2 border border-gray-800 bg-gray-950 p-6'>
-                    <h2 className='text-xl font-bold'>{title}</h2>
+                    <div className='flex items-center justify-between'>
+                        <h2 className='text-xl font-bold'>{title}</h2>
+                        <Link to='/'>
+                            <XMarkIcon className='size-6' />
+                        </Link>
+                    </div>
                     <main>{children}</main>
                 </div>
                 <footer className='flex gap-2 text-xs text-gray-400'>
