@@ -10,7 +10,7 @@ export default function CheckBox({ children, error, ...props }: CheckBoxProps) {
     return (
         <label className='flex flex-col items-start gap-0.5'>
             <input type='checkbox' className='peer hidden' {...props} />
-            <div className='peer-checked:[&_.-icon]:opacity-100! flex gap-1 peer-checked:[&>div:first-child]:bg-indigo-600 peer-checked:[&>div:first-child]:hover:bg-indigo-500'>
+            <div className='peer-checked:[&_.-icon]:opacity-100! flex gap-2 peer-checked:[&>div:first-child]:bg-indigo-600 peer-checked:[&>div:first-child]:hover:bg-indigo-500'>
                 <div
                     className={clsx(
                         'cursor-pointer border border-gray-800 bg-gray-900 p-1 transition hover:border-gray-700 hover:bg-gray-800',
