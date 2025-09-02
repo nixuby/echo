@@ -1,5 +1,5 @@
 import { createBrowserRouter } from 'react-router';
-import SignInRoute from './routes/signin';
+import SignInRoute from './routes/sign-in';
 import RootRoute from './routes/root';
 import CreateAccountRoute from './routes/create-account';
 
@@ -9,7 +9,7 @@ const router = createBrowserRouter([
         Component: RootRoute,
     },
     {
-        path: 'signin',
+        path: 'sign-in',
         Component: SignInRoute,
     },
     {

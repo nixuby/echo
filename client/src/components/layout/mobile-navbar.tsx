@@ -31,7 +31,7 @@ export default function MobileNavBar() {
                 <span>Notifications</span>
             </Link>
             <Link
-                to='/signin'
+                to='/sign-in'
                 className='flex flex-col items-center gap-1 px-4 py-3 text-sm transition-colors hover:bg-gray-900'
             >
                 <UserIcon className='size-6' />
