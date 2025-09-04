@@ -10,8 +10,10 @@ export default function PostFeed() {
         fetch('http://localhost:5179/api/posts')
             .then((res) => res.json())
             .then((res) => {
-                jsonReviveDates(res);
-                setPosts(res as Array<TPost>);
+                if (res.ok) {
+                    jsonReviveDates(res.data);
+                    setPosts(res.data as Array<TPost>);
+                }
             })
             .catch((err) => console.error(err));
     }, []);

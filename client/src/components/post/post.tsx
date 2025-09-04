@@ -2,8 +2,10 @@ import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
 import PostControls from './post-controls';
 import { type Post as TPost } from '@shared/types';
+import clsx from 'clsx/lite';
 
 export type PostProps = {
+    clickable?: boolean;
     post: TPost;
 };
 
@@ -38,12 +40,12 @@ function formatRelativeTime(date: Date) {
     }
 }
 
-export default function Post({ post }: PostProps) {
+export default function Post({ post, clickable = true }: PostProps) {
     const navigate = useNavigate();
 
     function navigateToPost(ev: React.MouseEvent<HTMLElement>) {
         ev.stopPropagation();
-        navigate(`post/${post.id}`);
+        navigate(`/post/${post.id}`);
     }
 
     function navigateToUser(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -58,8 +60,11 @@ export default function Post({ post }: PostProps) {
 
     return (
         <article
-            onClick={navigateToPost}
-            className='flex cursor-pointer items-start gap-2 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
+            onClick={clickable ? navigateToPost : undefined}
+            className={clsx(
+                'flex items-start gap-2 border-b border-gray-800 px-4 py-3 transition-colors',
+                clickable && 'cursor-pointer hover:bg-gray-900',
+            )}
         >
             <button
                 type='button'
