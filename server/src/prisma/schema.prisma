@@ -1,0 +1,23 @@
+generator client {
+    provider = "prisma-client-js"
+    output   = "../../generated/prisma"
+}
+
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db"
+}
+
+model User {
+    id         String   @id @default(uuid())
+    email      String? // Unique email address, not required
+    username   String   @unique // Unique user name for login
+    name       String // Non-unique display user name
+    provider   String   @default("local") // Auth provider (local | google | apple)
+    providerId String?
+    password   String? // Hash for local users
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    @@unique([provider, providerId])
+}
