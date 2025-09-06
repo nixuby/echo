@@ -5,6 +5,7 @@ import CreateAccountRoute from './routes/create-account';
 import Error404Route from './routes/error404';
 import PostRoute from './routes/post';
 import SettingsRoute from './routes/settings';
+import SignOutRoute from './routes/sign-out';
 
 const router = createBrowserRouter([
     {
@@ -18,6 +19,10 @@ const router = createBrowserRouter([
     {
         path: 'create-account',
         Component: CreateAccountRoute,
+    },
+    {
+        path: 'sign-out',
+        Component: SignOutRoute,
     },
     {
         path: 'settings',
