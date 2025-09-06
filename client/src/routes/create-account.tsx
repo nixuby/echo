@@ -3,7 +3,7 @@ import AuthLayout from '../components/auth/auth-layout';
 import TextBox from '../components/shared/textbox';
 import Button from '../components/shared/button';
 import { Link, useNavigate } from 'react-router';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import {
     CREATE_ACCOUNT_FORM_DEFAULT,
     type CreateAccountForm,
@@ -12,8 +12,13 @@ import CheckBox from '../components/shared/checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AuthProviderButton from '../components/auth/auth-provider-button';
 import { createAccountFormSchema } from '@shared/validation';
+import { useCreateAccountMutation } from '../redux/auth/auth-api';
+import { useAppDispatch } from '../redux/hooks';
+import { setUser } from '../redux/auth/auth-slice';
 
 export default function CreateAccountRoute() {
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -26,9 +31,9 @@ export default function CreateAccountRoute() {
         resolver: zodResolver(createAccountFormSchema),
     });
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [createAccount, { isLoading }] = useCreateAccountMutation();
 
-    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     const passwordValue = watch('password');
 
@@ -37,26 +42,17 @@ export default function CreateAccountRoute() {
     }, [passwordValue]);
 
     function submitForm(data: CreateAccountForm) {
-        setIsLoading(true);
-
-        fetch('http://localhost:5179/api/auth/create-account', {
-            body: JSON.stringify(data),
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => res.json())
+        createAccount(data)
+            .unwrap()
             .then((res) => {
-                setIsLoading(false);
                 if (res.ok) {
+                    dispatch(setUser(res.data.user));
                     navigate('/');
                 } else {
-                    if (res.errors) {
-                        for (const field in res.errors) {
+                    if (res.data.errors) {
+                        for (const field in res.data.errors) {
                             setError(field as keyof CreateAccountForm, {
-                                message: res.errors[field],
+                                message: res.data.errors[field],
                             });
                         }
                     }

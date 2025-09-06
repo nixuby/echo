@@ -11,33 +11,16 @@ import {
     UserGroupIcon,
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
-import { useEffect, useState } from 'react';
-import type { User } from '@shared/types';
+import { useAppSelector } from '../../redux/hooks';
 
 export type NavBarProps = {
     mobile?: boolean;
 };
 
 export default function NavBar({ mobile }: NavBarProps) {
-    const [user, setUser] = useState<User | null>(null);
+    const user = useAppSelector((s) => s.auth.user);
 
     const { pathname } = useLocation();
-
-    // TODO: RTK Query
-    useEffect(() => {
-        fetch('http://localhost:5179/api/auth/me', {
-            credentials: 'include',
-        })
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.ok) {
-                    setUser(res.data.user);
-                }
-            })
-            .catch((error) => {
-                console.error(error);
-            });
-    }, []);
 
     return (
         <nav

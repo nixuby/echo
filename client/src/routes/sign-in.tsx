@@ -3,11 +3,15 @@ import AuthLayout from '../components/auth/auth-layout';
 import TextBox from '../components/shared/textbox';
 import Button from '../components/shared/button';
 import { Link, useNavigate } from 'react-router';
-import { useState } from 'react';
 import { SIGN_IN_FORM_DEFAULT, type SignInForm } from '../forms/sign-in-form';
 import AuthProviderButton from '../components/auth/auth-provider-button';
+import { useSignInMutation } from '../redux/auth/auth-api';
+import { useAppDispatch } from '../redux/hooks';
+import { setUser } from '../redux/auth/auth-slice';
 
 export default function SignInRoute() {
+    const navigate = useNavigate();
+
     const {
         register,
         handleSubmit,
@@ -15,29 +19,20 @@ export default function SignInRoute() {
         setError,
     } = useForm<SignInForm>({ defaultValues: SIGN_IN_FORM_DEFAULT });
 
-    const [isLoading, setIsLoading] = useState(false);
+    const [signIn, { isLoading }] = useSignInMutation();
 
-    const navigate = useNavigate();
+    const dispatch = useAppDispatch();
 
     function submitForm(data: SignInForm) {
-        setIsLoading(true);
-
-        fetch('http://localhost:5179/api/auth/sign-in', {
-            body: JSON.stringify(data),
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-        })
-            .then((res) => res.json())
+        signIn(data)
+            .unwrap()
             .then((res) => {
-                setIsLoading(false);
-
-                if (res.ok) {
-                    navigate('/');
-                } else {
-                    const errors = res.data.errors;
+                if (res.ok) dispatch(setUser(res.data.user));
+                navigate('/');
+            })
+            .catch((error) => {
+                if (error.status === 400) {
+                    const errors = error.data.errors;
                     if (!errors) return;
                     for (const field in errors) {
                         setError(field as keyof SignInForm, {
