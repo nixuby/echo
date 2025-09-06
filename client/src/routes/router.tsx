@@ -6,6 +6,8 @@ import Error404Page from './error404';
 import PostPage from './post/[id]/page';
 import SettingsPage from './settings/page';
 import SignOutPage from './(auth)/sign-out/page';
+import AccountInfoPage from './settings/account-info/page';
+import UsernamePage from './settings/account-info/username/page';
 
 const router = createBrowserRouter([
     {
@@ -27,6 +29,14 @@ const router = createBrowserRouter([
     {
         path: 'settings',
         Component: SettingsPage,
+    },
+    {
+        path: 'settings/account-info',
+        Component: AccountInfoPage,
+    },
+    {
+        path: 'settings/account-info/username',
+        Component: UsernamePage,
     },
     {
         path: 'post/:id',
