@@ -11,6 +11,7 @@ passport.deserializeUser(async (id: string, done) => {
         return done(null, {
             id: user.id,
             email: user.email,
+            isEmailVerified: user.isEmailVerified,
             name: user.name,
             username: user.username,
         });

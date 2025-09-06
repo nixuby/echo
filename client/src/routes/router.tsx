@@ -8,6 +8,7 @@ import SettingsPage from './settings/page';
 import SignOutPage from './(auth)/sign-out/page';
 import AccountInfoPage from './settings/account-info/page';
 import UsernamePage from './settings/account-info/username/page';
+import EmailPage from './settings/account-info/email/page';
 
 const router = createBrowserRouter([
     {
@@ -37,6 +38,10 @@ const router = createBrowserRouter([
     {
         path: 'settings/account-info/username',
         Component: UsernamePage,
+    },
+    {
+        path: 'settings/account-info/email',
+        Component: EmailPage,
     },
     {
         path: 'post/:id',

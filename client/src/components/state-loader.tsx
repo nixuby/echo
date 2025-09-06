@@ -16,6 +16,7 @@ export default function StateLoader({ children }: StateLoaderProps) {
 
     useEffect(() => {
         if (meQuery.isSuccess) {
+            console.info('Loaded state', { user: meQuery.data.user });
             dispatch(setUser(meQuery.data.user));
         }
     }, [meQuery.data, dispatch]);

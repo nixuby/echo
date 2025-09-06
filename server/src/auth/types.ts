@@ -3,6 +3,7 @@ declare global {
         interface User {
             id: string;
             email: string | null;
+            isEmailVerified: boolean;
             name: string | null;
             username: string;
         }
@@ -16,6 +17,7 @@ export function toSafeUser(user: any): User {
     return {
         id: user.id,
         email: user.email,
+        isEmailVerified: user.isEmailVerified,
         name: user.name,
         username: user.username,
     };

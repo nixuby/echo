@@ -22,7 +22,18 @@ export const settingsApi = createApi({
                 body: payload,
             }),
         }),
+
+        changeEmail: builder.mutation<{ user: User }, { email: string | null }>(
+            {
+                query: (payload) => ({
+                    url: '/email',
+                    method: 'POST',
+                    body: payload,
+                }),
+            },
+        ),
     }),
 });
 
-export const { useChangeUsernameMutation } = settingsApi;
+export const { useChangeUsernameMutation, useChangeEmailMutation } =
+    settingsApi;

@@ -71,10 +71,8 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     const user = await prisma.user.create({
         data: {
-            name: '', // TODO: Make name optional
             username,
             password: hash,
-            email: username,
         },
     });
 

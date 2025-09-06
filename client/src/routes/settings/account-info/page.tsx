@@ -28,7 +28,7 @@ export default function AccountInfoPage() {
                         />
                         <SettingsLink
                             to='/settings/account-info/email'
-                            title={user.email ? 'Change Email' : 'Set Email'}
+                            title={user?.email ? 'Change Email' : 'Set Email'}
                             subtitle='Update your account email'
                         />
                     </div>

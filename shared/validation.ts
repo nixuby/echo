@@ -10,6 +10,8 @@ export const passwordSchema = z
     .min(6, 'Password must be at least 6 characters long')
     .max(128, 'Password must be at most 128 characters long');
 
+export const emailSchema = z.email('Invalid email address').max(256, 'Email must be at most 256 characters long');
+
 export const createAccountFormSchema = z
     .object({
         username: usernameSchema,
@@ -25,3 +27,7 @@ export const createAccountFormSchema = z
         message: 'You must accept the Terms of Service',
         path: ['tos'],
     });
+
+export const changeEmailFormSchema = z.object({
+    email: emailSchema,
+});
