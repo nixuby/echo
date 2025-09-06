@@ -32,8 +32,18 @@ export const settingsApi = createApi({
                 }),
             },
         ),
+
+        resendVerificationEmail: builder.mutation<void, void>({
+            query: () => ({
+                url: '/email/resend-verification',
+                method: 'POST',
+            }),
+        }),
     }),
 });
 
-export const { useChangeUsernameMutation, useChangeEmailMutation } =
-    settingsApi;
+export const {
+    useChangeUsernameMutation,
+    useChangeEmailMutation,
+    useResendVerificationEmailMutation,
+} = settingsApi;

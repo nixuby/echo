@@ -1,24 +1,26 @@
+import { type User as TUser } from '@shared/types.js';
+
 declare global {
     namespace Express {
-        interface User {
-            id: string;
-            email: string | null;
-            isEmailVerified: boolean;
-            name: string | null;
-            username: string;
-        }
+        interface User extends TUser {}
     }
 }
 
 // Safe user
-export type User = Express.User;
+export type User = TUser;
 
 export function toSafeUser(user: any): User {
     return {
         id: user.id,
         email: user.email,
-        isEmailVerified: user.isEmailVerified,
         name: user.name,
         username: user.username,
+        isEmailVerified: user.isEmailVerified,
+        emailVerifiedAt:
+            user.emailVerifiedAt == null
+                ? null
+                : typeof user.emailVerifiedAt === 'string'
+                ? user.emailVerifiedAt
+                : user.emailVerifiedAt.toISOString(),
     };
 }

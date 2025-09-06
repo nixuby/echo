@@ -4,6 +4,7 @@ export type User = {
     name: string | null;
     email: string | null;
     isEmailVerified: boolean;
+    emailVerifiedAt: string | null; // Date string
 };
 
 export type Post = {

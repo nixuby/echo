@@ -11,9 +11,10 @@ passport.deserializeUser(async (id: string, done) => {
         return done(null, {
             id: user.id,
             email: user.email,
-            isEmailVerified: user.isEmailVerified,
             name: user.name,
             username: user.username,
+            isEmailVerified: user.isEmailVerified,
+            emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
         });
     } catch (e) {
         done(e as Error);

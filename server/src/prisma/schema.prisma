@@ -9,16 +9,39 @@ datasource db {
 }
 
 model User {
-    id              String   @id @default(uuid())
-    email           String? // Unique email address, not required
-    isEmailVerified Boolean  @default(false)
-    username        String   @unique // Unique user name for login
-    name            String? // Non-unique display user name
-    provider        String   @default("local") // Auth provider (local | google | apple)
-    providerId      String?
-    password        String? // Hash for local users
-    createdAt       DateTime @default(now())
-    updatedAt       DateTime @updatedAt
+    id String @id @default(uuid())
+
+    // Unique email address, not required
+    // Used for resetting the password
+    email String?
+
+    // Whether the email is verified
+    isEmailVerified Boolean @default(false)
+
+    // Timestamp for when the email was verified
+    // Note: if not verified, this marks when the verification email was sent.
+    emailVerifiedAt DateTime?
+
+    // Unique user name for login
+    username String @unique
+
+    // Non-unique display user name
+    name String?
+
+    // Auth provider (local | google | apple)
+    provider String @default("local")
+
+    // Unique identifier for the provider
+    providerId String?
+
+    // Password hash for local users
+    password String?
+
+    // Timestamp for when the user was created
+    createdAt DateTime @default(now())
+
+    // Timestamp for when the user was last updated
+    updatedAt DateTime @updatedAt
 
     @@unique([provider, providerId])
 }

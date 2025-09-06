@@ -1,6 +1,7 @@
 import ProtectedRoute from '@/components/protected-route';
 import Layout from '../../components/layout/layout';
 import SettingsLink from './settings-link';
+import SettingsPageEmailInfo from './email-info';
 
 export default function SettingsPage() {
     return (
@@ -11,6 +12,7 @@ export default function SettingsPage() {
                         Settings
                     </h2>
                     <div className='flex flex-col border-b border-gray-800'>
+                        <SettingsPageEmailInfo />
                         <SettingsLink
                             to='/settings/account-info'
                             title='Account Information'

@@ -2,7 +2,7 @@ import { toSafeUser } from '@/auth/types.js';
 import prisma from '@/prisma.js';
 import { emailSchema, usernameSchema } from '@shared/validation.js';
 import express from 'express';
-import z from 'zod';
+import { EMAIL_INTERVAL } from '@shared/consts.js';
 
 const settingsRouter = express.Router();
 
@@ -61,6 +61,19 @@ settingsRouter.post('/email', async (req, res) => {
         return res.status(401).json({ errors: { root: 'Unauthorized' } });
     }
 
+    const timePassed =
+        Date.now() - new Date(req.user.emailVerifiedAt ?? 0).getTime();
+
+    if (timePassed < EMAIL_INTERVAL) {
+        return res.status(429).json({
+            errors: {
+                root: `Please wait ${Math.ceil(
+                    (EMAIL_INTERVAL - timePassed) / 1000 / 60
+                )} minutes before changing your email again`,
+            },
+        });
+    }
+
     const email = (req.body.email ?? null) as string | null;
 
     // If email is null, unlink the email from the account
@@ -104,6 +117,48 @@ settingsRouter.post('/email', async (req, res) => {
                 .status(500)
                 .json({ errors: { root: 'Internal Server Error' } });
         }
+    }
+});
+
+// Resend verification email
+
+settingsRouter.post('/email/resend-verification', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    try {
+        // TODO: Logic to resend verification email
+
+        // Check if enough time has passed since the last verification email
+        const timePassed =
+            Date.now() - new Date(req.user.emailVerifiedAt ?? 0).getTime();
+
+        if (timePassed < EMAIL_INTERVAL) {
+            return res.status(429).json({
+                errors: {
+                    root: `Please wait ${Math.ceil(
+                        (EMAIL_INTERVAL - timePassed) / 1000 / 60
+                    )} minutes before resending the verification email`,
+                },
+            });
+        }
+
+        await prisma.user.update({
+            where: {
+                id: req.user.id,
+            },
+            data: {
+                emailVerifiedAt: new Date(),
+                isEmailVerified: false,
+            },
+        });
+
+        res.status(200).json(null);
+    } catch (e) {
+        return res
+            .status(500)
+            .json({ errors: { root: 'Internal Server Error' } });
     }
 });
 
