@@ -1,8 +1,8 @@
 import { Link } from 'react-router';
-import Layout from '../components/layout/layout';
+import Layout from '../../components/layout/layout';
 import { ChevronRightIcon } from '@heroicons/react/20/solid';
 
-export default function SettingsRoute() {
+export default function SettingsPage() {
     return (
         <Layout title='Settings'>
             <div className='flex flex-col'>

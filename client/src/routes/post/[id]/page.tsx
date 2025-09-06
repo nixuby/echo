@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import Layout from '../components/layout/layout';
+import Layout from '../../../components/layout/layout';
 import { type Post as TPost } from '@shared/types';
-import Post from '../components/post/post';
+import Post from '../../../components/post/post';
 import { useParams } from 'react-router';
 import { jsonReviveDates } from '@shared/json-date';
 
-export type PostRouteParams = {
+export type PostPageParams = {
     id: string;
 };
 
-export default function PostRoute() {
-    const params = useParams<PostRouteParams>();
+export default function PostPage() {
+    const params = useParams<PostPageParams>();
     const [post, setPost] = useState<TPost | null>(null);
 
     useEffect(() => {

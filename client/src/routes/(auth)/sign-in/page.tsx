@@ -1,15 +1,18 @@
 import { useForm } from 'react-hook-form';
-import AuthLayout from '../components/auth/auth-layout';
-import TextBox from '../components/shared/textbox';
-import Button from '../components/shared/button';
+import AuthLayout from '../../../components/auth/auth-layout';
+import TextBox from '../../../components/shared/textbox';
+import Button from '../../../components/shared/button';
 import { Link, useNavigate } from 'react-router';
-import { SIGN_IN_FORM_DEFAULT, type SignInForm } from '../forms/sign-in-form';
-import AuthProviderButton from '../components/auth/auth-provider-button';
-import { useSignInMutation } from '../redux/auth/auth-api';
-import { useAppDispatch } from '../redux/hooks';
-import { setUser } from '../redux/auth/auth-slice';
+import {
+    SIGN_IN_FORM_DEFAULT,
+    type SignInForm,
+} from '../../../forms/sign-in-form';
+import AuthProviderButton from '../../../components/auth/auth-provider-button';
+import { useSignInMutation } from '../../../redux/auth/auth-api';
+import { useAppDispatch } from '../../../redux/hooks';
+import { setUser } from '../../../redux/auth/auth-slice';
 
-export default function SignInRoute() {
+export default function SignInPage() {
     const navigate = useNavigate();
 
     const {

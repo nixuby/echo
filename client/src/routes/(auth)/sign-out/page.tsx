@@ -1,11 +1,11 @@
-import { useSignOutMutation } from '../redux/auth/auth-api';
-import AuthLayout from '../components/auth/auth-layout';
+import { useSignOutMutation } from '../../../redux/auth/auth-api';
+import AuthLayout from '../../../components/auth/auth-layout';
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
-import { useAppDispatch } from '../redux/hooks';
-import { setUser } from '../redux/auth/auth-slice';
+import { useAppDispatch } from '../../../redux/hooks';
+import { setUser } from '../../../redux/auth/auth-slice';
 
-export default function SignOutRoute() {
+export default function SignOutPage() {
     const navigate = useNavigate();
     const [signOut] = useSignOutMutation();
     const dispatch = useAppDispatch();

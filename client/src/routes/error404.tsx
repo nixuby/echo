@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 
-export default function Error404Route() {
+export default function Error404Page() {
     return (
         <>
             <title>Not Found — Echo</title>
