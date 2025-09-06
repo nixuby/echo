@@ -4,6 +4,7 @@ import RootRoute from './routes/root';
 import CreateAccountRoute from './routes/create-account';
 import Error404Route from './routes/error404';
 import PostRoute from './routes/post';
+import SettingsRoute from './routes/settings';
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     {
         path: 'create-account',
         Component: CreateAccountRoute,
+    },
+    {
+        path: 'settings',
+        Component: SettingsRoute,
     },
     {
         path: 'post/:id',
