@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useMeQuery } from '../redux/auth/auth-api';
-import { setUser } from '../redux/auth/auth-slice';
-import { useAppDispatch } from '../redux/hooks';
+import { useEffect, useState } from 'react';
+import { useMeQuery } from '@/redux/auth/auth-api';
+import { setUser } from '@/redux/auth/auth-slice';
+import { useAppDispatch } from '@/redux/hooks';
 
 export type StateLoaderProps = {
     children?: React.ReactNode;
@@ -9,6 +9,8 @@ export type StateLoaderProps = {
 
 // Fetch state from the server
 export default function StateLoader({ children }: StateLoaderProps) {
+    const [isEverythingLoaded, setIsEverythingLoaded] = useState(false);
+
     const meQuery = useMeQuery();
     const dispatch = useAppDispatch();
 
@@ -18,7 +20,9 @@ export default function StateLoader({ children }: StateLoaderProps) {
         }
     }, [meQuery.data, dispatch]);
 
-    const isEverythingLoaded = !(meQuery.isLoading || meQuery.isUninitialized);
+    useEffect(() => {
+        setIsEverythingLoaded(!(meQuery.isLoading || meQuery.isUninitialized));
+    }, [meQuery.isLoading, meQuery.isUninitialized]);
 
     if (!isEverythingLoaded) {
         return (

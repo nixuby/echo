@@ -1,23 +1,26 @@
 import { useForm } from 'react-hook-form';
-import AuthLayout from '../../../components/auth/auth-layout';
-import TextBox from '../../../components/shared/textbox';
-import Button from '../../../components/shared/button';
-import { Link, useNavigate } from 'react-router';
+import AuthLayout from '@/components/auth/auth-layout';
+import TextBox from '@/components/shared/textbox';
+import Button from '@/components/shared/button';
+import { Link, Navigate, useNavigate } from 'react-router';
 import { useEffect } from 'react';
 import {
     CREATE_ACCOUNT_FORM_DEFAULT,
     type CreateAccountForm,
-} from '../../../forms/create-account-form';
-import CheckBox from '../../../components/shared/checkbox';
+} from '@/forms/create-account-form';
+import CheckBox from '@/components/shared/checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
-import AuthProviderButton from '../../../components/auth/auth-provider-button';
+import AuthProviderButton from '@/components/auth/auth-provider-button';
 import { createAccountFormSchema } from '@shared/validation';
-import { useCreateAccountMutation } from '../../../redux/auth/auth-api';
-import { useAppDispatch } from '../../../redux/hooks';
-import { setUser } from '../../../redux/auth/auth-slice';
+import { useCreateAccountMutation } from '@/redux/auth/auth-api';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setUser } from '@/redux/auth/auth-slice';
 
 export default function CreateAccountPage() {
     const navigate = useNavigate();
+    const user = useAppSelector((s) => s.auth.user);
+    const dispatch = useAppDispatch();
+    const [createAccount, { isLoading }] = useCreateAccountMutation();
 
     const {
         register,
@@ -31,15 +34,13 @@ export default function CreateAccountPage() {
         resolver: zodResolver(createAccountFormSchema),
     });
 
-    const [createAccount, { isLoading }] = useCreateAccountMutation();
-
-    const dispatch = useAppDispatch();
-
     const passwordValue = watch('password');
 
     useEffect(() => {
         if (isDirty && isSubmitted) trigger('confirm');
     }, [passwordValue]);
+
+    if (user) return <Navigate replace to='/' />;
 
     function submitForm(data: CreateAccountForm) {
         createAccount(data)

@@ -1,19 +1,20 @@
 import { useForm } from 'react-hook-form';
-import AuthLayout from '../../../components/auth/auth-layout';
-import TextBox from '../../../components/shared/textbox';
-import Button from '../../../components/shared/button';
-import { Link, useNavigate } from 'react-router';
-import {
-    SIGN_IN_FORM_DEFAULT,
-    type SignInForm,
-} from '../../../forms/sign-in-form';
-import AuthProviderButton from '../../../components/auth/auth-provider-button';
-import { useSignInMutation } from '../../../redux/auth/auth-api';
-import { useAppDispatch } from '../../../redux/hooks';
-import { setUser } from '../../../redux/auth/auth-slice';
+import AuthLayout from '@/components/auth/auth-layout';
+import TextBox from '@/components/shared/textbox';
+import Button from '@/components/shared/button';
+import { Link, Navigate, useNavigate, useSearchParams } from 'react-router';
+import { SIGN_IN_FORM_DEFAULT, type SignInForm } from '@/forms/sign-in-form';
+import AuthProviderButton from '@/components/auth/auth-provider-button';
+import { useSignInMutation } from '@/redux/auth/auth-api';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { setUser } from '@/redux/auth/auth-slice';
 
 export default function SignInPage() {
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const dispatch = useAppDispatch();
+    const user = useAppSelector((s) => s.auth.user);
+    const [signIn, { isLoading }] = useSignInMutation();
 
     const {
         register,
@@ -22,26 +23,25 @@ export default function SignInPage() {
         setError,
     } = useForm<SignInForm>({ defaultValues: SIGN_IN_FORM_DEFAULT });
 
-    const [signIn, { isLoading }] = useSignInMutation();
-
-    const dispatch = useAppDispatch();
+    if (user)
+        return <Navigate replace to={searchParams.get('redirectTo') ?? '/'} />;
 
     function submitForm(data: SignInForm) {
         signIn(data)
             .unwrap()
             .then((res) => {
                 dispatch(setUser(res.user));
-                navigate('/');
+                const redirectTo = searchParams.get('redirectTo') ?? '/';
+                navigate(redirectTo);
             })
-            .catch((error) => {
-                if (error.status === 400) {
-                    const errors = error.data.errors;
-                    if (!errors) return;
-                    for (const field in errors) {
-                        setError(field as keyof SignInForm, {
-                            message: errors[field],
-                        });
-                    }
+            .catch((res) => {
+                const errors = res.data.errors;
+
+                if (!errors) return;
+                for (const field in errors) {
+                    setError(field as keyof SignInForm, {
+                        message: errors[field],
+                    });
                 }
             });
     }
