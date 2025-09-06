@@ -20,7 +20,9 @@ authRouter.post('/sign-in', (req, res, next) => {
             return res.status(401).json({
                 ok: false,
                 data: {
-                    error: info?.message || 'Invalid credentials',
+                    errors: {
+                        root: info?.message || 'Invalid username or password',
+                    },
                 },
             });
         }

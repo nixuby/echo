@@ -7,28 +7,6 @@ import { useState } from 'react';
 import { SIGN_IN_FORM_DEFAULT, type SignInForm } from '../forms/sign-in-form';
 import AuthProviderButton from '../components/auth/auth-provider-button';
 
-async function mockSignIn(
-    body: SignInForm,
-): Promise<{ ok: true } | { ok: false; errors: Record<string, string> }> {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const { username, password } = body;
-            if (username === 'admin' && password === '123456') {
-                resolve({
-                    ok: true,
-                });
-            }
-
-            resolve({
-                ok: false,
-                errors: {
-                    root: 'Invalid username or password',
-                },
-            });
-        }, 500);
-    });
-}
-
 export default function SignInRoute() {
     const {
         register,
@@ -55,22 +33,19 @@ export default function SignInRoute() {
             .then((res) => res.json())
             .then((res) => {
                 setIsLoading(false);
-                console.log(res);
+
+                if (res.ok) {
+                    navigate('/');
+                } else {
+                    const errors = res.data.errors;
+                    if (!errors) return;
+                    for (const field in errors) {
+                        setError(field as keyof SignInForm, {
+                            message: errors[field],
+                        });
+                    }
+                }
             });
-
-        // mockSignIn(data).then((response) => {
-        //     setIsLoading(false);
-
-        //     if (response.ok) {
-        //         navigate('/');
-        //     } else {
-        //         for (const field in response.errors) {
-        //             setError(field as keyof SignInForm, {
-        //                 message: response.errors[field],
-        //             });
-        //         }
-        //     }
-        // });
     }
 
     return (
