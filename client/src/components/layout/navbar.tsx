@@ -11,13 +11,33 @@ import {
     UserGroupIcon,
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
+import { useEffect, useState } from 'react';
+import type { User } from '@shared/types';
 
 export type NavBarProps = {
     mobile?: boolean;
 };
 
 export default function NavBar({ mobile }: NavBarProps) {
+    const [user, setUser] = useState<User | null>(null);
+
     const { pathname } = useLocation();
+
+    // TODO: RTK Query
+    useEffect(() => {
+        fetch('http://localhost:5179/api/auth/me', {
+            credentials: 'include',
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                if (res.ok) {
+                    setUser(res.data.user);
+                }
+            })
+            .catch((error) => {
+                console.error(error);
+            });
+    }, []);
 
     return (
         <nav
@@ -76,13 +96,19 @@ export default function NavBar({ mobile }: NavBarProps) {
                     </NavBarLink>
                 </div>
                 <Link
-                    to='/sign-in'
+                    to={user ? `/@${user.username}` : '/sign-in'}
                     className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
                 >
                     <div className='aspect-square size-12 rounded-full bg-gray-500' />
                     <div className='flex flex-col'>
-                        <div>Profile</div>
-                        <div className='text-sm text-gray-500'>Sign In</div>
+                        <div>
+                            {user && user.name && user.name.length > 0
+                                ? user.name
+                                : 'Profile'}
+                        </div>
+                        <div className='text-sm text-gray-500'>
+                            {user ? `@${user.username}` : 'Sign In'}
+                        </div>
                     </div>
                 </Link>
             </div>

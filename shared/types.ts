@@ -1,3 +1,10 @@
+export type User = {
+    id: string;
+    username: string;
+    name: string | null;
+    email: string | null;
+};
+
 export type Post = {
     id: string;
     author: {

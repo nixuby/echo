@@ -44,19 +44,33 @@ export default function SignInRoute() {
     function submitForm(data: SignInForm) {
         setIsLoading(true);
 
-        mockSignIn(data).then((response) => {
-            setIsLoading(false);
+        fetch('http://localhost:5179/api/auth/sign-in', {
+            body: JSON.stringify(data),
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                setIsLoading(false);
+                console.log(res);
+            });
 
-            if (response.ok) {
-                navigate('/');
-            } else {
-                for (const field in response.errors) {
-                    setError(field as keyof SignInForm, {
-                        message: response.errors[field],
-                    });
-                }
-            }
-        });
+        // mockSignIn(data).then((response) => {
+        //     setIsLoading(false);
+
+        //     if (response.ok) {
+        //         navigate('/');
+        //     } else {
+        //         for (const field in response.errors) {
+        //             setError(field as keyof SignInForm, {
+        //                 message: response.errors[field],
+        //             });
+        //         }
+        //     }
+        // });
     }
 
     return (

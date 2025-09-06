@@ -1,12 +1,34 @@
 import express from 'express';
 import rootRouter from './routes/router.js';
 import cors from 'cors';
+import session from 'express-session';
+import ENV from './env.js';
+import passport from './auth/passport.js';
+import helmet from 'helmet';
 
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({ origin: 'http://localhost:5173', credentials: true }));
 app.use(express.json());
+app.use(
+    session({
+        name: 'sid',
+        secret: ENV.SESSION_SECRET,
+        resave: false,
+        saveUninitialized: false,
+        cookie: {
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: false, // TODO: Set to true in production
+            maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
+        },
+    })
+);
+
+app.use(helmet());
+app.use(passport.initialize());
+app.use(passport.session());
 
 // Router
 app.use(rootRouter);

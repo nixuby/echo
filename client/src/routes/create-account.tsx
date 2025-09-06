@@ -11,41 +11,9 @@ import {
 } from '../forms/create-account-form';
 import CheckBox from '../components/shared/checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
-import z from 'zod';
 import AuthProviderButton from '../components/auth/auth-provider-button';
 
-async function mockCreateAccount(
-    body: CreateAccountForm,
-): Promise<{ ok: true } | { ok: false; errors: Record<string, string> }> {
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            const valRes = createAccountFormSchema.safeParse(body);
-
-            if (valRes.success) {
-                resolve({ ok: true });
-            } else {
-                const result = {
-                    ok: false,
-                    errors: {} as Record<string, string>,
-                };
-
-                const errorTree = z.treeifyError(valRes.error)
-                    .properties as Record<
-                    string,
-                    { errors: string[] } | undefined
-                >;
-                for (const err in errorTree) {
-                    if (errorTree[err] === undefined) continue;
-                    result.errors[err] = errorTree[err].errors[0];
-                }
-
-                resolve(result);
-            }
-        }, 500);
-    });
-}
-
-export default function SignInRoute() {
+export default function CreateAccountRoute() {
     const {
         register,
         handleSubmit,
@@ -71,19 +39,29 @@ export default function SignInRoute() {
     function submitForm(data: CreateAccountForm) {
         setIsLoading(true);
 
-        mockCreateAccount(data).then((response) => {
-            setIsLoading(false);
-
-            if (response.ok) {
-                navigate('/');
-            } else {
-                for (const field in response.errors) {
-                    setError(field as keyof CreateAccountForm, {
-                        message: response.errors[field],
-                    });
+        fetch('http://localhost:5179/api/auth/create-account', {
+            body: JSON.stringify(data),
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
+            .then((res) => res.json())
+            .then((res) => {
+                setIsLoading(false);
+                if (res.ok) {
+                    navigate('/');
+                } else {
+                    if (res.errors) {
+                        for (const field in res.errors) {
+                            setError(field as keyof CreateAccountForm, {
+                                message: res.errors[field],
+                            });
+                        }
+                    }
                 }
-            }
-        });
+            });
     }
 
     return (
