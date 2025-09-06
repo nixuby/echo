@@ -9,6 +9,7 @@ import SignOutPage from './(auth)/sign-out/page';
 import AccountInfoPage from './settings/account-info/page';
 import UsernamePage from './settings/account-info/username/page';
 import EmailPage from './settings/account-info/email/page';
+import NamePage from './settings/account-info/name/page';
 
 const router = createBrowserRouter([
     {
@@ -34,6 +35,10 @@ const router = createBrowserRouter([
     {
         path: 'settings/account-info',
         Component: AccountInfoPage,
+    },
+    {
+        path: 'settings/account-info/name',
+        Component: NamePage,
     },
     {
         path: 'settings/account-info/username',

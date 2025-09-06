@@ -1,10 +1,59 @@
 import { toSafeUser } from '@/auth/types.js';
 import prisma from '@/prisma.js';
-import { emailSchema, usernameSchema } from '@shared/validation.js';
+import { emailSchema, nameSchema, usernameSchema } from '@shared/validation.js';
 import express from 'express';
 import { EMAIL_INTERVAL } from '@shared/consts.js';
 
 const settingsRouter = express.Router();
+
+// Change name
+
+settingsRouter.post('/name', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const validation = nameSchema.safeParse(req.body.name);
+
+    if (!validation.success) {
+        return res.status(400).json({
+            errors: {
+                name: validation.error.issues[0].message,
+            },
+        });
+    }
+
+    const name = req.body.name as string | undefined;
+
+    // Reset name
+    if (!name || name.trim().length === 0) {
+        try {
+            const user = await prisma.user.update({
+                where: { id: req.user.id },
+                data: { name: null },
+            });
+
+            return res.status(200).json({ user: toSafeUser(user) });
+        } catch (e) {
+            return res
+                .status(500)
+                .json({ errors: { root: 'Internal Server Error' } });
+        }
+    }
+
+    try {
+        const user = await prisma.user.update({
+            where: { id: req.user.id },
+            data: { name },
+        });
+
+        res.json({ user: toSafeUser(user) });
+    } catch (e) {
+        return res
+            .status(500)
+            .json({ errors: { root: 'Internal Server Error' } });
+    }
+});
 
 // Change username
 

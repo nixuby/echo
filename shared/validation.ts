@@ -1,5 +1,7 @@
 import z from 'zod';
 
+export const nameSchema = z.string().max(32, 'Name must be at most 32 characters long').optional();
+
 export const usernameSchema = z
     .string()
     .min(3, 'Username must be at least 3 characters long')

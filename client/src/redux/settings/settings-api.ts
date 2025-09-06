@@ -8,6 +8,14 @@ export const settingsApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
+        changeName: builder.mutation<{ user: User }, { name: string }>({
+            query: (payload) => ({
+                url: '/name',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
+
         changeUsername: builder.mutation<
             {
                 user: User;
@@ -43,6 +51,7 @@ export const settingsApi = createApi({
 });
 
 export const {
+    useChangeNameMutation,
     useChangeUsernameMutation,
     useChangeEmailMutation,
     useResendVerificationEmailMutation,

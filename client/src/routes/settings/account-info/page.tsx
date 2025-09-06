@@ -22,6 +22,11 @@ export default function AccountInfoPage() {
                     </div>
                     <div className='flex flex-col border-b border-gray-800'>
                         <SettingsLink
+                            to='/settings/account-info/name'
+                            title='Change Name'
+                            subtitle='Update your display name'
+                        />
+                        <SettingsLink
                             to='/settings/account-info/username'
                             title='Change Username'
                             subtitle='Update your account username'

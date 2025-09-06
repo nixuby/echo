@@ -84,14 +84,20 @@ export default function NavBar({ mobile }: NavBarProps) {
                 >
                     <div className='aspect-square size-12 rounded-full bg-gray-500' />
                     <div className='flex flex-col'>
-                        <div>
-                            {user && user.name && user.name.length > 0
-                                ? user.name
-                                : 'Profile'}
-                        </div>
-                        <div className='text-sm text-gray-500'>
-                            {user ? `@${user.username}` : 'Sign In'}
-                        </div>
+                        {user ? (
+                            user.name ? (
+                                <div>
+                                    <div>{user.name}</div>
+                                    <div className='text-sm text-gray-400'>
+                                        @{user.username}
+                                    </div>
+                                </div>
+                            ) : (
+                                <div>@{user.username}</div>
+                            )
+                        ) : (
+                            <div>Profile</div>
+                        )}
                     </div>
                 </Link>
             </div>
