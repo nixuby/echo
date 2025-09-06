@@ -21,7 +21,7 @@ export default function StateLoader({ children }: StateLoaderProps) {
     }, [meQuery.data, dispatch]);
 
     useEffect(() => {
-        setIsEverythingLoaded(!(meQuery.isLoading || meQuery.isUninitialized));
+        setIsEverythingLoaded(!meQuery.isLoading && !meQuery.isUninitialized);
     }, [meQuery.isLoading, meQuery.isUninitialized]);
 
     if (!isEverythingLoaded) {

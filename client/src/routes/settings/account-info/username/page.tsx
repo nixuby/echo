@@ -1,31 +1,55 @@
 import { Link } from 'react-router';
 import Layout from '@/components/layout/layout';
 import { ArrowLeftIcon } from '@heroicons/react/20/solid';
-import { useAppSelector } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProtectedRoute from '@/components/protected-route';
 import TextBox from '@/components/shared/textbox';
 import Button from '@/components/shared/button';
 import { useForm } from 'react-hook-form';
+import { useChangeUsernameMutation } from '@/redux/settings/settings-api';
+import { useState } from 'react';
+import { setUser } from '@/redux/auth/auth-slice';
 
 type ChangeUsernameForm = {
     username: string;
 };
 
 export default function UsernamePage() {
+    const dispatch = useAppDispatch();
     const user = useAppSelector((s) => s.auth.user)!;
+    const [changeUsername, { isLoading }] = useChangeUsernameMutation();
+    const [success, setSuccess] = useState<boolean>(false);
 
     const {
         register,
         handleSubmit: onSubmit,
         formState: { errors },
+        setError,
+        watch,
     } = useForm<ChangeUsernameForm>({
         defaultValues: {
-            username: user.username,
+            username: user?.username ?? '',
         },
     });
 
+    const username = watch('username');
+
     function handleSubmit(data: ChangeUsernameForm) {
-        // TODO: Implement username change logic using RTK Query
+        changeUsername(data)
+            .unwrap()
+            .then(({ user }) => {
+                setSuccess(true);
+                dispatch(setUser(user));
+            })
+            .catch((res) => {
+                if (!res?.data?.errors) return;
+                const errors = res.data.errors as Record<string, string>;
+                for (const field in errors) {
+                    setError(field as keyof ChangeUsernameForm, {
+                        message: errors[field],
+                    });
+                }
+            });
     }
 
     return (
@@ -54,13 +78,27 @@ export default function UsernamePage() {
                             label='Username'
                             {...register('username')}
                             error={errors.username?.message}
+                            disabled={success}
                         />
                         {errors.root && (
                             <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
                                 {errors.root.message}
                             </div>
                         )}
-                        <Button submit>Save</Button>
+                        {success ? (
+                            <div className='border border-green-400/40 bg-green-400/20 px-4 py-2 text-sm text-green-400'>
+                                Username changed successfully!
+                            </div>
+                        ) : (
+                            <Button
+                                submit
+                                disabled={
+                                    isLoading || username === user.username
+                                }
+                            >
+                                Save
+                            </Button>
+                        )}
                     </form>
                 </div>
             </Layout>
