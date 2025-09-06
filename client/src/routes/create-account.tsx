@@ -6,12 +6,12 @@ import { Link, useNavigate } from 'react-router';
 import { useEffect, useState } from 'react';
 import {
     CREATE_ACCOUNT_FORM_DEFAULT,
-    createAccountFormSchema,
     type CreateAccountForm,
 } from '../forms/create-account-form';
 import CheckBox from '../components/shared/checkbox';
 import { zodResolver } from '@hookform/resolvers/zod';
 import AuthProviderButton from '../components/auth/auth-provider-button';
+import { createAccountFormSchema } from '@shared/validation';
 
 export default function CreateAccountRoute() {
     const {

@@ -2,8 +2,10 @@
     "name": "echo-shared",
     "version": "0.1.0",
     "private": true,
-    "scripts": {
-    },
-    "keywords": [ ],
-    "type": "module"
+    "scripts": {},
+    "keywords": [],
+    "type": "module",
+    "dependencies": {
+        "zod": "^4.1.5"
+    }
 }

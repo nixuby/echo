@@ -3,6 +3,7 @@ import passport from '@/auth/passport.js';
 import prisma from '@/prisma.js';
 import { hashPassword } from '@/auth/hash-password.js';
 import { toSafeUser } from '@/auth/types.js';
+import { createAccountFormSchema } from '@shared/validation.js';
 
 const authRouter = express.Router();
 
@@ -45,6 +46,18 @@ authRouter.post('/create-account', async (req, res, next) => {
         return res.status(400).json({
             ok: false,
             errors: { confirm: 'Passwords do not match' },
+        });
+    }
+
+    const validation = createAccountFormSchema.safeParse(req.body);
+
+    if (!validation.success) {
+        return res.status(400).json({
+            ok: false,
+            errors: {
+                root: 'Validation failed',
+                // Other validation errors are handled on the client
+            },
         });
     }
 
