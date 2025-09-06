@@ -13,12 +13,12 @@ export default function SettingsPage() {
                     <div className='flex flex-col border-b border-gray-800'>
                         <SettingsLink
                             to='/settings/account-info'
-                            title='Account information'
+                            title='Account Information'
                             subtitle='Manage your account information like name, username, and email'
                         />
                         <SettingsLink
                             to='/settings/change-password'
-                            title='Change password'
+                            title='Change Password'
                             subtitle='Update your password to keep your account secure'
                         />
                         <SettingsLink
