@@ -5,6 +5,7 @@ import Button from '../components/shared/button';
 import { Link, useNavigate } from 'react-router';
 import { useState } from 'react';
 import { SIGN_IN_FORM_DEFAULT, type SignInForm } from '../forms/sign-in-form';
+import AuthProviderButton from '../components/auth/auth-provider-button';
 
 async function mockSignIn(
     body: SignInForm,
@@ -84,18 +85,26 @@ export default function SignInRoute() {
                 <Button submit disabled={isLoading}>
                     Sign In
                 </Button>
+                <Link
+                    to='/reset-password'
+                    className='self-start text-gray-400 transition-colors hover:text-gray-300 hover:underline'
+                >
+                    Forgot Password
+                </Link>
                 <div className='relative h-px w-full bg-gray-800 text-sm'>
-                    <span className='absolute left-1/2 top-0 -mx-2 -translate-y-1/2 bg-gray-950 px-2 text-gray-400'>
+                    <span className='absolute top-0 left-1/2 -mx-2 -translate-y-1/2 bg-gray-950 px-2 text-gray-400'>
                         or
                     </span>
                 </div>
-                <div className='w-full text-center'>
+                <div className='flex flex-col gap-2'>
                     <Link
                         to='/create-account'
-                        className='text-gray-400 transition-colors hover:text-gray-300 hover:underline'
+                        className='border border-gray-600 bg-gray-950 px-4 py-2 text-center text-sm font-semibold transition hover:bg-gray-900'
                     >
                         Create Account
                     </Link>
+                    <AuthProviderButton type='signin' provider='google' />
+                    <AuthProviderButton type='signin' provider='apple' />
                 </div>
             </form>
         </AuthLayout>
