@@ -4,12 +4,12 @@ import { setUser } from '../../redux/auth/auth-slice';
 import { useAppDispatch } from '../../redux/hooks';
 
 export default function AuthProvider() {
-    const { data } = useMeQuery();
+    const { data, isSuccess } = useMeQuery();
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (data && data.ok) {
-            dispatch(setUser(data.data.user));
+        if (isSuccess) {
+            dispatch(setUser(data.user));
         }
     }, [data, dispatch]);
 

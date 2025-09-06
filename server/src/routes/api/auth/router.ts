@@ -8,8 +8,9 @@ import { createAccountFormSchema } from '@shared/validation.js';
 const authRouter = express.Router();
 
 authRouter.get('/me', (req, res) => {
-    if (!req.user) return res.status(401).json({ ok: false, data: null });
-    res.json({ ok: true, data: { user: req.user } });
+    if (!req.user)
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    res.json({ user: req.user });
 });
 
 authRouter.post('/sign-in', (req, res, next) => {
@@ -18,18 +19,15 @@ authRouter.post('/sign-in', (req, res, next) => {
 
         if (!user) {
             return res.status(401).json({
-                ok: false,
-                data: {
-                    errors: {
-                        root: info?.message || 'Invalid username or password',
-                    },
+                errors: {
+                    root: info?.message || 'Invalid username or password',
                 },
             });
         }
 
         req.login(user, (err2) => {
             if (err2) return next(err2);
-            res.json({ ok: true, data: { user } });
+            res.json({ user });
         });
     })(req, res, next);
 });
@@ -39,14 +37,12 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     if (!username || !password || !confirm || !tos) {
         return res.status(400).json({
-            ok: false,
             errors: { root: 'Missing fields' },
         });
     }
 
     if (password !== confirm) {
         return res.status(400).json({
-            ok: false,
             errors: { confirm: 'Passwords do not match' },
         });
     }
@@ -55,7 +51,6 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     if (!validation.success) {
         return res.status(400).json({
-            ok: false,
             errors: {
                 root: 'Validation failed',
                 // Other validation errors are handled on the client
@@ -69,8 +64,7 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     if (existing)
         return res.status(409).json({
-            ok: false,
-            data: { errors: { username: 'Username already taken' } },
+            errors: { username: 'Username already taken' },
         });
 
     const hash = await hashPassword(password);
@@ -90,8 +84,8 @@ authRouter.post('/create-account', async (req, res, next) => {
         if (err2)
             return res
                 .status(500)
-                .json({ ok: false, errors: { root: 'Auto-login failed' } });
-        res.json({ ok: true, data: { user: safeUser } });
+                .json({ errors: { root: 'Auto-login failed' } });
+        res.json({ user: safeUser });
     });
 });
 

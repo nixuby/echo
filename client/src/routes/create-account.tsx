@@ -45,17 +45,14 @@ export default function CreateAccountRoute() {
         createAccount(data)
             .unwrap()
             .then((res) => {
-                if (res.ok) {
-                    dispatch(setUser(res.data.user));
-                    navigate('/');
-                } else {
-                    if (res.data.errors) {
-                        for (const field in res.data.errors) {
-                            setError(field as keyof CreateAccountForm, {
-                                message: res.data.errors[field],
-                            });
-                        }
-                    }
+                dispatch(setUser(res.user));
+                navigate('/');
+            })
+            .catch((error) => {
+                for (const field in error) {
+                    setError(field as keyof CreateAccountForm, {
+                        message: error[field],
+                    });
                 }
             });
     }

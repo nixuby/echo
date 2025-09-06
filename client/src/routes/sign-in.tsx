@@ -27,7 +27,7 @@ export default function SignInRoute() {
         signIn(data)
             .unwrap()
             .then((res) => {
-                if (res.ok) dispatch(setUser(res.data.user));
+                dispatch(setUser(res.user));
                 navigate('/');
             })
             .catch((error) => {
