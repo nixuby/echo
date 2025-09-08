@@ -1,38 +1,43 @@
-import { useEffect, useState } from 'react';
 import Layout from '../../../components/layout/layout';
-import { type Post as TPost } from '@shared/types';
 import Post from '../../../components/post/post';
-import { useParams } from 'react-router';
-import { jsonReviveDates } from '@shared/json-date';
+import { useNavigate, useParams } from 'react-router';
+import { useGetPostQuery } from '@/redux/posts/posts-api';
+import Error404Page from '@/routes/error404';
+import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 
 export type PostPageParams = {
     id: string;
 };
 
 export default function PostPage() {
+    const navigate = useNavigate();
     const params = useParams<PostPageParams>();
-    const [post, setPost] = useState<TPost | null>(null);
+    const postId = params.id;
+    if (!postId) return <Error404Page />;
+    const { data: post, isSuccess } = useGetPostQuery(params.id);
 
-    useEffect(() => {
-        fetch(`http://localhost:5179/api/post/${params.id}`)
-            .then((res) => res.json())
-            .then((res) => {
-                if (res.ok) {
-                    jsonReviveDates(res.data);
-                    setPost(res.data as TPost);
-                }
-            });
-    }, []);
+    function handleClickBack() {
+        navigate(-1);
+    }
 
     return (
         <Layout title='Post'>
-            {post ? <Post clickable={false} post={post} /> : 'Loading...'}
+            <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
+                <button
+                    type='button'
+                    role='button'
+                    onClick={handleClickBack}
+                    className='cursor-pointer'
+                >
+                    <ArrowLeftIcon className='size-5' />
+                </button>
+                <h2 className='text-xl font-bold'>Post</h2>
+            </div>
+            {isSuccess ? <Post clickable={false} post={post} /> : 'Loading...'}
             <section>
                 <h3 className='border-b border-gray-800 px-4 py-2 text-xl font-bold'>
                     Replies&nbsp;&middot;&nbsp;
-                    <span className='font-normal text-gray-400'>
-                        {post?.stats.comments}
-                    </span>
+                    <span className='font-normal text-gray-400'>0</span>
                 </h3>
                 <div className='bg-yellow-700 p-4'>TODO: Add replies</div>
             </section>

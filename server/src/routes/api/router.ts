@@ -5,7 +5,7 @@ import settingsRouter from './settings/router.js';
 
 const apiRouter = express.Router();
 
-apiRouter.use(postsRouter);
+apiRouter.use('/posts', postsRouter);
 apiRouter.use('/auth', authRouter);
 apiRouter.use('/settings', settingsRouter);
 

@@ -50,7 +50,7 @@ export default function Post({ post, clickable = true }: PostProps) {
 
     function navigateToUser(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        navigate(`@${post.author.username}`);
+        navigate(`/@${post.author.username}`);
     }
 
     function handleClickMenu(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -83,17 +83,22 @@ export default function Post({ post, clickable = true }: PostProps) {
                             onClick={navigateToUser}
                             className='cursor-pointer hover:underline'
                         >
-                            <span className='font-bold'>
-                                {post.author.name}
-                            </span>
-                            &nbsp;
+                            {post.author.name && (
+                                <>
+                                    <span className='font-bold'>
+                                        {post.author.name}
+                                    </span>
+                                    &nbsp;
+                                </>
+                            )}
                             <span className='text-gray-600'>
                                 @{post.author.username}
                             </span>
                         </button>
                         &nbsp;
                         <span>
-                            &middot; {formatRelativeTime(post.createdAt)}
+                            &middot;{' '}
+                            {formatRelativeTime(new Date(post.createdAt))}
                         </span>
                     </div>
                     <button type='button' onClick={handleClickMenu}>
@@ -101,7 +106,7 @@ export default function Post({ post, clickable = true }: PostProps) {
                     </button>
                 </div>
                 <div>{post.content}</div>
-                <PostControls stats={post.stats} />
+                <PostControls stats={{ likes: 0, comments: 0, reposts: 0 }} />
             </div>
         </article>
     );

@@ -43,5 +43,16 @@ model User {
     // Timestamp for when the user was last updated
     updatedAt DateTime @updatedAt
 
+    posts Post[]
+
     @@unique([provider, providerId])
+}
+
+model Post {
+    id        String   @id @default(uuid())
+    content   String   @default("")
+    author    User     @relation(fields: [userId], references: [id])
+    userId    String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

@@ -10,13 +10,12 @@ export type User = {
 export type Post = {
     id: string;
     author: {
-        id: string;
         name: string;
         username: string;
     };
     content: string;
-    stats: PostStats;
-    createdAt: Date;
+    createdAt: string;
+    updatedAt: string;
 };
 
 export type PostStats = {

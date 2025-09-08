@@ -1,58 +1,83 @@
-import { Post } from '@shared/types.js';
-import { jsonReplaceDates } from '@shared/json-date.js';
+import prisma from '@/prisma.js';
 import express from 'express';
 
 const postsRouter = express.Router();
 
-const POSTS: Record<string, Post> = {
-    '81a24714-5969-43c8-a2fa-08be7d713e3d': {
-        id: '81a24714-5969-43c8-a2fa-08be7d713e3d',
-        author: {
-            id: '19bd4a35-5e8f-493d-843a-de9968862114',
-            name: 'John Doe',
-            username: 'john_doe',
+const SAFE_POST_SELECT = {
+    id: true,
+    author: {
+        select: {
+            name: true,
+            username: true,
         },
-        content:
-            'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.',
-        stats: { likes: 10, comments: 5, reposts: 2 },
-        createdAt: new Date('9/2/25 2:00 pm'),
     },
-    'f8c86d22-8d93-4923-9db3-e413a55083ed': {
-        id: 'f8c86d22-8d93-4923-9db3-e413a55083ed',
-        author: {
-            id: 'ccf966c2-dd1f-4f1f-94e4-380652c1afc9',
-            name: 'Jane Doe',
-            username: 'jane_doe',
-        },
-        content:
-            'Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-        stats: { likes: 20, comments: 10, reposts: 5 },
-        createdAt: new Date('8/15/25 1:30 pm'),
-    },
+    content: true,
+    createdAt: true,
+    updatedAt: true,
 };
 
-postsRouter.get('/posts', (req, res) => {
-    const result = Object.values(structuredClone(POSTS));
-    jsonReplaceDates(result);
-    res.json({
-        ok: true,
-        data: result,
+postsRouter.get('/feed', async (req, res) => {
+    const LIMIT = 10;
+
+    const page = Number(req.query.page) || 1;
+
+    const posts = await prisma.post.findMany({
+        where: {
+            author: {
+                username:
+                    typeof req.query.username === 'string'
+                        ? req.query.username
+                        : undefined,
+            },
+        },
+        skip: (page - 1) * LIMIT,
+        take: LIMIT,
+        select: SAFE_POST_SELECT,
+        orderBy: {
+            createdAt: 'desc',
+        },
     });
+
+    return res.json(posts);
 });
 
-postsRouter.get('/post/:id', (req, res) => {
+postsRouter.get('/:id', async (req, res) => {
     const postId = req.params.id;
-    if (!(postId in POSTS)) {
-        return res.json({ ok: false });
+
+    const post = await prisma.post.findUnique({
+        where: { id: postId },
+        select: SAFE_POST_SELECT,
+    });
+
+    if (!post) {
+        return res.status(404).json({ errors: { root: 'Not found' } });
     }
 
-    const result = structuredClone(POSTS[postId]);
-    jsonReplaceDates(result);
+    return res.json(post);
+});
 
-    return res.json({
-        ok: true,
-        data: result,
+postsRouter.post('/publish', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const { content } = req.body;
+
+    if (!content) {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Content is required' } });
+    }
+
+    const post = await prisma.post.create({
+        data: {
+            author: { connect: { id: req.user.id } },
+            content,
+        },
+        select: SAFE_POST_SELECT,
     });
+
+    return res.status(201).json(post);
 });
 
 export default postsRouter;
