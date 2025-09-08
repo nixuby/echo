@@ -1,0 +1,111 @@
+import Button from '@/components/shared/button';
+import {
+    ArrowLeftIcon,
+    CheckBadgeIcon,
+    PencilIcon,
+} from '@heroicons/react/20/solid';
+import type { User } from '@shared/types';
+import { Link, useNavigate } from 'react-router';
+
+export type UserProfileHeaderProps = {
+    user: User;
+    you: boolean;
+};
+
+export default function UserProfileHeader({
+    user,
+    you,
+}: UserProfileHeaderProps) {
+    const navigate = useNavigate();
+
+    function handleClickBack() {
+        navigate(-1);
+    }
+
+    return (
+        <div className='flex flex-col'>
+            <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
+                <button
+                    type='button'
+                    role='button'
+                    onClick={handleClickBack}
+                    className='cursor-pointer'
+                >
+                    <ArrowLeftIcon className='size-5' />
+                </button>
+                <h2 className='text-xl font-bold'>
+                    {user.name ?? `@${user.username}`}
+                </h2>
+            </div>
+            <div className='relative'>
+                <div className='border-b border-gray-800'>
+                    <div className='h-48 bg-gray-900' />
+                </div>
+                <div className='absolute bottom-0 left-4 translate-y-1/2'>
+                    <div className='box-content size-24 rounded-full border-4 border-gray-950 bg-yellow-600' />
+                </div>
+            </div>
+            <div className='flex h-14 items-center justify-end px-4'>
+                {!you && (
+                    <Button
+                        size='small'
+                        className='border border-indigo-400 bg-indigo-600 px-4 py-1'
+                    >
+                        Follow
+                    </Button>
+                )}
+            </div>
+            <div className='flex flex-col gap-2 border-b border-gray-800 px-4 py-2'>
+                <div>
+                    <div className='flex gap-2'>
+                        <h2 className='font-semibold'>
+                            {user.name ?? user.username}
+                        </h2>
+                        {you && (
+                            <Link
+                                to='/verify'
+                                className='flex items-center gap-1 border border-gray-700 bg-gray-900 px-2 py-0.5 text-xs font-semibold transition-colors hover:bg-gray-800'
+                            >
+                                <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                <span>Get Verified</span>
+                            </Link>
+                        )}
+                    </div>
+                    <p className='text-sm text-gray-400'>@{user.username}</p>
+                </div>
+                <div>
+                    <span>
+                        Lorem ipsum dolor, sit amet consectetur adipisicing
+                        elit. Architecto incidunt aperiam similique inventore
+                        nemo nihil numquam, consequatur nobis quasi atque!
+                    </span>{' '}
+                    {you && (
+                        <button
+                            type='button'
+                            className='inline-flex cursor-pointer items-center gap-1 self-start px-1 text-sm text-gray-400 transition-colors hover:text-gray-300 hover:underline'
+                        >
+                            <PencilIcon className='size-4' />
+                            <span>Edit</span>
+                        </button>
+                    )}
+                </div>
+
+                <div className='text-gray-400'>Joined June 1, 2023</div>
+                <div className='flex flex-col gap-2 sm:flex-row sm:gap-4'>
+                    <div>
+                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='text-gray-400'>Following</span>
+                    </div>
+                    <div>
+                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='text-gray-400'>Followers</span>
+                    </div>
+                    <div>
+                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='text-gray-400'>Posts</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}

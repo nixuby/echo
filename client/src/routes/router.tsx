@@ -10,6 +10,7 @@ import AccountInfoPage from './settings/account-info/page';
 import UsernamePage from './settings/account-info/username/page';
 import EmailPage from './settings/account-info/email/page';
 import NamePage from './settings/account-info/name/page';
+import UserProfilePage from './[id]/page';
 
 const router = createBrowserRouter([
     {
@@ -51,6 +52,10 @@ const router = createBrowserRouter([
     {
         path: 'post/:id',
         Component: PostPage,
+    },
+    {
+        path: ':id',
+        Component: UserProfilePage,
     },
     {
         path: '*',
