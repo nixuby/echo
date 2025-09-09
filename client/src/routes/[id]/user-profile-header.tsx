@@ -1,5 +1,8 @@
+import MediaPreviewDialog from '@/components/dialog/media-preview-dialog';
 import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
+import { openDialog } from '@/redux/dialog/dialog-slice';
+import { useAppDispatch } from '@/redux/hooks';
 import { CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid';
 import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
@@ -13,6 +16,14 @@ export default function UserProfileHeader({
     user,
     you,
 }: UserProfileHeaderProps) {
+    const dispatch = useAppDispatch();
+
+    function handleClickPfp(ev: React.MouseEvent<HTMLImageElement>) {
+        const src = ev.currentTarget.src;
+
+        dispatch(openDialog(<MediaPreviewDialog url={src} />));
+    }
+
     return (
         <div className='flex flex-col'>
             <TitleBar>{user.name ?? `@${user.username}`}</TitleBar>
@@ -24,6 +35,7 @@ export default function UserProfileHeader({
                     <img
                         src={`http://localhost:5179/api/users/pic/${user.username}`}
                         alt={`Profile picture of ${user.name ?? user.username}`}
+                        onClick={handleClickPfp}
                         className='box-content size-24 rounded-full border-4 border-gray-950'
                     />
                 </div>
