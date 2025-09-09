@@ -21,7 +21,11 @@ export default function UserProfileHeader({
                     <div className='h-48 bg-gray-900' />
                 </div>
                 <div className='absolute bottom-0 left-4 translate-y-1/2'>
-                    <div className='box-content size-24 rounded-full border-4 border-gray-950 bg-yellow-600' />
+                    <img
+                        src={`http://localhost:5179/api/users/pic/${user.username}`}
+                        alt={`Profile picture of ${user.name ?? user.username}`}
+                        className='box-content size-24 rounded-full border-4 border-gray-950'
+                    />
                 </div>
             </div>
             <div className='flex h-14 items-center justify-end px-4'>

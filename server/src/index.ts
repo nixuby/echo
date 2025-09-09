@@ -26,7 +26,11 @@ app.use(
     })
 );
 
-app.use(helmet());
+app.use(
+    helmet({
+        crossOriginResourcePolicy: false,
+    })
+);
 app.use(passport.initialize());
 app.use(passport.session());
 

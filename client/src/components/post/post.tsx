@@ -77,7 +77,11 @@ export default function Post({
                 onClick={navigateToUser}
                 className='cursor-pointer transition-transform hover:scale-110'
             >
-                <div className='size-6 rounded-full bg-white' />
+                <img
+                    src={`http://localhost:5179/api/users/pic/${post.author.username}`}
+                    className='size-6 rounded-full bg-white'
+                    alt={`Profile picture of ${post.author.name ?? post.author.username}`}
+                />
             </button>
             <div className='flex flex-1 flex-col gap-2'>
                 <div className='flex justify-between'>

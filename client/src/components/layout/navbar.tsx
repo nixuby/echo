@@ -90,7 +90,11 @@ export default function NavBar({ mobile }: NavBarProps) {
                         to={user ? `/@${user.username}` : '/sign-in'}
                         className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
                     >
-                        <div className='aspect-square size-12 rounded-full bg-gray-500' />
+                        <img
+                            src={`http://localhost:5179/api/users/pic/${user.username}`}
+                            alt={`Profile picture of ${user.name ?? user.username}`}
+                            className='size-12 rounded-full'
+                        />
                         <div className='flex flex-col'>
                             {user.name ? (
                                 <div>
