@@ -9,6 +9,7 @@ import {
     HomeIcon,
     StarIcon,
     UserGroupIcon,
+    UserIcon,
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
 import { useAppSelector } from '../../redux/hooks';
@@ -77,15 +78,21 @@ export default function NavBar({ mobile }: NavBarProps) {
                         <Cog6ToothIcon className='size-6' />
                         <span>Settings</span>
                     </NavBarLink>
+                    {!user && (
+                        <NavBarLink to='/sign-in' active={false}>
+                            <UserIcon className='size-6' />
+                            <span>Sign In</span>
+                        </NavBarLink>
+                    )}
                 </div>
-                <Link
-                    to={user ? `/@${user.username}` : '/sign-in'}
-                    className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
-                >
-                    <div className='aspect-square size-12 rounded-full bg-gray-500' />
-                    <div className='flex flex-col'>
-                        {user ? (
-                            user.name ? (
+                {user && (
+                    <Link
+                        to={user ? `/@${user.username}` : '/sign-in'}
+                        className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
+                    >
+                        <div className='aspect-square size-12 rounded-full bg-gray-500' />
+                        <div className='flex flex-col'>
+                            {user.name ? (
                                 <div>
                                     <div>{user.name}</div>
                                     <div className='text-sm text-gray-400'>
@@ -94,12 +101,10 @@ export default function NavBar({ mobile }: NavBarProps) {
                                 </div>
                             ) : (
                                 <div>@{user.username}</div>
-                            )
-                        ) : (
-                            <div>Profile</div>
-                        )}
-                    </div>
-                </Link>
+                            )}
+                        </div>
+                    </Link>
+                )}
             </div>
             <Footer />
         </nav>
