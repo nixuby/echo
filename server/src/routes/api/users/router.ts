@@ -27,6 +27,8 @@ usersRouter.get('/:splat', async (req, res) => {
 
         res.json(user);
     }
+
+    res.status(400).json({ errors: { root: 'Invalid request' } });
 });
 
 export default usersRouter;
