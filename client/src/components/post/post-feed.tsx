@@ -8,7 +8,8 @@ export type PostFeedProps = {
 export default function PostFeed({ posts }: PostFeedProps) {
     return (
         <div className='flex flex-col'>
-            {posts && posts.map((post) => <Post key={post.id} post={post} />)}
+            {posts &&
+                posts.map((post) => <Post key={post.id} short post={post} />)}
         </div>
     );
 }

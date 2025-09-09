@@ -6,6 +6,7 @@ import clsx from 'clsx/lite';
 
 export type PostProps = {
     clickable?: boolean;
+    short?: boolean;
     post: TPost;
 };
 
@@ -40,7 +41,11 @@ function formatRelativeTime(date: Date) {
     }
 }
 
-export default function Post({ post, clickable = true }: PostProps) {
+export default function Post({
+    clickable = true,
+    short = false,
+    post,
+}: PostProps) {
     const navigate = useNavigate();
 
     function navigateToPost(ev: React.MouseEvent<HTMLElement>) {
@@ -105,7 +110,14 @@ export default function Post({ post, clickable = true }: PostProps) {
                         <EllipsisVerticalIcon className='size-5' />
                     </button>
                 </div>
-                <div>{post.content}</div>
+                <div
+                    className={clsx(
+                        'whitespace-pre-wrap',
+                        short && 'line-clamp-4',
+                    )}
+                >
+                    {post.content}
+                </div>
                 <PostControls stats={{ likes: 0, comments: 0, reposts: 0 }} />
             </div>
         </article>
