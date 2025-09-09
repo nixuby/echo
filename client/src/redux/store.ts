@@ -1,6 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { authApi } from './auth/auth-api';
 import authReducer from './auth/auth-slice';
+import dialogReducer from './dialog/dialog-slice';
 import { settingsApi } from './settings/settings-api';
 import { postsApi } from './posts/posts-api';
 import { usersApi } from './user/users-api';
@@ -12,6 +13,7 @@ export const store = configureStore({
         [settingsApi.reducerPath]: settingsApi.reducer,
         [usersApi.reducerPath]: usersApi.reducer,
         auth: authReducer,
+        dialog: dialogReducer,
     },
     middleware: (gdm) =>
         gdm()

@@ -12,3 +12,33 @@
     background-color: var(--color-black);
     opacity: 1
 }
+
+
+
+._dialog-open-anim {
+    animation: dialog-open-kf 200ms ease-out forwards;
+}
+
+._dialog-bg-open-anim {
+    animation: dialog-bg-open-kf 200ms ease-out forwards;
+}
+
+@keyframes dialog-open-kf {
+    0% {
+        opacity: 0;
+        transform: scale(0.9) translateY(-10px);
+    }
+    100% {
+        opacity: 1;
+        transform: scale(1) translateY(0px);
+    }
+}
+
+@keyframes dialog-bg-open-kf {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
