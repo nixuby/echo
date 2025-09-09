@@ -1,6 +1,4 @@
-import { Link } from 'react-router';
 import Layout from '@/components/layout/layout';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProtectedRoute from '@/components/protected-route';
 import TextBox from '@/components/shared/textbox';
@@ -11,6 +9,7 @@ import { useState } from 'react';
 import { setUser } from '@/redux/auth/auth-slice';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changeEmailFormSchema } from '@shared/validation';
+import TitleBar from '@/components/layout/titlebar';
 
 type ChangeEmailForm = {
     email: string;
@@ -59,12 +58,7 @@ export default function EmailPage() {
         <ProtectedRoute>
             <Layout title='Settings / Account Information'>
                 <div className='flex flex-col'>
-                    <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
-                        <Link to='/settings/account-info'>
-                            <ArrowLeftIcon className='size-5' />
-                        </Link>
-                        <h2 className='text-xl font-bold'>Change Email</h2>
-                    </div>
+                    <TitleBar>Change Email</TitleBar>
                     <form
                         className='flex w-[min(100%,350px)] flex-col gap-2 px-4 py-2'
                         onSubmit={onSubmit(handleSubmit)}

@@ -2,15 +2,14 @@ import ProtectedRoute from '@/components/protected-route';
 import Layout from '../../components/layout/layout';
 import SettingsLink from './settings-link';
 import SettingsPageEmailInfo from './email-info';
+import TitleBar from '@/components/layout/titlebar';
 
 export default function SettingsPage() {
     return (
         <ProtectedRoute>
             <Layout title='Settings'>
                 <div className='flex flex-col'>
-                    <h2 className='border-b border-gray-800 px-4 py-2 text-xl font-bold'>
-                        Settings
-                    </h2>
+                    <TitleBar>Settings</TitleBar>
                     <div className='flex flex-col border-b border-gray-800'>
                         <SettingsPageEmailInfo />
                         <SettingsLink

@@ -1,38 +1,23 @@
 import Layout from '../../../components/layout/layout';
 import Post from '../../../components/post/post';
-import { useNavigate, useParams } from 'react-router';
+import { useParams } from 'react-router';
 import { useGetPostQuery } from '@/redux/posts/posts-api';
 import Error404Page from '@/routes/error404';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
+import TitleBar from '@/components/layout/titlebar';
 
 export type PostPageParams = {
     id: string;
 };
 
 export default function PostPage() {
-    const navigate = useNavigate();
     const params = useParams<PostPageParams>();
     const postId = params.id;
     if (!postId) return <Error404Page />;
     const { data: post, isSuccess } = useGetPostQuery(params.id);
 
-    function handleClickBack() {
-        navigate(-1);
-    }
-
     return (
         <Layout title='Post'>
-            <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
-                <button
-                    type='button'
-                    role='button'
-                    onClick={handleClickBack}
-                    className='cursor-pointer'
-                >
-                    <ArrowLeftIcon className='size-5' />
-                </button>
-                <h2 className='text-xl font-bold'>Post</h2>
-            </div>
+            <TitleBar>Post</TitleBar>
             {isSuccess ? <Post clickable={false} post={post} /> : 'Loading...'}
             <section>
                 <h3 className='border-b border-gray-800 px-4 py-2 text-xl font-bold'>

@@ -1,11 +1,8 @@
+import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
-import {
-    ArrowLeftIcon,
-    CheckBadgeIcon,
-    PencilIcon,
-} from '@heroicons/react/20/solid';
+import { CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid';
 import type { User } from '@shared/types';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 
 export type UserProfileHeaderProps = {
     user: User;
@@ -16,27 +13,9 @@ export default function UserProfileHeader({
     user,
     you,
 }: UserProfileHeaderProps) {
-    const navigate = useNavigate();
-
-    function handleClickBack() {
-        navigate(-1);
-    }
-
     return (
         <div className='flex flex-col'>
-            <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
-                <button
-                    type='button'
-                    role='button'
-                    onClick={handleClickBack}
-                    className='cursor-pointer'
-                >
-                    <ArrowLeftIcon className='size-5' />
-                </button>
-                <h2 className='text-xl font-bold'>
-                    {user.name ?? `@${user.username}`}
-                </h2>
-            </div>
+            <TitleBar>{user.name ?? `@${user.username}`}</TitleBar>
             <div className='relative'>
                 <div className='border-b border-gray-800'>
                     <div className='h-48 bg-gray-900' />

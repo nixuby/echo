@@ -1,9 +1,8 @@
-import { Link } from 'react-router';
 import Layout from '@/components/layout/layout';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import SettingsLink from '../settings-link';
 import { useAppSelector } from '@/redux/hooks';
 import ProtectedRoute from '@/components/protected-route';
+import TitleBar from '@/components/layout/titlebar';
 
 export default function AccountInfoPage() {
     const user = useAppSelector((s) => s.auth.user)!;
@@ -12,14 +11,7 @@ export default function AccountInfoPage() {
         <ProtectedRoute>
             <Layout title='Settings / Account Information'>
                 <div className='flex flex-col'>
-                    <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
-                        <Link to='/settings'>
-                            <ArrowLeftIcon className='size-5' />
-                        </Link>
-                        <h2 className='text-xl font-bold'>
-                            Account Information
-                        </h2>
-                    </div>
+                    <TitleBar>Account Information</TitleBar>
                     <div className='flex flex-col border-b border-gray-800'>
                         <SettingsLink
                             to='/settings/account-info/name'

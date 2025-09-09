@@ -1,6 +1,4 @@
-import { Link } from 'react-router';
 import Layout from '@/components/layout/layout';
-import { ArrowLeftIcon } from '@heroicons/react/20/solid';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import ProtectedRoute from '@/components/protected-route';
 import TextBox from '@/components/shared/textbox';
@@ -9,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { useChangeUsernameMutation } from '@/redux/settings/settings-api';
 import { useState } from 'react';
 import { setUser } from '@/redux/auth/auth-slice';
+import TitleBar from '@/components/layout/titlebar';
 
 type ChangeUsernameForm = {
     username: string;
@@ -56,12 +55,7 @@ export default function UsernamePage() {
         <ProtectedRoute>
             <Layout title='Settings / Account Information'>
                 <div className='flex flex-col'>
-                    <div className='flex items-center gap-2 border-b border-gray-800 px-4 py-2'>
-                        <Link to='/settings/account-info'>
-                            <ArrowLeftIcon className='size-5' />
-                        </Link>
-                        <h2 className='text-xl font-bold'>Change Username</h2>
-                    </div>
+                    <TitleBar>Change Username</TitleBar>
                     <form
                         className='flex w-[min(100%,350px)] flex-col gap-2 px-4 py-2'
                         onSubmit={onSubmit(handleSubmit)}
