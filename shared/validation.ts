@@ -5,7 +5,11 @@ export const nameSchema = z.string().max(32, 'Name must be at most 32 characters
 export const usernameSchema = z
     .string()
     .min(3, 'Username must be at least 3 characters long')
-    .max(32, 'Username must be at most 32 characters long');
+    .max(32, 'Username must be at most 32 characters long')
+    .regex(
+        /^[a-zA-Z][a-zA-Z0-9_]+$/,
+        'Username can only contain letters, numbers, and underscores and must start with a letter'
+    );
 
 export const passwordSchema = z
     .string()
