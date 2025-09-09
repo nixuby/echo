@@ -3,9 +3,10 @@ import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
 import { openDialog } from '@/redux/dialog/dialog-slice';
 import { useAppDispatch } from '@/redux/hooks';
-import { CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid';
+import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
+import UserProfileEditDialog from './user-profile-edit-dialog';
 
 export type UserProfileHeaderProps = {
     user: OtherClientUser;
@@ -22,6 +23,10 @@ export default function UserProfileHeader({
         const src = ev.currentTarget.src;
 
         dispatch(openDialog(<MediaPreviewDialog url={src} />));
+    }
+
+    function handleClickEdit() {
+        dispatch(openDialog(<UserProfileEditDialog />));
     }
 
     return (
@@ -41,13 +46,12 @@ export default function UserProfileHeader({
                 </div>
             </div>
             <div className='flex h-14 items-center justify-end px-4'>
-                {!you && (
-                    <Button
-                        size='small'
-                        className='border border-indigo-400 bg-indigo-600 px-4 py-1'
-                    >
-                        Follow
+                {you ? (
+                    <Button size='small' onClick={handleClickEdit}>
+                        Edit
                     </Button>
+                ) : (
+                    <Button size='small'>Follow</Button>
                 )}
             </div>
             <div className='flex flex-col gap-2 border-b border-gray-800 px-4 py-2'>
@@ -69,20 +73,9 @@ export default function UserProfileHeader({
                     <p className='text-sm text-gray-400'>@{user.username}</p>
                 </div>
                 <div>
-                    <span>
-                        Lorem ipsum dolor, sit amet consectetur adipisicing
-                        elit. Architecto incidunt aperiam similique inventore
-                        nemo nihil numquam, consequatur nobis quasi atque!
-                    </span>{' '}
-                    {you && (
-                        <button
-                            type='button'
-                            className='inline-flex cursor-pointer items-center gap-1 self-start px-1 text-sm text-gray-400 transition-colors hover:text-gray-300 hover:underline'
-                        >
-                            <PencilIcon className='size-4' />
-                            <span>Edit</span>
-                        </button>
-                    )}
+                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
+                    Architecto incidunt aperiam similique inventore nemo nihil
+                    numquam, consequatur nobis quasi atque!
                 </div>
 
                 <div className='text-gray-400'>Joined June 1, 2023</div>

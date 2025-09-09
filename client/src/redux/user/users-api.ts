@@ -12,7 +12,15 @@ export const usersApi = createApi({
         getUser: builder.query<OtherClientUser, string>({
             query: (id) => `/@${id}`,
         }),
+
+        updateProfilePicture: builder.mutation<void, string>({
+            query: (base64) => ({
+                url: '/pic',
+                method: 'POST',
+                body: { picture: base64 },
+            }),
+        }),
     }),
 });
 
-export const { useGetUserQuery } = usersApi;
+export const { useGetUserQuery, useUpdateProfilePictureMutation } = usersApi;

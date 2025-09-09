@@ -78,7 +78,7 @@ export default function Post({
                 className='cursor-pointer transition-transform hover:scale-110'
             >
                 <img
-                    src={`http://localhost:5179/api/users/pic/${post.author.username}`}
+                    src={`http://localhost:5179/api/users/pic/${post.author.username}-sm`}
                     className='size-6 rounded-full bg-white'
                     alt={`Profile picture of ${post.author.name ?? post.author.username}`}
                 />
