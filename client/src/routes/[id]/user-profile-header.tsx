@@ -1,11 +1,11 @@
 import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
 import { CheckBadgeIcon, PencilIcon } from '@heroicons/react/20/solid';
-import type { User } from '@shared/types';
+import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
 
 export type UserProfileHeaderProps = {
-    user: User;
+    user: OtherClientUser;
     you: boolean;
 };
 

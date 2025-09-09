@@ -2,6 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Post } from '@shared/types';
 
 export const postsApi = createApi({
+    reducerPath: 'postsApi',
     baseQuery: fetchBaseQuery({
         baseUrl: 'http://localhost:5179/api/posts',
         credentials: 'include',

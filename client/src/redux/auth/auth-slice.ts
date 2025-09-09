@@ -1,8 +1,8 @@
 import { createSlice, type PayloadAction } from '@reduxjs/toolkit';
-import { type User } from '@shared/types';
+import { type ClientUser } from '@shared/types';
 
 type AuthState = {
-    user: User | null;
+    user: ClientUser | null;
 };
 
 const initialState: AuthState = {
@@ -13,7 +13,7 @@ const slice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<User | null>) => {
+        setUser: (state, action: PayloadAction<ClientUser | null>) => {
             state.user = action.payload;
         },
     },

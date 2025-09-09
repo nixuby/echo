@@ -1,5 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { User } from '@shared/types';
+import type { ClientUser } from '@shared/types';
 
 export const settingsApi = createApi({
     reducerPath: 'settingsApi',
@@ -8,7 +8,7 @@ export const settingsApi = createApi({
         credentials: 'include',
     }),
     endpoints: (builder) => ({
-        changeName: builder.mutation<{ user: User }, { name: string }>({
+        changeName: builder.mutation<{ user: ClientUser }, { name: string }>({
             query: (payload) => ({
                 url: '/name',
                 method: 'POST',
@@ -18,7 +18,7 @@ export const settingsApi = createApi({
 
         changeUsername: builder.mutation<
             {
-                user: User;
+                user: ClientUser;
             },
             {
                 username: string;
@@ -31,15 +31,16 @@ export const settingsApi = createApi({
             }),
         }),
 
-        changeEmail: builder.mutation<{ user: User }, { email: string | null }>(
-            {
-                query: (payload) => ({
-                    url: '/email',
-                    method: 'POST',
-                    body: payload,
-                }),
-            },
-        ),
+        changeEmail: builder.mutation<
+            { user: ClientUser },
+            { email: string | null }
+        >({
+            query: (payload) => ({
+                url: '/email',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
 
         resendVerificationEmail: builder.mutation<void, void>({
             query: () => ({

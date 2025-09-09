@@ -1,13 +1,13 @@
-import { type User as TUser } from '@shared/types.js';
+import { type ServerUser } from '@shared/types.js';
 
 declare global {
     namespace Express {
-        interface User extends TUser {}
+        interface User extends ServerUser {}
     }
 }
 
 // Safe user
-export type User = TUser;
+export type User = ServerUser;
 
 export function toSafeUser(user: any): User {
     return {
