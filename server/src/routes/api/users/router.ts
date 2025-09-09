@@ -27,8 +27,7 @@ usersRouter.get('/:splat', async (req, res) => {
     const splat = req.params.splat;
 
     if (splat.length === 0) {
-        res.status(400).json({ errors: { root: 'Invalid request' } });
-        return;
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
     }
 
     if (splat[0] === '@') {
@@ -40,11 +39,10 @@ usersRouter.get('/:splat', async (req, res) => {
         });
 
         if (!user) {
-            res.status(404).json({ errors: { root: 'User not found' } });
-            return;
+            return res.status(404).json({ errors: { root: 'User not found' } });
         }
 
-        res.json(user);
+        return res.json(user);
     }
 
     res.status(400).json({ errors: { root: 'Invalid request' } });
