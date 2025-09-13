@@ -7,6 +7,7 @@ import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
 import UserProfileEditDialog from './user-profile-edit-dialog';
+import env from '@/env';
 
 export type UserProfileHeaderProps = {
     user: OtherClientUser;
@@ -38,7 +39,7 @@ export default function UserProfileHeader({
                 </div>
                 <div className='absolute bottom-0 left-4 translate-y-1/2'>
                     <img
-                        src={`http://localhost:5179/api/users/pic/${user.username}`}
+                        src={`${env.API_URL}/users/pic/${user.username}`}
                         alt={`Profile picture of ${user.name ?? user.username}`}
                         onClick={handleClickPfp}
                         className='box-content size-24 rounded-full border-4 border-gray-950'

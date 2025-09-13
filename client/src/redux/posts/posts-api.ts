@@ -1,10 +1,11 @@
+import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { Post } from '@shared/types';
 
 export const postsApi = createApi({
     reducerPath: 'postsApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5179/api/posts',
+        baseUrl: `${env.API_URL}/posts`,
         credentials: 'include',
     }),
     tagTypes: ['PostFeed'],

@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router';
 import PostControls from './post-controls';
 import { type Post as TPost } from '@shared/types';
 import clsx from 'clsx/lite';
+import env from '@/env';
 
 export type PostProps = {
     clickable?: boolean;
@@ -78,7 +79,7 @@ export default function Post({
                 className='cursor-pointer transition-transform hover:scale-110'
             >
                 <img
-                    src={`http://localhost:5179/api/users/pic/${post.author.username}-sm`}
+                    src={`${env.API_URL}/users/pic/${post.author.username}-sm`}
                     className='size-6 rounded-full bg-white'
                     alt={`Profile picture of ${post.author.name ?? post.author.username}`}
                 />

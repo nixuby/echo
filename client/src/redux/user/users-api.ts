@@ -1,10 +1,11 @@
+import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { OtherClientUser } from '@shared/types';
 
 export const usersApi = createApi({
     reducerPath: 'usersApi',
     baseQuery: fetchBaseQuery({
-        baseUrl: 'http://localhost:5179/api/users',
+        baseUrl: `${env.API_URL}/users`,
         credentials: 'include',
     }),
     endpoints: (builder) => ({

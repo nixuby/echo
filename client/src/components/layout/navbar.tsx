@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
 import { useAppSelector } from '../../redux/hooks';
+import env from '@/env';
 
 export type NavBarProps = {
     mobile?: boolean;
@@ -91,7 +92,7 @@ export default function NavBar({ mobile }: NavBarProps) {
                         className='flex items-center gap-4 border-b border-gray-800 px-4 py-3 transition-colors hover:bg-gray-900'
                     >
                         <img
-                            src={`http://localhost:5179/api/users/pic/${user.username}`}
+                            src={`${env.API_URL}/users/pic/${user.username}`}
                             alt={`Profile picture of ${user.name ?? user.username}`}
                             className='size-12 rounded-full'
                         />
