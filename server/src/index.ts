@@ -5,6 +5,9 @@ import session from 'express-session';
 import ENV from './env.js';
 import passport from './auth/passport.js';
 import helmet from 'helmet';
+import fileStore from 'session-file-store';
+
+const FileStore = fileStore(session);
 
 const app = express();
 
@@ -23,6 +26,7 @@ app.use(
             secure: false, // TODO: Set to true in production
             maxAge: 1000 * 60 * 60 * 24 * 7, // 7 days
         },
+        store: new FileStore({ path: './generated/sessions' }),
     })
 );
 
