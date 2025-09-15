@@ -3,7 +3,7 @@ import Error404Page from '../error404';
 import Layout from '@/components/layout/layout';
 import { useAppSelector } from '@/redux/hooks';
 import UserProfileHeader from './user-profile-header';
-import UserProfileCreatePost from './user-profile-create-post';
+import CreatePost from '../../components/post/create-post';
 import UserProfilePostFeed from './user-profile-post-feed';
 import { useGetUserQuery } from '@/redux/user/users-api';
 
@@ -27,7 +27,7 @@ export default function UserProfilePage() {
                 {isSuccess ? (
                     <>
                         <UserProfileHeader user={user} you={you} />
-                        {you && <UserProfileCreatePost />}
+                        {you && <CreatePost />}
                         <UserProfilePostFeed username={user.username} />
                     </>
                 ) : (

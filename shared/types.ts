@@ -59,6 +59,9 @@ export type Post = {
     content: string;
     likeCount: number;
     likedByMe: boolean;
+    replyCount: number;
+    parent: Post[] | null;
+    parentId: string | null;
     createdAt: string;
     updatedAt: string;
 };

@@ -125,8 +125,9 @@ export default function Post({
                 </div>
                 <PostControls
                     id={post.id}
-                    likes={post.likeCount}
+                    likeCount={post.likeCount}
                     likedByMe={post.likedByMe}
+                    replyCount={post.replyCount}
                 />
             </div>
         </article>

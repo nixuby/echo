@@ -4,12 +4,16 @@ import { useParams } from 'react-router';
 import { useGetPostQuery } from '@/redux/posts/posts-api';
 import Error404Page from '@/routes/error404';
 import TitleBar from '@/components/layout/titlebar';
+import { useAppSelector } from '@/redux/hooks';
+import CreatePost from '@/components/post/create-post';
+import RepliesPostFeed from '@/components/post/replies-post-feed';
 
 export type PostPageParams = {
     id: string;
 };
 
 export default function PostPage() {
+    const user = useAppSelector((state) => state.auth.user);
     const params = useParams<PostPageParams>();
     const postId = params.id;
     if (!postId) return <Error404Page />;
@@ -19,12 +23,18 @@ export default function PostPage() {
         <Layout title='Post'>
             <TitleBar>Post</TitleBar>
             {isSuccess ? <Post clickable={false} post={post} /> : 'Loading...'}
-            <section>
-                <h3 className='border-b border-gray-800 px-4 py-2 text-xl font-bold'>
+            <section className='flex flex-col'>
+                <h3
+                    id='Reply'
+                    className='border-b border-gray-800 px-4 py-2 text-xl font-bold'
+                >
                     Replies&nbsp;&middot;&nbsp;
-                    <span className='font-normal text-gray-400'>0</span>
+                    <span className='font-normal text-gray-400'>
+                        {post?.replyCount}
+                    </span>
                 </h3>
-                <div className='bg-yellow-700 p-4'>TODO: Add replies</div>
+                {user && <CreatePost parentId={postId} />}
+                <RepliesPostFeed postId={postId} />
             </section>
         </Layout>
     );

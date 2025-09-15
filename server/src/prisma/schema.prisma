@@ -50,14 +50,20 @@ model User {
 }
 
 model Post {
-    id        String     @id @default(uuid())
-    content   String     @default("")
-    author    User       @relation(fields: [userId], references: [id])
-    userId    String
-    createdAt DateTime   @default(now())
-    updatedAt DateTime   @updatedAt
-    likes     PostLike[]
-    likeCount Int        @default(0)
+    id         String     @id @default(uuid())
+    content    String     @default("")
+    author     User       @relation(fields: [userId], references: [id])
+    userId     String
+    createdAt  DateTime   @default(now())
+    updatedAt  DateTime   @updatedAt
+    likes      PostLike[]
+    likeCount  Int        @default(0)
+    replyCount Int        @default(0)
+    parent     Post?      @relation("PostToPost", fields: [parentId], references: [id], onDelete: Cascade)
+    children   Post[]     @relation("PostToPost")
+    parentId   String?
+
+    @@index([parentId])
 }
 
 model PostLike {

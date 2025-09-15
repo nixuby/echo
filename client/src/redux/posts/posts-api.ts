@@ -12,7 +12,7 @@ export const postsApi = createApi({
     endpoints: (builder) => ({
         getPostFeed: builder.query<
             Array<Post>,
-            { page?: number; username?: string }
+            { page?: number; username?: string; parentPostId?: string }
         >({
             query: (params) => ({
                 url: '/feed',
@@ -26,7 +26,10 @@ export const postsApi = createApi({
             providesTags: (_result, _error, id) => [{ type: 'Post', id }],
         }),
 
-        publishPost: builder.mutation<Post, { content: string }>({
+        publishPost: builder.mutation<
+            Post,
+            { content: string; parentId?: string }
+        >({
             query: (body) => ({
                 url: '/publish',
                 method: 'POST',

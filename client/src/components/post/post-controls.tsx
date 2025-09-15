@@ -13,14 +13,16 @@ import { useAppSelector } from '@/redux/hooks';
 
 export type PostControlsProps = {
     id: string;
-    likes: number;
+    likeCount: number;
     likedByMe: boolean;
+    replyCount: number;
 };
 
 export default function PostControls({
     id,
-    likes,
+    likeCount,
     likedByMe,
+    replyCount,
 }: PostControlsProps) {
     const navigate = useNavigate();
     const [likePost] = useLikePostMutation();
@@ -35,8 +37,7 @@ export default function PostControls({
 
     function handleReply(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        console.log('Reply');
-        navigate('post/123?reply');
+        navigate(`/post/${id}#Reply`);
     }
 
     function handleRepost(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -69,7 +70,7 @@ export default function PostControls({
                     )}
                 >
                     <HeartIcon className='size-5' />
-                    <span>{likes}</span>
+                    <span>{likeCount}</span>
                 </button>
             </div>
             <div>
@@ -79,7 +80,7 @@ export default function PostControls({
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ChatBubbleLeftIcon className='size-5' />
-                    <span>{0}</span>
+                    <span>{replyCount}</span>
                 </button>
             </div>
             <div className='flex items-center gap-1.5'>

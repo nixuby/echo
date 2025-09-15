@@ -4,7 +4,11 @@ import { PaperAirplaneIcon, PaperClipIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
-export default function UserProfileCreatePost() {
+export type CreatePostProps = {
+    parentId?: string; // Parent post id for creating replies
+};
+
+export default function CreatePost({ parentId }: CreatePostProps) {
     const navigate = useNavigate();
     const [content, setContent] = useState<string>('');
     const [publishPost] = usePublishPostMutation();
@@ -14,7 +18,7 @@ export default function UserProfileCreatePost() {
     }
 
     function handlePublish() {
-        publishPost({ content })
+        publishPost({ content, parentId })
             .unwrap()
             .then((post) => {
                 navigate(`/post/${post.id}`);
