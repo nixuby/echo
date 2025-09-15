@@ -33,8 +33,74 @@ export const postsApi = createApi({
             }),
             invalidatesTags: ['PostFeed'],
         }),
+
+        likePost: builder.mutation<
+            { likeCount: number; likedByMe: boolean },
+            { id: string }
+        >({
+            query: ({ id }) => ({
+                url: `/${id}/like`,
+                method: 'POST',
+            }),
+            async onQueryStarted(
+                { id },
+                { dispatch, queryFulfilled, getState },
+            ) {
+                const feedEntries = postsApi.util.selectInvalidatedBy(
+                    getState(),
+                    [{ type: 'PostFeed' }],
+                );
+
+                const patches = feedEntries.map(({ originalArgs }) =>
+                    dispatch(
+                        postsApi.util.updateQueryData(
+                            'getPostFeed',
+                            originalArgs,
+                            (draft) => {
+                                const post = draft.find(
+                                    (post) => post.id === id,
+                                );
+                                if (post) {
+                                    if (post.likedByMe) {
+                                        post.likedByMe = false;
+                                        post.likeCount -= 1;
+                                    } else {
+                                        post.likedByMe = true;
+                                        post.likeCount += 1;
+                                    }
+                                }
+                            },
+                        ),
+                    ),
+                );
+
+                // patch single post query if open
+                const patchSingle = dispatch(
+                    postsApi.util.updateQueryData('getPost', id, (draft) => {
+                        if (draft.likedByMe) {
+                            draft.likedByMe = false;
+                            draft.likeCount -= 1;
+                        } else {
+                            draft.likedByMe = true;
+                            draft.likeCount += 1;
+                        }
+                    }),
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patches.forEach((patch) => patch.undo());
+                    patchSingle.undo();
+                }
+            },
+        }),
     }),
 });
 
-export const { useGetPostFeedQuery, useGetPostQuery, usePublishPostMutation } =
-    postsApi;
+export const {
+    useGetPostFeedQuery,
+    useGetPostQuery,
+    usePublishPostMutation,
+    useLikePostMutation,
+} = postsApi;

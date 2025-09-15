@@ -1,3 +1,5 @@
+import { useLikePostMutation } from '@/redux/posts/posts-api';
+import clsx from 'clsx/lite';
 import {
     ArrowPathRoundedSquareIcon,
     BookmarkIcon,
@@ -5,19 +7,30 @@ import {
     HeartIcon,
     ShareIcon,
 } from '@heroicons/react/20/solid';
-import type { PostStats } from '@shared/types';
 import { useNavigate } from 'react-router';
+import playLikeAnimation from './post-like-animation';
+import { useAppSelector } from '@/redux/hooks';
 
 export type PostControlsProps = {
-    stats: PostStats;
+    id: string;
+    likes: number;
+    likedByMe: boolean;
 };
 
-export default function PostControls({ stats }: PostControlsProps) {
+export default function PostControls({
+    id,
+    likes,
+    likedByMe,
+}: PostControlsProps) {
     const navigate = useNavigate();
+    const [likePost] = useLikePostMutation();
+    const user = useAppSelector((state) => state.auth.user);
 
     function handleLike(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        console.log('Like');
+        if (!user) return;
+        if (!likedByMe) playLikeAnimation(id);
+        likePost({ id });
     }
 
     function handleReply(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -42,15 +55,21 @@ export default function PostControls({ stats }: PostControlsProps) {
     }
 
     return (
-        <div className='grid grid-cols-4 text-gray-500'>
-            <div>
+        <div
+            id={`post-controls-${id}`}
+            className='grid grid-cols-4 text-gray-500'
+        >
+            <div className='__like-btn-container relative'>
                 <button
                     type='button'
                     onClick={handleLike}
-                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
+                    className={clsx(
+                        'relative z-5 -mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300',
+                        likedByMe && 'text-rose-500',
+                    )}
                 >
                     <HeartIcon className='size-5' />
-                    <span>{stats.likes}</span>
+                    <span>{likes}</span>
                 </button>
             </div>
             <div>
@@ -60,7 +79,7 @@ export default function PostControls({ stats }: PostControlsProps) {
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ChatBubbleLeftIcon className='size-5' />
-                    <span>{stats.comments}</span>
+                    <span>{0}</span>
                 </button>
             </div>
             <div className='flex items-center gap-1.5'>
@@ -70,7 +89,7 @@ export default function PostControls({ stats }: PostControlsProps) {
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ArrowPathRoundedSquareIcon className='size-5' />
-                    <span>{stats.reposts}</span>
+                    <span>{0}</span>
                 </button>
             </div>
             <div className='flex items-center justify-end gap-1'>

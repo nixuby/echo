@@ -53,16 +53,12 @@ export const SERVER_USER_SELECT: PrismaSelect<ServerUser> = {
 export type Post = {
     id: string;
     author: {
-        name: string;
+        name: string | null;
         username: string;
     };
     content: string;
+    likeCount: number;
+    likedByMe: boolean;
     createdAt: string;
     updatedAt: string;
-};
-
-export type PostStats = {
-    likes: number;
-    comments: number;
-    reposts: number;
 };

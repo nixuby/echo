@@ -123,7 +123,11 @@ export default function Post({
                 >
                     {post.content}
                 </div>
-                <PostControls stats={{ likes: 0, comments: 0, reposts: 0 }} />
+                <PostControls
+                    id={post.id}
+                    likes={post.likeCount}
+                    likedByMe={post.likedByMe}
+                />
             </div>
         </article>
     );

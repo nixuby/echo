@@ -34,11 +34,29 @@
     }
 }
 
+
 @keyframes dialog-bg-open-kf {
     0% {
         opacity: 0;
     }
     100% {
         opacity: 1;
+    }
+}
+
+
+._like-anim-particle {
+    @apply absolute top-2 left-2 size-4 bg-rose-500 rounded-full opacity-0 pointer-events-none z-1;
+    animation: like-particle-kf 500ms ease-out forwards;
+}
+
+@keyframes like-particle-kf {
+    0% {
+        opacity: 1;
+        transform: translate(0, 0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translate(var(--target-x), var(--target-y)) scale(0.1);
     }
 }
