@@ -1,6 +1,7 @@
 import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { ClientUser } from '@shared/types';
+import { postsApi } from '../posts/posts-api';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
@@ -18,6 +19,14 @@ export const authApi = createApi({
             { username: string; password: string }
         >({
             query: (body) => ({ url: 'sign-in', method: 'POST', body }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        postsApi.util.invalidateTags(['PostFeed', 'Post']),
+                    );
+                } catch {}
+            },
         }),
 
         createAccount: builder.mutation<
@@ -34,6 +43,14 @@ export const authApi = createApi({
 
         signOut: builder.mutation<null, void>({
             query: () => ({ url: 'sign-out', method: 'POST' }),
+            async onQueryStarted(_, { dispatch, queryFulfilled }) {
+                try {
+                    await queryFulfilled;
+                    dispatch(
+                        postsApi.util.invalidateTags(['PostFeed', 'Post']),
+                    );
+                } catch {}
+            },
         }),
     }),
 });

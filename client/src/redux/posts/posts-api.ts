@@ -8,7 +8,7 @@ export const postsApi = createApi({
         baseUrl: `${env.API_URL}/posts`,
         credentials: 'include',
     }),
-    tagTypes: ['PostFeed'],
+    tagTypes: ['PostFeed', 'Post'],
     endpoints: (builder) => ({
         getPostFeed: builder.query<
             Array<Post>,
@@ -23,6 +23,7 @@ export const postsApi = createApi({
 
         getPost: builder.query<Post, string>({
             query: (id) => `/${id}`,
+            providesTags: (_result, _error, id) => [{ type: 'Post', id }],
         }),
 
         publishPost: builder.mutation<Post, { content: string }>({
