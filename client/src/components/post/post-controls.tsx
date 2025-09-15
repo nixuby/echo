@@ -1,4 +1,7 @@
-import { useLikePostMutation } from '@/redux/posts/posts-api';
+import {
+    useLikePostMutation,
+    useRepostPostMutation,
+} from '@/redux/posts/posts-api';
 import clsx from 'clsx/lite';
 import {
     ArrowPathRoundedSquareIcon,
@@ -8,7 +11,7 @@ import {
     ShareIcon,
 } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
-import playLikeAnimation from './post-like-animation';
+import playButtonAnimation from './post-button-animation';
 import { useAppSelector } from '@/redux/hooks';
 
 export type PostControlsProps = {
@@ -16,6 +19,8 @@ export type PostControlsProps = {
     likeCount: number;
     likedByMe: boolean;
     replyCount: number;
+    repostCount: number;
+    repostedByMe: boolean;
 };
 
 export default function PostControls({
@@ -23,15 +28,19 @@ export default function PostControls({
     likeCount,
     likedByMe,
     replyCount,
+    repostCount,
+    repostedByMe,
 }: PostControlsProps) {
     const navigate = useNavigate();
     const [likePost] = useLikePostMutation();
+    const [repostPost] = useRepostPostMutation();
     const user = useAppSelector((state) => state.auth.user);
 
     function handleLike(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
         if (!user) return;
-        if (!likedByMe) playLikeAnimation(id);
+        if (!likedByMe)
+            playButtonAnimation(id, '.__like-btn-container', 'bg-rose-500');
         likePost({ id });
     }
 
@@ -42,7 +51,14 @@ export default function PostControls({
 
     function handleRepost(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        console.log('Repost');
+        if (!user) return;
+        if (!repostedByMe)
+            playButtonAnimation(
+                id,
+                '.__repost-btn-container',
+                'bg-emerald-500',
+            );
+        repostPost({ id });
     }
 
     function handleBookmark(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -83,14 +99,17 @@ export default function PostControls({
                     <span>{replyCount}</span>
                 </button>
             </div>
-            <div className='flex items-center gap-1.5'>
+            <div className='__repost-btn-container relative'>
                 <button
                     type='button'
                     onClick={handleRepost}
-                    className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
+                    className={clsx(
+                        '-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300',
+                        repostedByMe && 'text-emerald-500',
+                    )}
                 >
                     <ArrowPathRoundedSquareIcon className='size-5' />
-                    <span>{0}</span>
+                    <span>{repostCount}</span>
                 </button>
             </div>
             <div className='flex items-center justify-end gap-1'>

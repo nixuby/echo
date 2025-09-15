@@ -1,6 +1,78 @@
 import env from '@/env';
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import type { ThunkDispatch, UnknownAction } from '@reduxjs/toolkit';
+import {
+    createApi,
+    fetchBaseQuery,
+    type RootState,
+} from '@reduxjs/toolkit/query/react';
 import type { Post } from '@shared/types';
+
+type SortType = 'newest' | 'oldest' | 'likes';
+
+type FeedQueryParams =
+    | {
+          type: 'home';
+          page?: number;
+          sort?: SortType;
+      }
+    | {
+          type: 'profile';
+          username: string;
+          page?: number;
+          sort?: SortType;
+      }
+    | {
+          type: 'reply';
+          parentId: string;
+          page?: number;
+          sort?: SortType;
+      };
+
+async function updatePostQueryData(
+    id: string,
+    dispatch: ThunkDispatch<any, any, UnknownAction>,
+    queryFulfilled: Promise<any>,
+    getState: () => RootState<any, any, 'postsApi'>,
+    callback: (draft: Post) => void,
+) {
+    const feedEntries = postsApi.util.selectInvalidatedBy(getState(), [
+        { type: 'PostFeed' },
+    ]);
+
+    const patches = feedEntries.map(({ originalArgs }) =>
+        dispatch(
+            postsApi.util.updateQueryData(
+                'getPostFeed',
+                originalArgs,
+                (draft) => {
+                    for (const post of draft) {
+                        if (
+                            post && post.type === 'REPOST'
+                                ? post.parent?.id === id
+                                : post.id === id
+                        ) {
+                            callback(post);
+                        }
+                    }
+                },
+            ),
+        ),
+    );
+
+    // patch single post query if open
+    const patchSingle = dispatch(
+        postsApi.util.updateQueryData('getPost', id, (draft) => {
+            callback(draft);
+        }),
+    );
+
+    try {
+        await queryFulfilled;
+    } catch {
+        patches.forEach((patch) => patch.undo());
+        patchSingle.undo();
+    }
+}
 
 export const postsApi = createApi({
     reducerPath: 'postsApi',
@@ -10,10 +82,7 @@ export const postsApi = createApi({
     }),
     tagTypes: ['PostFeed', 'Post'],
     endpoints: (builder) => ({
-        getPostFeed: builder.query<
-            Array<Post>,
-            { page?: number; username?: string; parentPostId?: string }
-        >({
+        getPostFeed: builder.query<Array<Post>, FeedQueryParams>({
             query: (params) => ({
                 url: '/feed',
                 params,
@@ -50,54 +119,61 @@ export const postsApi = createApi({
                 { id },
                 { dispatch, queryFulfilled, getState },
             ) {
-                const feedEntries = postsApi.util.selectInvalidatedBy(
-                    getState(),
-                    [{ type: 'PostFeed' }],
-                );
+                await updatePostQueryData(
+                    id,
+                    dispatch,
+                    queryFulfilled,
+                    getState,
+                    (draft) => {
+                        const originalPost =
+                            draft.type === 'REPOST' ? draft.parent : draft;
+                        if (!originalPost) return;
 
-                const patches = feedEntries.map(({ originalArgs }) =>
-                    dispatch(
-                        postsApi.util.updateQueryData(
-                            'getPostFeed',
-                            originalArgs,
-                            (draft) => {
-                                const post = draft.find(
-                                    (post) => post.id === id,
-                                );
-                                if (post) {
-                                    if (post.likedByMe) {
-                                        post.likedByMe = false;
-                                        post.likeCount -= 1;
-                                    } else {
-                                        post.likedByMe = true;
-                                        post.likeCount += 1;
-                                    }
-                                }
-                            },
-                        ),
-                    ),
-                );
-
-                // patch single post query if open
-                const patchSingle = dispatch(
-                    postsApi.util.updateQueryData('getPost', id, (draft) => {
-                        if (draft.likedByMe) {
-                            draft.likedByMe = false;
-                            draft.likeCount -= 1;
+                        if (originalPost.likedByMe) {
+                            originalPost.likedByMe = false;
+                            originalPost.likeCount -= 1;
                         } else {
-                            draft.likedByMe = true;
-                            draft.likeCount += 1;
+                            originalPost.likedByMe = true;
+                            originalPost.likeCount += 1;
                         }
-                    }),
+                    },
                 );
-
-                try {
-                    await queryFulfilled;
-                } catch {
-                    patches.forEach((patch) => patch.undo());
-                    patchSingle.undo();
-                }
             },
+        }),
+
+        repostPost: builder.mutation<
+            { repostCount: number; repostedByMe: boolean },
+            { id: string }
+        >({
+            query: ({ id }) => ({
+                url: `/${id}/repost`,
+                method: 'POST',
+            }),
+            async onQueryStarted(
+                { id },
+                { dispatch, queryFulfilled, getState },
+            ) {
+                await updatePostQueryData(
+                    id,
+                    dispatch,
+                    queryFulfilled,
+                    getState,
+                    (draft) => {
+                        const originalPost =
+                            draft.type === 'REPOST' ? draft.parent : draft;
+                        if (!originalPost) return;
+
+                        if (originalPost.repostedByMe) {
+                            originalPost.repostedByMe = false;
+                            originalPost.repostCount -= 1;
+                        } else {
+                            originalPost.repostedByMe = true;
+                            originalPost.repostCount += 1;
+                        }
+                    },
+                );
+            },
+            invalidatesTags: ['PostFeed'],
         }),
     }),
 });
@@ -107,4 +183,5 @@ export const {
     useGetPostQuery,
     usePublishPostMutation,
     useLikePostMutation,
+    useRepostPostMutation,
 } = postsApi;

@@ -8,7 +8,11 @@ export type UserProfilePostFeedProps = {
 export default function UserProfilePostFeed({
     username,
 }: UserProfilePostFeedProps) {
-    const { data } = useGetPostFeedQuery({ page: 1, username });
+    const { data } = useGetPostFeedQuery({
+        type: 'profile',
+        username,
+        page: 1,
+    });
 
     return <PostFeed posts={data} />;
 }

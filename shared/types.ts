@@ -50,8 +50,11 @@ export const SERVER_USER_SELECT: PrismaSelect<ServerUser> = {
 
 //
 
+export type PostType = 'ORIGINAL' | 'REPLY' | 'REPOST';
+
 export type Post = {
     id: string;
+    type: PostType;
     author: {
         name: string | null;
         username: string;
@@ -60,7 +63,9 @@ export type Post = {
     likeCount: number;
     likedByMe: boolean;
     replyCount: number;
-    parent: Post[] | null;
+    repostCount: number;
+    repostedByMe: boolean;
+    parent: Post | null;
     parentId: string | null;
     createdAt: string;
     updatedAt: string;

@@ -5,16 +5,23 @@ function randInt(from: number, to: number) {
 
 // Using pure HTML and avoiding React for performance
 // Id - post id
-export default function playLikeAnimation(id: string) {
+export default function playButtonAnimation(
+    id: string,
+    btnContainerClass: string,
+    colorClassName = 'bg-rose-500',
+) {
     const container = document.getElementById(`post-controls-${id}`);
     if (!container) return;
 
-    const likeButton = container.querySelector('.__like-btn-container');
+    const likeButton = container.querySelector(btnContainerClass);
     if (!likeButton) return;
 
     const particleCount = randInt(5, 10);
-    const particles = Array.from({ length: particleCount }, addParticle);
-
+    const color = colorClassName;
+    const particles: Array<HTMLDivElement> = [];
+    for (let i = 0; i < particleCount; i++) {
+        particles.push(addParticle(color));
+    }
     for (const particle of particles) {
         likeButton.appendChild(particle);
     }
@@ -26,9 +33,9 @@ export default function playLikeAnimation(id: string) {
     }, 600);
 }
 
-function addParticle() {
+function addParticle(colorClassName: string) {
     const particle = document.createElement('div');
-    particle.className = '_like-anim-particle';
+    particle.classList.add('_like-anim-particle', colorClassName);
     particle.style.setProperty('--target-x', randInt(-50, 50) + 'px');
     particle.style.setProperty('--target-y', randInt(-50, 50) + 'px');
     return particle;

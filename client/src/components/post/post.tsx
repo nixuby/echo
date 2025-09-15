@@ -49,14 +49,17 @@ export default function Post({
 }: PostProps) {
     const navigate = useNavigate();
 
+    const repost = post.type === 'REPOST';
+    const originalPost = repost && post.parent ? post.parent : post;
+
     function navigateToPost(ev: React.MouseEvent<HTMLElement>) {
         ev.stopPropagation();
-        navigate(`/post/${post.id}`);
+        navigate(`/post/${originalPost.id}`);
     }
 
     function navigateToUser(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        navigate(`/@${post.author.username}`);
+        navigate(`/@${originalPost.author.username}`);
     }
 
     function handleClickMenu(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -68,67 +71,79 @@ export default function Post({
         <article
             onClick={clickable ? navigateToPost : undefined}
             className={clsx(
-                'flex items-start gap-2 border-b border-gray-800 px-4 py-3 transition-colors',
+                'flex flex-col items-start gap-2 border-b border-gray-800 px-4 py-3 transition-colors',
                 clickable && 'cursor-pointer hover:bg-gray-900',
             )}
         >
-            <button
-                type='button'
-                role='link'
-                onClick={navigateToUser}
-                className='cursor-pointer transition-transform hover:scale-110'
-            >
-                <img
-                    src={`${env.API_URL}/users/pic/${post.author.username}-sm`}
-                    className='size-6 rounded-full bg-white'
-                    alt={`Profile picture of ${post.author.name ?? post.author.username}`}
-                />
-            </button>
-            <div className='flex flex-1 flex-col gap-2'>
-                <div className='flex justify-between'>
-                    <div className='text-sm'>
-                        <button
-                            type='button'
-                            role='link'
-                            onClick={navigateToUser}
-                            className='cursor-pointer hover:underline'
-                        >
-                            {post.author.name && (
-                                <>
-                                    <span className='font-bold'>
-                                        {post.author.name}
-                                    </span>
-                                    &nbsp;
-                                </>
-                            )}
-                            <span className='text-gray-600'>
-                                @{post.author.username}
-                            </span>
-                        </button>
-                        &nbsp;
-                        <span>
-                            &middot;{' '}
-                            {formatRelativeTime(new Date(post.createdAt))}
-                        </span>
-                    </div>
-                    <button type='button' onClick={handleClickMenu}>
-                        <EllipsisVerticalIcon className='size-5' />
-                    </button>
+            {repost && (
+                <div className='text-sm font-semibold text-gray-400'>
+                    Reposted by {post.author.name ?? post.author.username}{' '}
+                    &middot; {formatRelativeTime(new Date(post.createdAt))}
                 </div>
-                <div
-                    className={clsx(
-                        'whitespace-pre-wrap',
-                        short && 'line-clamp-4',
-                    )}
+            )}
+            <div className='flex w-full items-start gap-2'>
+                <button
+                    type='button'
+                    role='link'
+                    onClick={navigateToUser}
+                    className='cursor-pointer transition-transform hover:scale-110'
                 >
-                    {post.content}
+                    <img
+                        src={`${env.API_URL}/users/pic/${originalPost.author.username}-sm`}
+                        className='size-6 rounded-full bg-white'
+                        alt={`Profile picture of ${originalPost.author.name ?? originalPost.author.username}`}
+                    />
+                </button>
+                <div className='flex flex-1 flex-col gap-2'>
+                    <div className='flex justify-between'>
+                        <div className='text-sm'>
+                            <button
+                                type='button'
+                                role='link'
+                                onClick={navigateToUser}
+                                className='cursor-pointer hover:underline'
+                            >
+                                {originalPost.author.name && (
+                                    <>
+                                        <span className='font-bold'>
+                                            {originalPost.author.name}
+                                        </span>
+                                        &nbsp;
+                                    </>
+                                )}
+                                <span className='text-gray-600'>
+                                    @{originalPost.author.username}
+                                </span>
+                            </button>
+                            &nbsp;
+                            <span>
+                                &middot;{' '}
+                                {formatRelativeTime(
+                                    new Date(originalPost.createdAt),
+                                )}
+                            </span>
+                        </div>
+                        <button type='button' onClick={handleClickMenu}>
+                            <EllipsisVerticalIcon className='size-5' />
+                        </button>
+                    </div>
+                    <div
+                        className={clsx(
+                            'whitespace-pre-wrap',
+                            short && 'line-clamp-4',
+                        )}
+                    >
+                        {originalPost.content}
+                    </div>
+                    <PostControls
+                        id={originalPost.id}
+                        likeCount={originalPost.likeCount}
+                        likedByMe={originalPost.likedByMe}
+                        replyCount={originalPost.replyCount}
+                        repostCount={originalPost.repostCount}
+                        repostedByMe={originalPost.repostedByMe}
+                    />
                 </div>
-                <PostControls
-                    id={post.id}
-                    likeCount={post.likeCount}
-                    likedByMe={post.likedByMe}
-                    replyCount={post.replyCount}
-                />
             </div>
         </article>
     );

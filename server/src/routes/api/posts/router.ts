@@ -7,6 +7,7 @@ const postsRouter = express.Router();
 
 const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
     id: true,
+    type: true,
     author: {
         select: {
             name: true,
@@ -16,6 +17,7 @@ const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
     content: true,
     likeCount: true,
     replyCount: true,
+    repostCount: true,
     createdAt: true,
     updatedAt: true,
     likes: userId
@@ -30,60 +32,127 @@ const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
               select: SAFE_POST_SELECT(userId, false),
           }
         : false,
+    _count: userId
+        ? {
+              select: {
+                  children: {
+                      where: { type: 'REPOST', userId },
+                  },
+              },
+          }
+        : false,
 });
 
 function toClientPost(post: any): Post {
     return {
         id: post.id,
+        type: post.type,
         author: post.author,
         content: post.content,
         likeCount: post.likeCount,
-        likedByMe: post.likes ? post.likes.length > 0 : false,
+        likedByMe: post.likes?.length > 0,
         replyCount: post.replyCount,
+        repostCount: post.repostCount,
+        repostedByMe: post._count?.children > 0,
         parentId: post.parentId,
-        parent: post.parent,
+        parent: post.parent ? toClientPost(post.parent) : null,
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
     };
 }
 
-postsRouter.get('/feed', async (req, res) => {
-    function parseSort(sort: any): Prisma.PostOrderByWithRelationInput {
-        if (sort === 'newest') return { createdAt: 'desc' };
-        if (sort === 'oldest') return { createdAt: 'asc' };
-        if (sort === 'likes') return { likeCount: 'desc' };
-        return { createdAt: 'desc' }; // Default
-    }
+function parseSort(sort: any): Prisma.PostOrderByWithRelationInput {
+    if (sort === 'newest') return { createdAt: 'desc' };
+    if (sort === 'oldest') return { createdAt: 'asc' };
+    if (sort === 'likes') return { likeCount: 'desc' };
+    return { createdAt: 'desc' }; // Default
+}
 
+function paginate(page: number) {
     const LIMIT = 10;
+    return {
+        skip: (page - 1) * LIMIT,
+        take: LIMIT,
+    };
+}
+
+async function getHomeFeed(req: express.Request): Promise<Array<Post>> {
+    const page = Number(req.query.page) || 1;
+    const sort = parseSort(req.query.sort);
+
+    const posts = await prisma.post.findMany({
+        where: {
+            type: {
+                in: ['ORIGINAL'],
+            },
+        },
+        select: SAFE_POST_SELECT(req.user?.id, false),
+        orderBy: sort,
+        ...paginate(page),
+    });
+
+    return posts.map(toClientPost);
+}
+
+async function getProfileFeed(req: express.Request): Promise<Array<Post>> {
+    const username = req.query.username as string;
+    if (!username) {
+        throw new Error('Invalid parameters');
+    }
 
     const page = Number(req.query.page) || 1;
     const sort = parseSort(req.query.sort);
 
-    if (req.query.username && req.query.parentPostId) {
-        return res.status(400).json({ errors: { root: 'Invalid parameters' } });
-    }
-
     const posts = await prisma.post.findMany({
         where: {
-            author: {
-                username:
-                    typeof req.query.username === 'string'
-                        ? req.query.username
-                        : undefined,
+            type: {
+                in: ['ORIGINAL', 'REPOST'],
             },
-            parentId:
-                typeof req.query.parentPostId === 'string'
-                    ? req.query.parentPostId
-                    : null, // Only fetch top-level posts
+            author: { username },
         },
-        skip: (page - 1) * LIMIT,
-        take: LIMIT,
-        select: SAFE_POST_SELECT(req.user?.id, false),
+        select: SAFE_POST_SELECT(req.user?.id, true),
         orderBy: sort,
+        ...paginate(page),
     });
 
-    return res.json(posts.map(toClientPost));
+    return posts.map(toClientPost);
+}
+
+async function getReplyFeed(req: express.Request): Promise<Array<Post>> {
+    const parentId = req.query.parentId as string;
+    if (!parentId) {
+        throw new Error('Invalid parameters');
+    }
+
+    const page = Number(req.query.page) || 1;
+    const sort = parseSort(req.query.sort);
+
+    const posts = await prisma.post.findMany({
+        where: { type: 'REPLY', parentId },
+        select: SAFE_POST_SELECT(req.user?.id, true),
+        orderBy: sort,
+        ...paginate(page),
+    });
+
+    return posts.map(toClientPost);
+}
+
+postsRouter.get('/feed', async (req, res) => {
+    const type = req.query.type as string;
+
+    const fetchFn = (() => {
+        switch (req.query.type) {
+            case 'profile':
+                return getProfileFeed;
+            case 'reply':
+                return getReplyFeed;
+            default:
+                return getHomeFeed;
+        }
+    })();
+
+    const posts = await fetchFn(req);
+    return res.json(posts);
 });
 
 postsRouter.get('/:id', async (req, res) => {
@@ -134,10 +203,28 @@ postsRouter.post('/publish', async (req, res) => {
 
     const parentIds = parentId ? await getAncestorIds(parentId) : [];
 
+    const reply = parentId != null;
+
+    const parent = await prisma.post.findUnique({
+        where: parentId,
+        select: { id: true, type: true },
+    });
+
+    if (!parent) {
+        return res.status(400).json({ errors: { root: 'Parent not found' } });
+    }
+
+    if (parent.type === 'REPOST') {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Cannot reply to a repost' } });
+    }
+
     const post = (
         await prisma.$transaction([
             prisma.post.create({
                 data: {
+                    type: reply ? 'REPLY' : 'ORIGINAL',
                     author: { connect: { id: req.user.id } },
                     content,
                     parent: {
@@ -158,6 +245,91 @@ postsRouter.post('/publish', async (req, res) => {
     return res.status(201).json(toClientPost(post));
 });
 
+postsRouter.post('/:id/repost', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const originalId = req.params.id;
+
+    const originalPost = await prisma.post.findUnique({
+        where: { id: originalId },
+        select: {
+            id: true,
+            type: true,
+            _count: {
+                select: {
+                    children: {
+                        where: { AND: { type: 'REPOST', userId: req.user.id } },
+                    },
+                },
+            },
+        },
+    });
+
+    if (!originalPost) {
+        return res.status(404).json({ errors: { root: 'Not found' } });
+    }
+
+    if (originalPost.type === 'REPOST') {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Cannot repost a repost' } });
+    }
+
+    const repostedByMe = originalPost._count.children > 0;
+
+    if (repostedByMe) {
+        // Delete the repost
+        await prisma.$transaction([
+            prisma.post.deleteMany({
+                where: {
+                    AND: {
+                        type: 'REPOST',
+                        userId: req.user.id,
+                        parentId: originalId,
+                    },
+                },
+            }),
+            prisma.post.update({
+                where: {
+                    id: originalId,
+                },
+                data: {
+                    repostCount: { decrement: 1 },
+                },
+            }),
+        ]);
+
+        return res.status(204);
+    } else {
+        // Create the repost
+        const post = (
+            await prisma.$transaction([
+                prisma.post.create({
+                    data: {
+                        type: 'REPOST',
+                        author: { connect: { id: req.user.id } },
+                        content: '<repost>',
+                        parent: { connect: { id: originalId } },
+                    },
+                    select: SAFE_POST_SELECT(req.user?.id, true),
+                }),
+                prisma.post.update({
+                    where: {
+                        id: originalId,
+                    },
+                    data: {
+                        repostCount: { increment: 1 },
+                    },
+                }),
+            ])
+        )[0];
+
+        return res.status(201).json(toClientPost(post));
+    }
+});
+
 postsRouter.post('/:id/like', async (req, res) => {
     if (!req.user) {
         return res.status(401).json({ errors: { root: 'Unauthorized' } });
@@ -169,6 +341,7 @@ postsRouter.post('/:id/like', async (req, res) => {
         where: { id: postId },
         select: {
             id: true,
+            type: true,
             likes: {
                 where: { userId: req.user.id },
                 select: { id: true },
@@ -178,6 +351,12 @@ postsRouter.post('/:id/like', async (req, res) => {
 
     if (!post) {
         return res.status(404).json({ errors: { root: 'Not found' } });
+    }
+
+    if (post.type === 'REPOST') {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Cannot like a repost' } });
     }
 
     let likeCount = 0;

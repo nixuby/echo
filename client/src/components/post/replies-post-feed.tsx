@@ -6,6 +6,10 @@ export type RepliesPostFeedProps = {
 };
 
 export default function RepliesPostFeed({ postId }: RepliesPostFeedProps) {
-    const { data } = useGetPostFeedQuery({ page: 1, parentPostId: postId });
+    const { data } = useGetPostFeedQuery({
+        type: 'reply',
+        parentId: postId,
+        page: 1,
+    });
     return <PostFeed posts={data} />;
 }

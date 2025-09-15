@@ -46,7 +46,7 @@
 
 
 ._like-anim-particle {
-    @apply absolute top-2 left-2 size-4 bg-rose-500 rounded-full opacity-0 pointer-events-none z-1;
+    @apply absolute top-2 left-2 size-4  rounded-full opacity-0 pointer-events-none z-1;
     animation: like-particle-kf 500ms ease-out forwards;
 }
 
