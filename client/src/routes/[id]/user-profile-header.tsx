@@ -9,6 +9,15 @@ import { Link } from 'react-router';
 import UserProfileEditDialog from './user-profile-edit-dialog';
 import env from '@/env';
 
+function formatDate(datestr: string) {
+    const date = new Date(datestr);
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+    });
+}
+
 export type UserProfileHeaderProps = {
     user: OtherClientUser;
     you: boolean;
@@ -79,7 +88,9 @@ export default function UserProfileHeader({
                     numquam, consequatur nobis quasi atque!
                 </div>
 
-                <div className='text-gray-400'>Joined June 1, 2023</div>
+                <div className='text-gray-400'>
+                    Joined {formatDate(user.createdAt)}
+                </div>
                 <div className='flex flex-col gap-2 sm:flex-row sm:gap-4'>
                     <div>
                         <span className='font-semibold'>0</span>&nbsp;
