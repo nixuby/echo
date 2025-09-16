@@ -103,7 +103,8 @@ export default function UserProfileHeader({
                         <span className='text-gray-400'>Followers</span>
                     </div>
                     <div>
-                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='font-semibold'>{user.postCount}</span>
+                        &nbsp;
                         <span className='text-gray-400'>Posts</span>
                     </div>
                 </div>

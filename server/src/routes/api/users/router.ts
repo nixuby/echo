@@ -1,10 +1,10 @@
 import prisma from '@/prisma.js';
-import { OTHER_CLIENT_USER_SELECT } from '@shared/types.js';
 import express from 'express';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import sharp from 'sharp';
+import { OtherClientUser } from '@shared/types.js';
 
 const usersRouter = express.Router();
 
@@ -103,11 +103,9 @@ usersRouter.post('/bio', async (req, res) => {
     const bio = req.body.bio;
 
     if (typeof bio !== 'string' || bio.length > 160) {
-        return res
-            .status(400)
-            .json({
-                errors: { root: 'Bio must be a string up to 160 characters' },
-            });
+        return res.status(400).json({
+            errors: { root: 'Bio must be a string up to 160 characters' },
+        });
     }
 
     await prisma.user.update({
@@ -128,16 +126,34 @@ usersRouter.get('/:splat', async (req, res) => {
     if (splat[0] === '@') {
         const username = splat.slice(1);
 
-        const user = await prisma.user.findUnique({
+        const prUser = await prisma.user.findUnique({
             where: { username },
-            select: OTHER_CLIENT_USER_SELECT,
+            select: {
+                username: true,
+                name: true,
+                bio: true,
+                isVerified: true,
+                createdAt: true,
+                _count: {
+                    select: {
+                        posts: true,
+                    },
+                },
+            },
         });
 
-        if (!user) {
+        if (!prUser) {
             return res.status(404).json({ errors: { root: 'User not found' } });
         }
 
-        return res.json(user);
+        return res.json({
+            username: prUser.username,
+            name: prUser.name,
+            bio: prUser.bio,
+            isVerified: prUser.isVerified,
+            createdAt: prUser.createdAt.toISOString(),
+            postCount: prUser._count.posts,
+        } satisfies OtherClientUser);
     }
 
     res.status(400).json({ errors: { root: 'Invalid request' } });

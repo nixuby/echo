@@ -1,7 +1,3 @@
-type PrismaSelect<T> = {
-    [K in keyof T]: true;
-};
-
 export type ClientUser = {
     username: string;
     name: string | null;
@@ -19,6 +15,7 @@ export type OtherClientUser = {
     bio: string;
     isVerified: boolean;
     createdAt: string;
+    postCount: number;
 };
 
 export type ServerUser = {
@@ -31,39 +28,6 @@ export type ServerUser = {
     emailVerifiedAt: string | null; // Date string
     isVerified: boolean;
     createdAt: string;
-};
-
-//
-
-export const CLIENT_USER_SELECT: PrismaSelect<ClientUser> = {
-    username: true,
-    name: true,
-    bio: true,
-    email: true,
-    isEmailVerified: true,
-    emailVerifiedAt: true,
-    isVerified: true,
-    createdAt: true,
-};
-
-export const OTHER_CLIENT_USER_SELECT: PrismaSelect<OtherClientUser> = {
-    username: true,
-    name: true,
-    bio: true,
-    isVerified: true,
-    createdAt: true,
-};
-
-export const SERVER_USER_SELECT: PrismaSelect<ServerUser> = {
-    id: true,
-    username: true,
-    name: true,
-    bio: true,
-    email: true,
-    isEmailVerified: true,
-    emailVerifiedAt: true,
-    isVerified: true,
-    createdAt: true,
 };
 
 //
