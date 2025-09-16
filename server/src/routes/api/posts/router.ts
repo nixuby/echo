@@ -252,9 +252,7 @@ async function processAttachments(
                 await fs.writeFile(`./uploads/${attachment.id}`, buffer);
             }
         } catch (e: unknown) {
-            if (e instanceof Error) {
-                throw new Error('Failed to process attachment: ' + e.message);
-            } else throw new Error('Failed to process attachment');
+            throw new Error('Failed to process attachment');
         }
     }
 }
@@ -272,10 +270,10 @@ postsRouter.post('/publish', async (req, res) => {
             .json({ errors: { root: 'parentId must be a string' } });
     }
 
-    if (!content) {
+    if (!content && (!attachments || attachments.length === 0)) {
         return res
             .status(400)
-            .json({ errors: { root: 'Content is required' } });
+            .json({ errors: { root: 'Content or attachments are required' } });
     }
 
     if (!attachments || !Array.isArray(attachments)) {
@@ -305,33 +303,38 @@ postsRouter.post('/publish', async (req, res) => {
 
     const userId = req.user.id;
 
-    const [post] = await prisma.$transaction(async (tx) => {
-        const post = await tx.post.create({
-            data: {
-                type: reply ? 'REPLY' : 'ORIGINAL',
-                author: { connect: { id: userId } },
-                content,
-                parent: {
-                    connect: parentId ? { id: parentId } : undefined,
+    try {
+        const [post] = await prisma.$transaction(async (tx) => {
+            const post = await tx.post.create({
+                data: {
+                    type: reply ? 'REPLY' : 'ORIGINAL',
+                    author: { connect: { id: userId } },
+                    content,
+                    parent: {
+                        connect: parentId ? { id: parentId } : undefined,
+                    },
                 },
-            },
-            select: SAFE_POST_SELECT(userId, false),
+                select: SAFE_POST_SELECT(userId, false),
+            });
+
+            const postId = post.id as unknown as string;
+
+            await processAttachments(tx, postId, attachments);
+
+            for (const id of parentIds) {
+                await tx.post.update({
+                    where: { id },
+                    data: { replyCount: { increment: 1 } },
+                });
+            }
+            return [post];
         });
 
-        const postId = post.id as unknown as string;
-
-        await processAttachments(tx, postId, attachments);
-
-        for (const id of parentIds) {
-            await tx.post.update({
-                where: { id },
-                data: { replyCount: { increment: 1 } },
-            });
-        }
-        return [post];
-    });
-
-    return res.status(201).json(toClientPost(post));
+        return res.status(201).json(toClientPost(post));
+    } catch (e: unknown) {
+        const message = e instanceof Error ? e.message : 'Unknown error';
+        return res.status(400).json({ errors: { root: message } });
+    }
 });
 
 postsRouter.get('/attachment/:id', async (req, res) => {

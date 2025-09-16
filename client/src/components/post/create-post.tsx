@@ -16,6 +16,7 @@ export default function CreatePost({ parentId }: CreatePostProps) {
     const navigate = useNavigate();
     const [content, setContent] = useState<string>('');
     const [files, setFiles] = useState<Array<AttachedFile>>([]);
+    const [error, setError] = useState<string | null>(null);
     const [publishPost] = usePublishPostMutation();
     const dialog = useDialog();
 
@@ -42,18 +43,27 @@ export default function CreatePost({ parentId }: CreatePostProps) {
         setContent(ev.target.value);
     }
 
+    function reset() {
+        setContent('');
+        setFiles([]);
+        setError(null);
+    }
+
     function handlePublish() {
         Promise.all(files.map(([file]) => fileToBase64(file, true))).then(
             (base64Files) => {
                 publishPost({ content, parentId, attachments: base64Files })
                     .unwrap()
                     .then((post) => {
+                        reset();
                         navigate(`/post/${post.id}`);
                     })
                     .catch((res) => {
                         const error =
-                            (res?.errors?.root as string) ?? 'Unknown error';
+                            (res?.data?.errors?.root as string) ??
+                            'Unknown error';
                         console.error('Failed to publish post: ' + error);
+                        setError(error);
                     });
             },
         );
@@ -67,23 +77,31 @@ export default function CreatePost({ parentId }: CreatePostProps) {
                 value={content}
                 className='h-24 w-full resize-none border border-gray-700 bg-gray-900 px-4 py-2 transition-colors outline-none focus:border-white focus:bg-gray-800'
             ></textarea>
-            <div className='flex flex-wrap gap-2'>
-                {files.map(([file, urlObject], index) => (
-                    <div key={index} className='relative flex flex-col gap-1'>
-                        {urlObject && (
-                            <div className='size-32'>
-                                <img
-                                    src={urlObject}
-                                    alt={file.name}
-                                    onClick={handleClickImage}
-                                    className='aspect-square size-full cursor-pointer border border-gray-800 object-cover'
-                                />
-                            </div>
-                        )}
-                        <p className='text-sm text-gray-400'>{file.name}</p>
-                    </div>
-                ))}
-            </div>
+            {files.length > 0 && (
+                <div className='flex flex-wrap gap-2'>
+                    {files.map(([file, urlObject], index) => (
+                        <div key={index}>
+                            {urlObject ? (
+                                <div className='size-32'>
+                                    <img
+                                        src={urlObject}
+                                        alt={file.name}
+                                        onClick={handleClickImage}
+                                        className='aspect-square size-full cursor-pointer border border-gray-800 object-cover'
+                                    />
+                                </div>
+                            ) : (
+                                <div>{file.name}</div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+            {error && (
+                <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
+                    {error}
+                </div>
+            )}
             <div className='flex justify-between'>
                 <Button
                     onClick={handleClickAttach}
