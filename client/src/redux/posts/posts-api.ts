@@ -33,7 +33,7 @@ async function updatePostQueryData(
     dispatch: ThunkDispatch<any, any, UnknownAction>,
     queryFulfilled: Promise<any>,
     getState: () => RootState<any, any, 'postsApi'>,
-    callback: (draft: Post) => void,
+    callback: (draft: Post, remove: (post: Post) => void) => void,
 ) {
     const feedEntries = postsApi.util.selectInvalidatedBy(getState(), [
         { type: 'PostFeed' },
@@ -45,14 +45,26 @@ async function updatePostQueryData(
                 'getPostFeed',
                 originalArgs,
                 (draft) => {
+                    const removeList: Array<Post> = [];
+
+                    function remove(post: Post) {
+                        removeList.push(post);
+                    }
+
                     for (const post of draft) {
                         if (
                             post && post.type === 'REPOST'
                                 ? post.parent?.id === id
                                 : post.id === id
                         ) {
-                            callback(post);
+                            callback(post, remove);
                         }
+                    }
+
+                    // remove posts marked for removal
+                    for (const post of removeList) {
+                        const index = draft.indexOf(post);
+                        if (index !== -1) draft.splice(index, 1);
                     }
                 },
             ),
@@ -62,7 +74,7 @@ async function updatePostQueryData(
     // patch single post query if open
     const patchSingle = dispatch(
         postsApi.util.updateQueryData('getPost', id, (draft) => {
-            callback(draft);
+            callback(draft, () => {});
         }),
     );
 
@@ -158,7 +170,7 @@ export const postsApi = createApi({
                     dispatch,
                     queryFulfilled,
                     getState,
-                    (draft) => {
+                    (draft, remove) => {
                         const originalPost =
                             draft.type === 'REPOST' ? draft.parent : draft;
                         if (!originalPost) return;
@@ -166,6 +178,7 @@ export const postsApi = createApi({
                         if (originalPost.repostedByMe) {
                             originalPost.repostedByMe = false;
                             originalPost.repostCount -= 1;
+                            remove(draft);
                         } else {
                             originalPost.repostedByMe = true;
                             originalPost.repostCount += 1;

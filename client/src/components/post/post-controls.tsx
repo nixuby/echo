@@ -16,6 +16,7 @@ import { useAppSelector } from '@/redux/hooks';
 
 export type PostControlsProps = {
     id: string;
+    originalId: string;
     likeCount: number;
     likedByMe: boolean;
     replyCount: number;
@@ -25,6 +26,7 @@ export type PostControlsProps = {
 
 export default function PostControls({
     id,
+    originalId,
     likeCount,
     likedByMe,
     replyCount,
@@ -41,12 +43,12 @@ export default function PostControls({
         if (!user) return;
         if (!likedByMe)
             playButtonAnimation(id, '.__like-btn-container', 'bg-rose-500');
-        likePost({ id });
+        likePost({ id: originalId });
     }
 
     function handleReply(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        navigate(`/post/${id}#Reply`);
+        navigate(`/post/${originalId}#Reply`);
     }
 
     function handleRepost(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -58,7 +60,7 @@ export default function PostControls({
                 '.__repost-btn-container',
                 'bg-emerald-500',
             );
-        repostPost({ id });
+        repostPost({ id: originalId });
     }
 
     function handleBookmark(ev: React.MouseEvent<HTMLButtonElement>) {

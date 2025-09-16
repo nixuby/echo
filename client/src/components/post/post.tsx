@@ -136,7 +136,8 @@ export default function Post({
                         {originalPost.content}
                     </div>
                     <PostControls
-                        id={originalPost.id}
+                        id={post.id}
+                        originalId={originalPost.id}
                         likeCount={originalPost.likeCount}
                         likedByMe={originalPost.likedByMe}
                         replyCount={originalPost.replyCount}
