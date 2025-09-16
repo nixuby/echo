@@ -1,6 +1,5 @@
+import { useDialog } from '@/components/dialog/dialog';
 import Button from '@/components/shared/button';
-import { closeDialog } from '@/redux/dialog/dialog-slice';
-import { useAppDispatch } from '@/redux/hooks';
 import { useUpdateProfilePictureMutation } from '@/redux/user/users-api';
 import { fileToBase64 } from '@shared/file';
 import { useRef, useState } from 'react';
@@ -29,7 +28,7 @@ export default function UserProfileEditDialog() {
 }
 
 function Menu({ setPage }: { setPage: (page: string) => void }) {
-    const dispatch = useAppDispatch();
+    const dialog = useDialog();
 
     function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
         const target = ev.currentTarget;
@@ -40,7 +39,7 @@ function Menu({ setPage }: { setPage: (page: string) => void }) {
     }
 
     function handleClickClose() {
-        dispatch(closeDialog());
+        dialog.close();
     }
 
     return (

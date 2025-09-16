@@ -1,10 +1,9 @@
 import env from '@/env';
-import { openDialog } from '@/redux/dialog/dialog-slice';
-import { useAppDispatch } from '@/redux/hooks';
 import type { PostAttachment } from '@shared/types';
 import MediaPreviewDialog from '../dialog/media-preview-dialog';
 import { useState } from 'react';
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/20/solid';
+import { useDialog } from '../dialog/dialog';
 
 export type PostAttachmentsProps = {
     attachments: Array<PostAttachment>;
@@ -15,8 +14,8 @@ function url(attachment: PostAttachment) {
 }
 
 export default function PostAttachments({ attachments }: PostAttachmentsProps) {
+    const dialog = useDialog();
     const [selectedAttachment, setSelectedAttachment] = useState(0);
-    const dispatch = useAppDispatch();
 
     if (attachments.length === 0) {
         return null;
@@ -27,7 +26,7 @@ export default function PostAttachments({ attachments }: PostAttachmentsProps) {
         const id = ev.currentTarget.dataset.index as string;
         const attachment = attachments.find((a) => a.id === id);
         if (!attachment) return;
-        dispatch(openDialog(<MediaPreviewDialog url={url(attachment)} />));
+        dialog.open(<MediaPreviewDialog url={url(attachment)} />);
     }
 
     function handleClickControl(ev: React.MouseEvent<HTMLButtonElement>) {

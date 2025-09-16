@@ -1,6 +1,4 @@
 import Button from '@/components/shared/button';
-import { closeDialog, openDialog } from '@/redux/dialog/dialog-slice';
-import { useAppDispatch } from '@/redux/hooks';
 import { usePublishPostMutation } from '@/redux/posts/posts-api';
 import { PaperAirplaneIcon, PaperClipIcon } from '@heroicons/react/20/solid';
 import React, { useState } from 'react';
@@ -8,6 +6,7 @@ import { useNavigate } from 'react-router';
 import AttachDialog, { type AttachedFile } from './attach-dialog';
 import MediaPreviewDialog from '../dialog/media-preview-dialog';
 import { fileToBase64 } from '@shared/file';
+import { useDialog } from '../dialog/dialog';
 
 export type CreatePostProps = {
     parentId?: string; // Parent post id for creating replies
@@ -18,27 +17,25 @@ export default function CreatePost({ parentId }: CreatePostProps) {
     const [content, setContent] = useState<string>('');
     const [files, setFiles] = useState<Array<AttachedFile>>([]);
     const [publishPost] = usePublishPostMutation();
-    const dispatch = useAppDispatch();
+    const dialog = useDialog();
 
     function handleClickAttach() {
         function handleFinish(newFiles: Array<AttachedFile>) {
             setFiles(newFiles);
-            dispatch(closeDialog());
+            dialog.close();
         }
 
-        dispatch(
-            openDialog(
-                <AttachDialog
-                    defaultFiles={structuredClone(files)}
-                    onFinish={handleFinish}
-                />,
-            ),
+        dialog.open(
+            <AttachDialog
+                defaultFiles={structuredClone(files)}
+                onFinish={handleFinish}
+            />,
         );
     }
 
     function handleClickImage(ev: React.MouseEvent<HTMLImageElement>) {
         const url = ev.currentTarget.src;
-        dispatch(openDialog(<MediaPreviewDialog url={url} />));
+        dialog.open(<MediaPreviewDialog url={url} />);
     }
 
     function handleChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {

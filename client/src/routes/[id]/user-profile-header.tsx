@@ -1,13 +1,12 @@
 import MediaPreviewDialog from '@/components/dialog/media-preview-dialog';
 import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
-import { openDialog } from '@/redux/dialog/dialog-slice';
-import { useAppDispatch } from '@/redux/hooks';
 import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
 import UserProfileEditDialog from './user-profile-edit-dialog';
 import env from '@/env';
+import { useDialog } from '@/components/dialog/dialog';
 
 function formatDate(datestr: string) {
     const date = new Date(datestr);
@@ -27,16 +26,15 @@ export default function UserProfileHeader({
     user,
     you,
 }: UserProfileHeaderProps) {
-    const dispatch = useAppDispatch();
+    const dialog = useDialog();
 
     function handleClickPfp(ev: React.MouseEvent<HTMLImageElement>) {
         const src = ev.currentTarget.src;
-
-        dispatch(openDialog(<MediaPreviewDialog url={src} />));
+        dialog.open(<MediaPreviewDialog url={src} />);
     }
 
     function handleClickEdit() {
-        dispatch(openDialog(<UserProfileEditDialog />));
+        dialog.open(<UserProfileEditDialog />);
     }
 
     return (

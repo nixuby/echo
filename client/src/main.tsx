@@ -6,15 +6,16 @@ import router from './routes/router';
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
 import StateLoader from './components/state-loader';
-import Dialog from './components/dialog/dialog';
 import './env';
+import { DialogProvider } from './components/dialog/dialog';
 
 createRoot(document.getElementById('root')!).render(
     <StrictMode>
         <Provider store={store}>
             <StateLoader>
-                <Dialog />
-                <RouterProvider router={router} />
+                <DialogProvider>
+                    <RouterProvider router={router} />
+                </DialogProvider>
             </StateLoader>
         </Provider>
     </StrictMode>,
