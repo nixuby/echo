@@ -70,14 +70,20 @@ export default function UserProfileHeader({
                         <h2 className='font-semibold'>
                             {user.name ?? user.username}
                         </h2>
-                        {you && (
-                            <Link
-                                to='/verify'
-                                className='flex items-center gap-1 border border-gray-700 bg-gray-900 px-2 py-0.5 text-xs font-semibold transition-colors hover:bg-gray-800'
-                            >
+                        {user.isVerified ? (
+                            <div className='flex items-center'>
                                 <CheckBadgeIcon className='size-4 text-indigo-600' />
-                                <span>Get Verified</span>
-                            </Link>
+                            </div>
+                        ) : (
+                            you && (
+                                <Link
+                                    to='/verify'
+                                    className='flex items-center gap-1 border border-gray-700 bg-gray-900 px-2 py-0.5 text-xs font-semibold transition-colors hover:bg-gray-800'
+                                >
+                                    <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                    <span>Get Verified</span>
+                                </Link>
+                            )
                         )}
                     </div>
                     <p className='text-sm text-gray-400'>@{user.username}</p>

@@ -12,6 +12,7 @@ const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
         select: {
             name: true,
             username: true,
+            isVerified: true,
         },
     },
     content: true,
@@ -195,6 +196,12 @@ postsRouter.post('/publish', async (req, res) => {
 
     const { content, parentId } = req.body;
 
+    if (parentId && typeof parentId !== 'string') {
+        return res
+            .status(400)
+            .json({ errors: { root: 'parentId must be a string' } });
+    }
+
     if (!content) {
         return res
             .status(400)
@@ -205,16 +212,16 @@ postsRouter.post('/publish', async (req, res) => {
 
     const reply = parentId != null;
 
-    const parent = await prisma.post.findUnique({
-        where: parentId,
-        select: { id: true, type: true },
-    });
+    const parent = parentId
+        ? await prisma.post.findUnique({
+              where: {
+                  id: parentId,
+              },
+              select: { id: true, type: true },
+          })
+        : null;
 
-    if (!parent) {
-        return res.status(400).json({ errors: { root: 'Parent not found' } });
-    }
-
-    if (parent.type === 'REPOST') {
+    if (parent && parent.type === 'REPOST') {
         return res
             .status(400)
             .json({ errors: { root: 'Cannot reply to a repost' } });

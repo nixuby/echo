@@ -8,12 +8,14 @@ export type ClientUser = {
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null;
+    isVerified: boolean;
     createdAt: string;
 };
 
 export type OtherClientUser = {
     username: string;
     name: string | null;
+    isVerified: boolean;
     createdAt: string;
 };
 
@@ -24,6 +26,7 @@ export type ServerUser = {
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null; // Date string
+    isVerified: boolean;
     createdAt: string;
 };
 
@@ -35,12 +38,14 @@ export const CLIENT_USER_SELECT: PrismaSelect<ClientUser> = {
     email: true,
     isEmailVerified: true,
     emailVerifiedAt: true,
+    isVerified: true,
     createdAt: true,
 };
 
 export const OTHER_CLIENT_USER_SELECT: PrismaSelect<OtherClientUser> = {
     username: true,
     name: true,
+    isVerified: true,
     createdAt: true,
 };
 
@@ -51,6 +56,7 @@ export const SERVER_USER_SELECT: PrismaSelect<ServerUser> = {
     email: true,
     isEmailVerified: true,
     emailVerifiedAt: true,
+    isVerified: true,
     createdAt: true,
 };
 
@@ -64,6 +70,7 @@ export type Post = {
     author: {
         name: string | null;
         username: string;
+        isVerified: boolean;
     };
     content: string;
     likeCount: number;

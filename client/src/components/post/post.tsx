@@ -1,4 +1,7 @@
-import { EllipsisVerticalIcon } from '@heroicons/react/20/solid';
+import {
+    CheckBadgeIcon,
+    EllipsisVerticalIcon,
+} from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
 import PostControls from './post-controls';
 import { type Post as TPost } from '@shared/types';
@@ -96,26 +99,31 @@ export default function Post({
                 </button>
                 <div className='flex flex-1 flex-col gap-2'>
                     <div className='flex justify-between'>
-                        <div className='text-sm'>
+                        <div className='flex items-center gap-1 text-sm'>
                             <button
                                 type='button'
                                 role='link'
                                 onClick={navigateToUser}
-                                className='cursor-pointer hover:underline'
+                                className='flex cursor-pointer items-center gap-1 hover:underline'
                             >
                                 {originalPost.author.name && (
                                     <>
                                         <span className='font-bold'>
                                             {originalPost.author.name}
                                         </span>
-                                        &nbsp;
+                                        {originalPost.author.isVerified && (
+                                            <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                        )}
                                     </>
                                 )}
-                                <span className='text-gray-600'>
+                                <span className='flex items-center gap-1 text-gray-600'>
                                     @{originalPost.author.username}
+                                    {!originalPost.author.name &&
+                                        originalPost.author.isVerified && (
+                                            <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                        )}
                                 </span>
                             </button>
-                            &nbsp;
                             <span>
                                 &middot;{' '}
                                 {formatRelativeTime(

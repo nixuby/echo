@@ -46,6 +46,8 @@ model User {
     posts     Post[]
     postLikes PostLike[]
 
+    isVerified Boolean @default(false)
+
     @@unique([provider, providerId])
 }
 
