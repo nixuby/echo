@@ -1,15 +1,26 @@
+import {
+    useGetPostFeedInfiniteQuery,
+    type FeedQueryParams,
+} from '@/redux/posts/posts-api';
 import Post from './post';
-import { type Post as TPost } from '@shared/types';
 
 export type PostFeedProps = {
-    posts: TPost[] | null | undefined;
+    query: FeedQueryParams;
 };
 
-export default function PostFeed({ posts }: PostFeedProps) {
+export default function PostFeed({ query }: PostFeedProps) {
+    const { data, fetchNextPage } = useGetPostFeedInfiniteQuery(query);
+    const posts = data ? data.pages.flat() : [];
+
+    function loadNextPage() {
+        fetchNextPage();
+    }
+
     return (
         <div className='flex flex-col'>
             {posts &&
                 posts.map((post) => <Post key={post.id} short post={post} />)}
+            <button onClick={loadNextPage}>Load next!</button>
         </div>
     );
 }

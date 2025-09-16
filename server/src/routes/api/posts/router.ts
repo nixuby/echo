@@ -71,14 +71,15 @@ function parseSort(sort: any): Prisma.PostOrderByWithRelationInput {
 
 function paginate(page: number) {
     const LIMIT = 10;
+
     return {
-        skip: (page - 1) * LIMIT,
+        skip: page * LIMIT,
         take: LIMIT,
     };
 }
 
 async function getHomeFeed(req: express.Request): Promise<Array<Post>> {
-    const page = Number(req.query.page) || 1;
+    const page = Number(req.query.page);
     const sort = parseSort(req.query.sort);
 
     const posts = await prisma.post.findMany({
@@ -101,7 +102,7 @@ async function getProfileFeed(req: express.Request): Promise<Array<Post>> {
         throw new Error('Invalid parameters');
     }
 
-    const page = Number(req.query.page) || 1;
+    const page = Number(req.query.page);
     const sort = parseSort(req.query.sort);
 
     const posts = await prisma.post.findMany({
@@ -125,7 +126,7 @@ async function getReplyFeed(req: express.Request): Promise<Array<Post>> {
         throw new Error('Invalid parameters');
     }
 
-    const page = Number(req.query.page) || 1;
+    const page = Number(req.query.page);
     const sort = parseSort(req.query.sort);
 
     const posts = await prisma.post.findMany({
@@ -139,8 +140,6 @@ async function getReplyFeed(req: express.Request): Promise<Array<Post>> {
 }
 
 postsRouter.get('/feed', async (req, res) => {
-    const type = req.query.type as string;
-
     const fetchFn = (() => {
         switch (req.query.type) {
             case 'profile':

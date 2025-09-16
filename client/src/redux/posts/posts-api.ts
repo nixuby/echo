@@ -9,22 +9,19 @@ import type { Post } from '@shared/types';
 
 type SortType = 'newest' | 'oldest' | 'likes';
 
-type FeedQueryParams =
+export type FeedQueryParams =
     | {
           type: 'home';
-          page?: number;
           sort?: SortType;
       }
     | {
           type: 'profile';
           username: string;
-          page?: number;
           sort?: SortType;
       }
     | {
           type: 'reply';
           parentId: string;
-          page?: number;
           sort?: SortType;
       };
 
@@ -45,13 +42,14 @@ async function updatePostQueryData(
                 'getPostFeed',
                 originalArgs,
                 (draft) => {
+                    const posts = draft.pages.flat();
                     const removeList: Array<Post> = [];
 
                     function remove(post: Post) {
                         removeList.push(post);
                     }
 
-                    for (const post of draft) {
+                    for (const post of posts) {
                         if (
                             post && post.type === 'REPOST'
                                 ? post.parent?.id === id
@@ -63,8 +61,8 @@ async function updatePostQueryData(
 
                     // remove posts marked for removal
                     for (const post of removeList) {
-                        const index = draft.indexOf(post);
-                        if (index !== -1) draft.splice(index, 1);
+                        const index = posts.indexOf(post);
+                        if (index !== -1) posts.splice(index, 1);
                     }
                 },
             ),
@@ -94,10 +92,28 @@ export const postsApi = createApi({
     }),
     tagTypes: ['PostFeed', 'Post'],
     endpoints: (builder) => ({
-        getPostFeed: builder.query<Array<Post>, FeedQueryParams>({
-            query: (params) => ({
+        getPostFeed: builder.infiniteQuery<
+            Array<Post>,
+            FeedQueryParams,
+            number
+        >({
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: (_lastPage, _allPages, lastPageParam) =>
+                    lastPageParam + 1,
+                getPreviousPageParam: (
+                    _firstPage,
+                    _allPages,
+                    firstPageParam,
+                ) => (firstPageParam > 0 ? firstPageParam - 1 : undefined),
+            },
+
+            query: ({ pageParam, queryArg }) => ({
                 url: '/feed',
-                params,
+                params: {
+                    page: pageParam,
+                    ...queryArg,
+                },
             }),
             providesTags: ['PostFeed'],
         }),
@@ -192,7 +208,7 @@ export const postsApi = createApi({
 });
 
 export const {
-    useGetPostFeedQuery,
+    useGetPostFeedInfiniteQuery,
     useGetPostQuery,
     usePublishPostMutation,
     useLikePostMutation,
