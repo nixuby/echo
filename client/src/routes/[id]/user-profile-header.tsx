@@ -87,12 +87,9 @@ export default function UserProfileHeader({
                     </div>
                     <p className='text-sm text-gray-400'>@{user.username}</p>
                 </div>
-                <div>
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Architecto incidunt aperiam similique inventore nemo nihil
-                    numquam, consequatur nobis quasi atque!
-                </div>
-
+                {user.bio.length > 0 && (
+                    <div className='whitespace-pre'>{user.bio}</div>
+                )}
                 <div className='text-gray-400'>
                     Joined {formatDate(user.createdAt)}
                 </div>

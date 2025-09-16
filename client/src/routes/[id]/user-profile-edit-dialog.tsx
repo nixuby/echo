@@ -1,7 +1,10 @@
 import { useDialog } from '@/components/dialog/dialog';
 import Button from '@/components/shared/button';
 import { useAppSelector } from '@/redux/hooks';
-import { useUpdateProfilePictureMutation } from '@/redux/user/users-api';
+import {
+    useUpdateBioMutation,
+    useUpdateProfilePictureMutation,
+} from '@/redux/user/users-api';
 import { fileToBase64 } from '@shared/file';
 import { useRef, useState } from 'react';
 
@@ -181,7 +184,7 @@ function EditProfilePicture() {
 
 function EditCoverPhoto() {
     return (
-        <div className='flex flex-col'>
+        <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
                 Edit Cover Photo
             </h2>
@@ -190,11 +193,57 @@ function EditCoverPhoto() {
 }
 
 function EditBio() {
+    const user = useAppSelector((s) => s.auth.user);
+    const [input, setInput] = useState(user?.bio || '');
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
+    const [updateBio] = useUpdateBioMutation();
+    const dialog = useDialog();
+
+    function handleChange(ev: React.ChangeEvent<HTMLTextAreaElement>) {
+        setInput(ev.currentTarget.value);
+        setError(null);
+    }
+
+    function handleClick() {
+        setIsLoading(true);
+        updateBio(input)
+            .unwrap()
+            .then(() => dialog.close())
+            .catch((error) => setError(error.message))
+            .finally(() => setIsLoading(false));
+    }
+
     return (
-        <div className='flex flex-col'>
+        <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
                 Edit Profile Bio
             </h2>
+            <div className='flex flex-col gap-2 px-4 py-2'>
+                <div>
+                    <textarea
+                        name='post'
+                        onChange={handleChange}
+                        value={input}
+                        className='h-24 w-full resize-none border border-gray-700 bg-gray-900 px-4 py-2 transition-colors outline-none focus:border-white focus:bg-gray-800'
+                    ></textarea>
+                </div>
+                {error && (
+                    <div>
+                        <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
+                            {error}
+                        </div>
+                    </div>
+                )}
+                <Button
+                    disabled={isLoading}
+                    size='small'
+                    onClick={handleClick}
+                    className='self-end'
+                >
+                    Save
+                </Button>
+            </div>
         </div>
     );
 }

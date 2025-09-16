@@ -5,6 +5,7 @@ type PrismaSelect<T> = {
 export type ClientUser = {
     username: string;
     name: string | null;
+    bio: string;
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null;
@@ -15,6 +16,7 @@ export type ClientUser = {
 export type OtherClientUser = {
     username: string;
     name: string | null;
+    bio: string;
     isVerified: boolean;
     createdAt: string;
 };
@@ -23,6 +25,7 @@ export type ServerUser = {
     id: string;
     username: string;
     name: string | null;
+    bio: string;
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null; // Date string
@@ -35,6 +38,7 @@ export type ServerUser = {
 export const CLIENT_USER_SELECT: PrismaSelect<ClientUser> = {
     username: true,
     name: true,
+    bio: true,
     email: true,
     isEmailVerified: true,
     emailVerifiedAt: true,
@@ -45,6 +49,7 @@ export const CLIENT_USER_SELECT: PrismaSelect<ClientUser> = {
 export const OTHER_CLIENT_USER_SELECT: PrismaSelect<OtherClientUser> = {
     username: true,
     name: true,
+    bio: true,
     isVerified: true,
     createdAt: true,
 };
@@ -53,6 +58,7 @@ export const SERVER_USER_SELECT: PrismaSelect<ServerUser> = {
     id: true,
     username: true,
     name: true,
+    bio: true,
     email: true,
     isEmailVerified: true,
     emailVerifiedAt: true,

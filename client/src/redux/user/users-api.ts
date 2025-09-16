@@ -8,10 +8,12 @@ export const usersApi = createApi({
         baseUrl: `${env.API_URL}/users`,
         credentials: 'include',
     }),
+    tagTypes: ['User'],
     endpoints: (builder) => ({
         // Get user info
         getUser: builder.query<OtherClientUser, string>({
             query: (id) => `/@${id}`,
+            providesTags: ['User'],
         }),
 
         updateProfilePicture: builder.mutation<void, string>({
@@ -21,7 +23,20 @@ export const usersApi = createApi({
                 body: { picture: base64 },
             }),
         }),
+
+        updateBio: builder.mutation<void, string>({
+            query: (bio) => ({
+                url: '/bio',
+                method: 'POST',
+                body: { bio },
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
-export const { useGetUserQuery, useUpdateProfilePictureMutation } = usersApi;
+export const {
+    useGetUserQuery,
+    useUpdateProfilePictureMutation,
+    useUpdateBioMutation,
+} = usersApi;

@@ -28,6 +28,8 @@ model User {
     // Non-unique display user name
     name String?
 
+    bio String @default("")
+
     // Auth provider (local | google | apple)
     provider String @default("local")
 

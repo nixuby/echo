@@ -95,6 +95,29 @@ usersRouter.post('/pic', async (req, res) => {
     }
 });
 
+usersRouter.post('/bio', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const bio = req.body.bio;
+
+    if (typeof bio !== 'string' || bio.length > 160) {
+        return res
+            .status(400)
+            .json({
+                errors: { root: 'Bio must be a string up to 160 characters' },
+            });
+    }
+
+    await prisma.user.update({
+        where: { id: req.user.id },
+        data: { bio },
+    });
+
+    return res.status(204).end();
+});
+
 usersRouter.get('/:splat', async (req, res) => {
     const splat = req.params.splat;
 
