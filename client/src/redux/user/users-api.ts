@@ -12,7 +12,7 @@ export const usersApi = createApi({
     endpoints: (builder) => ({
         // Get user info
         getUser: builder.query<OtherClientUser, string>({
-            query: (id) => `/@${id}`,
+            query: (id) => `/${id}`,
             providesTags: ['User'],
         }),
 

@@ -116,47 +116,41 @@ usersRouter.post('/bio', async (req, res) => {
     return res.status(204).end();
 });
 
-usersRouter.get('/:splat', async (req, res) => {
-    const splat = req.params.splat;
+usersRouter.get('/:username', async (req, res) => {
+    const username = req.params.username;
 
-    if (splat.length === 0) {
+    if (username.length === 0) {
         return res.status(400).json({ errors: { root: 'Invalid request' } });
     }
 
-    if (splat[0] === '@') {
-        const username = splat.slice(1);
-
-        const prUser = await prisma.user.findUnique({
-            where: { username },
-            select: {
-                username: true,
-                name: true,
-                bio: true,
-                isVerified: true,
-                createdAt: true,
-                _count: {
-                    select: {
-                        posts: true,
-                    },
+    const prUser = await prisma.user.findUnique({
+        where: { username },
+        select: {
+            username: true,
+            name: true,
+            bio: true,
+            isVerified: true,
+            createdAt: true,
+            _count: {
+                select: {
+                    posts: true,
                 },
             },
-        });
+        },
+    });
 
-        if (!prUser) {
-            return res.status(404).json({ errors: { root: 'User not found' } });
-        }
-
-        return res.json({
-            username: prUser.username,
-            name: prUser.name,
-            bio: prUser.bio,
-            isVerified: prUser.isVerified,
-            createdAt: prUser.createdAt.toISOString(),
-            postCount: prUser._count.posts,
-        } satisfies OtherClientUser);
+    if (!prUser) {
+        return res.status(404).json({ errors: { root: 'User not found' } });
     }
 
-    res.status(400).json({ errors: { root: 'Invalid request' } });
+    return res.json({
+        username: prUser.username,
+        name: prUser.name,
+        bio: prUser.bio,
+        isVerified: prUser.isVerified,
+        createdAt: prUser.createdAt.toISOString(),
+        postCount: prUser._count.posts,
+    } satisfies OtherClientUser);
 });
 
 export default usersRouter;
