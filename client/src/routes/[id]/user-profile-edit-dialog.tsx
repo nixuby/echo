@@ -2,7 +2,7 @@ import Button from '@/components/shared/button';
 import { closeDialog } from '@/redux/dialog/dialog-slice';
 import { useAppDispatch } from '@/redux/hooks';
 import { useUpdateProfilePictureMutation } from '@/redux/user/users-api';
-import { fileToBase64 } from '@shared/util/file';
+import { fileToBase64 } from '@shared/file';
 import { useRef, useState } from 'react';
 
 export default function UserProfileEditDialog() {
