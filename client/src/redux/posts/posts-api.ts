@@ -125,7 +125,7 @@ export const postsApi = createApi({
 
         publishPost: builder.mutation<
             Post,
-            { content: string; parentId?: string }
+            { content: string; attachments: Array<string>; parentId?: string }
         >({
             query: (body) => ({
                 url: '/publish',

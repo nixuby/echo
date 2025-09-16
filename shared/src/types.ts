@@ -80,6 +80,12 @@ export type Post = {
     repostedByMe: boolean;
     parent: Post | null;
     parentId: string | null;
+    attachments: Array<PostAttachment>;
     createdAt: string;
     updatedAt: string;
+};
+
+export type PostAttachment = {
+    id: string;
+    type: string; // MIME type
 };

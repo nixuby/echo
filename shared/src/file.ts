@@ -1,4 +1,4 @@
-export async function fileToBase64(file: File): Promise<string> {
+export async function fileToBase64(file: File, withMime: boolean = false): Promise<string> {
     return new Promise(async (resolve) => {
         const buffer = await file.arrayBuffer();
         const bytes = new Uint8Array(buffer);
@@ -7,6 +7,6 @@ export async function fileToBase64(file: File): Promise<string> {
             binary += String.fromCharCode(byte);
         }
         const base64 = btoa(binary);
-        resolve(base64);
+        resolve(withMime ? `data:${file.type};base64,${base64}` : base64);
     });
 }

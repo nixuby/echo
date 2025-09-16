@@ -2,6 +2,9 @@ import prisma from '@/prisma.js';
 import { Post } from '@shared/types.js';
 import express from 'express';
 import { Prisma } from 'generated/prisma/index.js';
+import sharp from 'sharp';
+import ffmpeg from 'fluent-ffmpeg';
+import fs from 'node:fs/promises';
 
 const postsRouter = express.Router();
 
@@ -33,6 +36,12 @@ const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
               select: SAFE_POST_SELECT(userId, false),
           }
         : false,
+    attachments: {
+        select: {
+            id: true,
+            type: true,
+        },
+    },
     _count: userId
         ? {
               select: {
@@ -57,6 +66,7 @@ function toClientPost(post: any): Post {
         repostedByMe: post._count?.children > 0,
         parentId: post.parentId,
         parent: post.parent ? toClientPost(post.parent) : null,
+        attachments: post.attachments,
         createdAt: post.createdAt.toISOString(),
         updatedAt: post.updatedAt.toISOString(),
     };
@@ -188,12 +198,73 @@ async function getAncestorIds(postId: string): Promise<string[]> {
     return ids;
 }
 
+async function processAttachments(
+    tx: Prisma.TransactionClient,
+    postId: string,
+    attachments: Array<string>
+): Promise<void> {
+    const SUPPORTED_TYPES = [
+        'image',
+        // TODO
+        //  'video'
+    ];
+    const files: Array<[type: string, data: Buffer]> = [];
+
+    // Parse, collect, and validate
+    for (const file of attachments) {
+        const type = file.split(';')[0].split(':')[1]; // Extract MIME type from data URL
+        const data = file.split(',')[1]; // Extract base64 data
+        const buffer = Buffer.from(data, 'base64');
+        files.push([type, buffer]);
+        // Validate
+        let supported = false;
+        for (const supportedType of SUPPORTED_TYPES) {
+            if (type.startsWith(supportedType + '/')) {
+                supported = true;
+                break;
+            }
+        }
+        if (!supported) throw new Error('Unsupported attachment type');
+    }
+
+    // Process images with sharp and videos with ffmpeg
+    for (const file of files) {
+        const [type, data] = file;
+        try {
+            if (type.startsWith('image/')) {
+                // Process image with sharp
+                const buffer = await sharp(data)
+                    .resize({
+                        height: 1280,
+                        fit: 'inside',
+                        withoutEnlargement: true,
+                    })
+                    .toFormat('jpeg')
+                    .toBuffer();
+
+                const attachment = await tx.postAttachment.create({
+                    data: {
+                        postId,
+                        type: 'image/jpeg',
+                    },
+                });
+
+                await fs.writeFile(`./uploads/${attachment.id}`, buffer);
+            }
+        } catch (e: unknown) {
+            if (e instanceof Error) {
+                throw new Error('Failed to process attachment: ' + e.message);
+            } else throw new Error('Failed to process attachment');
+        }
+    }
+}
+
 postsRouter.post('/publish', async (req, res) => {
     if (!req.user) {
         return res.status(401).json({ errors: { root: 'Unauthorized' } });
     }
 
-    const { content, parentId } = req.body;
+    const { content, attachments, parentId } = req.body;
 
     if (parentId && typeof parentId !== 'string') {
         return res
@@ -205,6 +276,12 @@ postsRouter.post('/publish', async (req, res) => {
         return res
             .status(400)
             .json({ errors: { root: 'Content is required' } });
+    }
+
+    if (!attachments || !Array.isArray(attachments)) {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Attachments must be an array' } });
     }
 
     const parentIds = parentId ? await getAncestorIds(parentId) : [];
@@ -226,29 +303,48 @@ postsRouter.post('/publish', async (req, res) => {
             .json({ errors: { root: 'Cannot reply to a repost' } });
     }
 
-    const post = (
-        await prisma.$transaction([
-            prisma.post.create({
-                data: {
-                    type: reply ? 'REPLY' : 'ORIGINAL',
-                    author: { connect: { id: req.user.id } },
-                    content,
-                    parent: {
-                        connect: parentId ? { id: parentId } : undefined,
-                    },
+    const userId = req.user.id;
+
+    const [post] = await prisma.$transaction(async (tx) => {
+        const post = await tx.post.create({
+            data: {
+                type: reply ? 'REPLY' : 'ORIGINAL',
+                author: { connect: { id: userId } },
+                content,
+                parent: {
+                    connect: parentId ? { id: parentId } : undefined,
                 },
-                select: SAFE_POST_SELECT(req.user?.id, false),
-            }),
-            ...parentIds.map((id) =>
-                prisma.post.update({
-                    where: { id },
-                    data: { replyCount: { increment: 1 } },
-                })
-            ),
-        ])
-    )[0];
+            },
+            select: SAFE_POST_SELECT(userId, false),
+        });
+
+        const postId = post.id as unknown as string;
+
+        await processAttachments(tx, postId, attachments);
+
+        for (const id of parentIds) {
+            await tx.post.update({
+                where: { id },
+                data: { replyCount: { increment: 1 } },
+            });
+        }
+        return [post];
+    });
 
     return res.status(201).json(toClientPost(post));
+});
+
+postsRouter.get('/attachment/:id', async (req, res) => {
+    const attachmentId = req.params.id;
+    const attachment = await prisma.postAttachment.findUnique({
+        where: { id: attachmentId },
+    });
+    if (!attachment) {
+        return res.status(404).json({ errors: { root: 'Not found' } });
+    }
+    const file = await fs.readFile(`./uploads/${attachment.id}`);
+    res.setHeader('Content-Type', attachment.type);
+    return res.send(file);
 });
 
 postsRouter.post('/:id/repost', async (req, res) => {

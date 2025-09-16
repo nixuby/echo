@@ -7,6 +7,7 @@ import PostControls from './post-controls';
 import { type Post as TPost } from '@shared/types';
 import clsx from 'clsx/lite';
 import env from '@/env';
+import PostAttachments from './post-attachments';
 
 export type PostProps = {
     clickable?: boolean;
@@ -143,6 +144,7 @@ export default function Post({
                     >
                         {originalPost.content}
                     </div>
+                    <PostAttachments attachments={originalPost.attachments} />
                     <PostControls
                         id={post.id}
                         originalId={originalPost.id}
