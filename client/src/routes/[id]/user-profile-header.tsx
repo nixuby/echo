@@ -49,7 +49,8 @@ export default function UserProfileHeader({
                         src={`${env.API_URL}/users/pic/${user.username}`}
                         alt={`Profile picture of ${user.name ?? user.username}`}
                         onClick={handleClickPfp}
-                        className='box-content size-24 rounded-full border-4 border-gray-950'
+                        data-user={user.username}
+                        className='__pfp box-content size-24 rounded-full border-4 border-gray-950'
                     />
                 </div>
             </div>

@@ -86,6 +86,8 @@ usersRouter.post('/pic', async (req, res) => {
             fullPicture.toFile(fullOutputPath),
             previewPicture.toFile(previewOutputPath),
         ]);
+
+        return res.status(204).end();
     } catch (error) {
         return res
             .status(500)

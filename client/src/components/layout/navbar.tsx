@@ -94,7 +94,8 @@ export default function NavBar({ mobile }: NavBarProps) {
                         <img
                             src={`${env.API_URL}/users/pic/${user.username}`}
                             alt={`Profile picture of ${user.name ?? user.username}`}
-                            className='size-12 rounded-full'
+                            data-user={user.username}
+                            className='__pfp size-12 rounded-full'
                         />
                         <div className='flex flex-col'>
                             {user.name ? (

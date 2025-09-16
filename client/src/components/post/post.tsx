@@ -94,7 +94,8 @@ export default function Post({
                 >
                     <img
                         src={`${env.API_URL}/users/pic/${originalPost.author.username}-sm`}
-                        className='size-6 rounded-full bg-white'
+                        className='__pfp size-6 rounded-full bg-white'
+                        data-user={originalPost.author.username}
                         alt={`Profile picture of ${originalPost.author.name ?? originalPost.author.username}`}
                     />
                 </button>

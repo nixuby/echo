@@ -1,5 +1,6 @@
 import { useDialog } from '@/components/dialog/dialog';
 import Button from '@/components/shared/button';
+import { useAppSelector } from '@/redux/hooks';
 import { useUpdateProfilePictureMutation } from '@/redux/user/users-api';
 import { fileToBase64 } from '@shared/file';
 import { useRef, useState } from 'react';
@@ -43,7 +44,7 @@ function Menu({ setPage }: { setPage: (page: string) => void }) {
     }
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <button
                 onClick={handleClick}
                 data-page='pfp'
@@ -76,9 +77,13 @@ function Menu({ setPage }: { setPage: (page: string) => void }) {
 }
 
 function EditProfilePicture() {
+    const dialog = useDialog();
+    const [error, setError] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
     const ref = useRef<HTMLInputElement>(null);
     const [urlObject, setUrlObject] = useState<string | null>(null);
     const [updateProfilePicture] = useUpdateProfilePictureMutation();
+    const user = useAppSelector((s) => s.auth.user);
 
     function handleClickSelectFile() {
         ref.current?.click();
@@ -90,8 +95,27 @@ function EditProfilePicture() {
         const file = files[0];
         if (!file) return;
 
+        setIsLoading(true);
+
         fileToBase64(file).then((b64) => {
-            updateProfilePicture(b64);
+            updateProfilePicture(b64)
+                .then(() => {
+                    dialog.close();
+                    const pfps = document.querySelectorAll('img.__pfp');
+                    for (const pfp of pfps) {
+                        const username = pfp.getAttribute('data-user');
+                        if (username === user?.username) {
+                            // refresh the profile picture by changing the src attribute
+                            const url = new URL(
+                                pfp.getAttribute('src') || '',
+                                location.origin,
+                            );
+                            url.searchParams.set('t', Date.now().toString());
+                            pfp.setAttribute('src', url.toString());
+                        }
+                    }
+                })
+                .finally(() => setIsLoading(false));
         });
     }
 
@@ -99,13 +123,16 @@ function EditProfilePicture() {
         const files = ev.currentTarget.files;
         if (files && files.length > 0) {
             const file = files[0];
+            if (file.type.startsWith('image/') === false) {
+                return setError('Please select an image file');
+            }
             const url = URL.createObjectURL(file);
             setUrlObject(url);
         }
     }
 
     return (
-        <div className='flex flex-col'>
+        <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
                 Edit Profile Picture
             </h2>
@@ -116,20 +143,33 @@ function EditProfilePicture() {
                 onChange={handleChange}
                 className='hidden'
             />
-            <div className='flex flex-col px-4 py-2'>
+            {error && (
+                <div className='px-4 py-2'>
+                    <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
+                        {error}
+                    </div>
+                </div>
+            )}
+            <div className='flex flex-col items-center px-4 py-2'>
                 {urlObject && (
-                    <img
-                        src={urlObject}
-                        alt='Selected file'
-                        className='mb-2 w-64 border border-gray-800'
-                    />
+                    <div className='aspect-square w-full'>
+                        <img
+                            src={urlObject}
+                            alt='Selected file'
+                            className='mb-2 aspect-square w-full border border-gray-800 object-cover object-center'
+                        />
+                    </div>
                 )}
                 <div className='flex flex-col gap-2 self-end'>
                     <Button size='small' onClick={handleClickSelectFile}>
                         Select File
                     </Button>
                     {urlObject && (
-                        <Button size='small' onClick={handleClickConfirm}>
+                        <Button
+                            disabled={isLoading}
+                            size='small'
+                            onClick={handleClickConfirm}
+                        >
                             Confirm
                         </Button>
                     )}
