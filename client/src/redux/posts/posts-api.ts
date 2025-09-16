@@ -116,7 +116,7 @@ export const postsApi = createApi({
                 method: 'POST',
                 body,
             }),
-            invalidatesTags: ['PostFeed'],
+            invalidatesTags: ['PostFeed', 'Post'],
         }),
 
         likePost: builder.mutation<
