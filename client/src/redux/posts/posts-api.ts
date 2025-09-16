@@ -42,27 +42,35 @@ async function updatePostQueryData(
                 'getPostFeed',
                 originalArgs,
                 (draft) => {
-                    const posts = draft.pages.flat();
-                    const removeList: Array<Post> = [];
+                    const removeList: Array<[page: number, index: number]> = [];
 
                     function remove(post: Post) {
-                        removeList.push(post);
+                        const page = draft.pages.findIndex((p) =>
+                            p.find((x) => x.id === post.id),
+                        );
+                        if (page === -1) return;
+                        const index = draft.pages[page].findIndex(
+                            (x) => x.id === post.id,
+                        );
+                        if (index === -1) return;
+                        removeList.push([page, index]);
                     }
 
-                    for (const post of posts) {
-                        if (
-                            post && post.type === 'REPOST'
-                                ? post.parent?.id === id
-                                : post.id === id
-                        ) {
-                            callback(post, remove);
+                    for (const page of draft.pages) {
+                        for (const post of page) {
+                            if (
+                                post && post.type === 'REPOST'
+                                    ? post.parent?.id === id
+                                    : post.id === id
+                            ) {
+                                callback(post, remove);
+                            }
                         }
                     }
 
                     // remove posts marked for removal
-                    for (const post of removeList) {
-                        const index = posts.indexOf(post);
-                        if (index !== -1) posts.splice(index, 1);
+                    for (const [page, index] of removeList) {
+                        draft.pages[page].splice(index, 1);
                     }
                 },
             ),
@@ -194,7 +202,7 @@ export const postsApi = createApi({
                         if (originalPost.repostedByMe) {
                             originalPost.repostedByMe = false;
                             originalPost.repostCount -= 1;
-                            remove(draft);
+                            if (draft.type === 'REPOST') remove(draft);
                         } else {
                             originalPost.repostedByMe = true;
                             originalPost.repostCount += 1;
