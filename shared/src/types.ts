@@ -114,6 +114,6 @@ export type ClientNotification =
 
 export type NotificationType = ServerNotification['type'];
 
-export const NOTIFICATION_TYPES: NotificationType[] = ['new_follower', 'post_liked', 'post_replied'];
+export const NOTIFICATION_TYPES: NotificationType[] = ['new_follower', 'post_liked', 'post_replied', 'post_shared'];
 
 export type NotificationSettings = Record<NotificationType, boolean>;
