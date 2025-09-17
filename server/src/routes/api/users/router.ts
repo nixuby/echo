@@ -6,11 +6,16 @@ import fs from 'node:fs/promises';
 import sharp from 'sharp';
 import {
     ClientNotification,
+    NOTIFICATION_TYPES,
+    NotificationType,
     OtherClientUser,
     ServerNotification,
 } from '@shared/types.js';
-import { toClientNotification } from '@/notifications.js';
-import { Prisma } from 'generated/prisma/index.js';
+import {
+    parseNotificationSettings,
+    toClientNotification,
+} from '@/notifications.js';
+import { Notification, Prisma } from 'generated/prisma/index.js';
 
 const usersRouter = express.Router();
 
@@ -186,8 +191,70 @@ usersRouter.get('/notifications', async (req, res) => {
     res.json(clientNotifs);
 });
 
-export default usersRouter;
+usersRouter.get('/notification-settings', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
 
+    const settings = parseNotificationSettings(
+        (
+            await prisma.user.findUnique({
+                where: {
+                    id: req.user.id,
+                },
+                select: {
+                    notificationSettings: true,
+                },
+            })
+        )?.notificationSettings
+    );
+
+    res.json(settings);
+});
+
+usersRouter.post('/notification-settings', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const type = req.body.type as NotificationType;
+
+    if (
+        !type ||
+        typeof type !== 'string' ||
+        !NOTIFICATION_TYPES.includes(type)
+    ) {
+        return res.status(400).json({
+            errors: { root: 'Invalid or missing notification type' },
+        });
+    }
+
+    const result = await prisma.$transaction(async (tx) => {
+        const user = await tx.user.findUnique({
+            where: { id: req.user!.id },
+            select: { notificationSettings: true },
+        });
+
+        const settings = parseNotificationSettings(user?.notificationSettings);
+
+        if (!settings) {
+            throw new Error('Failed to parse notification settings');
+        }
+
+        settings[type] = !settings[type];
+
+        await tx.user.update({
+            where: { id: req.user!.id },
+            data: { notificationSettings: JSON.stringify(settings) },
+        });
+
+        return settings[type];
+    });
+
+    return res.status(200).json(result);
+});
+
+// TODO: move to "/user/:username" to prevent collision
 usersRouter.get('/:username', async (req, res) => {
     const username = req.params.username;
 
@@ -224,3 +291,5 @@ usersRouter.get('/:username', async (req, res) => {
         postCount: prUser._count.posts,
     } satisfies OtherClientUser);
 });
+
+export default usersRouter;

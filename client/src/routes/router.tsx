@@ -12,6 +12,7 @@ import EmailPage from './settings/account-info/email/page';
 import NamePage from './settings/account-info/name/page';
 import UserProfilePage from './[id]/page';
 import NotificationsPage from './notifications/page';
+import NotificationsSettingsPage from './settings/notifications/page';
 
 const router = createBrowserRouter([
     {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
     {
         path: 'settings/account-info/email',
         Component: EmailPage,
+    },
+    {
+        path: 'settings/notifications',
+        Component: NotificationsSettingsPage,
     },
     {
         path: 'notifications',

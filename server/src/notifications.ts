@@ -9,7 +9,9 @@ import {
 import prisma from './prisma.js';
 import { Prisma } from 'generated/prisma/index.js';
 
-function parseNotificationSettings(str?: string): NotificationSettings | null {
+export function parseNotificationSettings(
+    str?: string | null
+): NotificationSettings | null {
     if (!str) return null;
     try {
         const obj = JSON.parse(str);

@@ -1,6 +1,11 @@
 import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import type { ClientNotification, OtherClientUser } from '@shared/types';
+import type {
+    ClientNotification,
+    NotificationSettings,
+    NotificationType,
+    OtherClientUser,
+} from '@shared/types';
 import { authApi } from '../auth/auth-api';
 
 export const usersApi = createApi({
@@ -59,6 +64,35 @@ export const usersApi = createApi({
             },
             providesTags: ['Notifications'],
         }),
+
+        getNotificationSettings: builder.query<NotificationSettings, void>({
+            query: () => '/notification-settings',
+        }),
+
+        toggleNotificationSetting: builder.mutation<boolean, NotificationType>({
+            query: (type) => ({
+                url: '/notification-settings',
+                method: 'POST',
+                body: { type },
+            }),
+            async onQueryStarted(arg, { dispatch, queryFulfilled }) {
+                const patch = dispatch(
+                    usersApi.util.updateQueryData(
+                        'getNotificationSettings',
+                        undefined,
+                        (draft) => {
+                            draft[arg] = !draft[arg];
+                        },
+                    ),
+                );
+
+                try {
+                    await queryFulfilled;
+                } catch {
+                    patch.undo();
+                }
+            },
+        }),
     }),
 });
 
@@ -67,4 +101,6 @@ export const {
     useUpdateProfilePictureMutation,
     useUpdateBioMutation,
     useGetNotificationsInfiniteQuery,
+    useGetNotificationSettingsQuery,
+    useToggleNotificationSettingMutation,
 } = usersApi;
