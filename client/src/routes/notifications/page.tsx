@@ -3,19 +3,7 @@ import ProtectedRoute from '@/components/protected-route';
 import { useGetNotificationsInfiniteQuery } from '@/redux/user/users-api';
 import Notification from './Notification';
 import { useEffect, useRef } from 'react';
-
-function isElementInViewport(el: HTMLElement): boolean {
-    var rect = el.getBoundingClientRect();
-
-    return (
-        rect.top >= 0 &&
-        rect.left >= 0 &&
-        rect.bottom <=
-            (window.innerHeight || document.documentElement.clientHeight) &&
-        rect.right <=
-            (window.innerWidth || document.documentElement.clientWidth)
-    );
-}
+import isElementInViewport from '@/util/is-element-in-viewport';
 
 export default function NotificationsPage() {
     const ref = useRef<HTMLDivElement>(null);
@@ -25,8 +13,6 @@ export default function NotificationsPage() {
     const notifications = data ? data.pages.flat() : [];
 
     function handleUpdate() {
-        console.log(ref.current);
-
         if (ref.current && isElementInViewport(ref.current) && hasNextPage) {
             fetchNextPage();
         }

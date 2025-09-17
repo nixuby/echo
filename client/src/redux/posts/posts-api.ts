@@ -107,8 +107,8 @@ export const postsApi = createApi({
         >({
             infiniteQueryOptions: {
                 initialPageParam: 0,
-                getNextPageParam: (_lastPage, _allPages, lastPageParam) =>
-                    lastPageParam + 1,
+                getNextPageParam: (lastPage, _allPages, lastPageParam) =>
+                    lastPage.length === 10 ? lastPageParam + 1 : null,
                 getPreviousPageParam: (
                     _firstPage,
                     _allPages,
