@@ -12,6 +12,7 @@ import {
     ServerNotification,
 } from '@shared/types.js';
 import {
+    createNotification,
     parseNotificationSettings,
     toClientNotification,
 } from '@/notifications.js';
@@ -384,6 +385,16 @@ usersRouter.post('/follow/:username', async (req, res) => {
                     followsId: userToFollow.id,
                 },
             });
+
+            await createNotification(
+                userToFollow.id,
+                {
+                    type: 'new_follower',
+                    data: { userId: req.user!.id },
+                },
+                tx
+            );
+
             return true;
         }
     });
@@ -391,7 +402,6 @@ usersRouter.post('/follow/:username', async (req, res) => {
     return res.status(200).json(isFollowed);
 });
 
-// TODO: move to "/user/:username" to prevent collision
 usersRouter.get('/user/:username', async (req, res) => {
     const username = req.params.username;
 

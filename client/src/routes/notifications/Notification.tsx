@@ -5,6 +5,7 @@ import {
     ChatBubbleLeftIcon,
     HeartIcon,
     LinkIcon,
+    UserPlusIcon,
 } from '@heroicons/react/20/solid';
 import type {
     ClientNotification,
@@ -86,6 +87,16 @@ export default function Notification({ notification }: NotificationProps) {
                                     </Link>
                                 </div>
                             );
+
+                        case 'new_follower':
+                            return (
+                                <div>
+                                    <NotifUserProfile
+                                        user={notification.data.user}
+                                    />{' '}
+                                    followed you
+                                </div>
+                            );
                     }
                     return null;
                 })()}
@@ -102,6 +113,8 @@ function NotificationIcon({ type }: { type: NotificationType }) {
             return <ChatBubbleLeftIcon className='size-8' />;
         case 'post_shared':
             return <ArrowPathRoundedSquareIcon className='size-8' />;
+        case 'new_follower':
+            return <UserPlusIcon className='size-8' />;
     }
 
     return null;
