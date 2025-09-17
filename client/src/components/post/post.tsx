@@ -63,7 +63,11 @@ export default function Post({
 
     function navigateToUser(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        navigate(`/@${originalPost.author.username}`);
+        const path = location.pathname;
+        const target = `/@${originalPost.author.username}`;
+        if (path === target) return;
+        navigate(target);
+        window.scrollTo(0, 0);
     }
 
     function handleClickMenu(ev: React.MouseEvent<HTMLButtonElement>) {
