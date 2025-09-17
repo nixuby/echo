@@ -1,7 +1,12 @@
 import MediaPreviewDialog from '@/components/dialog/media-preview-dialog';
 import TitleBar from '@/components/layout/titlebar';
 import Button from '@/components/shared/button';
-import { CheckBadgeIcon } from '@heroicons/react/20/solid';
+import {
+    ChatBubbleLeftIcon,
+    CheckBadgeIcon,
+    PencilIcon,
+    UserPlusIcon,
+} from '@heroicons/react/20/solid';
 import type { OtherClientUser } from '@shared/types';
 import { Link } from 'react-router';
 import UserProfileEditDialog from './user-profile-edit-dialog';
@@ -54,15 +59,7 @@ export default function UserProfileHeader({
                     />
                 </div>
             </div>
-            <div className='flex h-14 items-center justify-end px-4'>
-                {you ? (
-                    <Button size='small' onClick={handleClickEdit}>
-                        Edit
-                    </Button>
-                ) : (
-                    <Button size='small'>Follow</Button>
-                )}
-            </div>
+            <div className='h-12' />
             <div className='flex flex-col gap-2 border-b border-gray-800 px-4 py-2'>
                 <div>
                     <div className='flex gap-2'>
@@ -107,6 +104,44 @@ export default function UserProfileHeader({
                         &nbsp;
                         <span className='text-gray-400'>Posts</span>
                     </div>
+                </div>
+                <div className='flex items-center gap-2'>
+                    {you ? (
+                        <>
+                            <Button
+                                size='small'
+                                onClick={handleClickEdit}
+                                className='flex items-center gap-1'
+                            >
+                                <PencilIcon className='size-4' />
+                                <span>Edit</span>
+                            </Button>
+                            <Button
+                                size='small'
+                                className='flex items-center gap-1'
+                            >
+                                <ChatBubbleLeftIcon className='size-4' />
+                                <span>Message</span>
+                            </Button>
+                        </>
+                    ) : (
+                        <>
+                            <Button
+                                size='small'
+                                className='flex items-center gap-1'
+                            >
+                                <UserPlusIcon className='size-4' />
+                                <span>Follow</span>
+                            </Button>
+                            <Button
+                                size='small'
+                                className='flex items-center gap-1'
+                            >
+                                <ChatBubbleLeftIcon className='size-4' />
+                                <span>Message</span>
+                            </Button>
+                        </>
+                    )}
                 </div>
             </div>
         </div>
