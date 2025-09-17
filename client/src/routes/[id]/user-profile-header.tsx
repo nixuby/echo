@@ -12,6 +12,7 @@ import { Link } from 'react-router';
 import UserProfileEditDialog from './user-profile-edit-dialog';
 import env from '@/env';
 import { useDialog } from '@/components/dialog/dialog';
+import { useFollowMutation } from '@/redux/user/users-api';
 
 function formatDate(datestr: string) {
     const date = new Date(datestr);
@@ -32,6 +33,7 @@ export default function UserProfileHeader({
     you,
 }: UserProfileHeaderProps) {
     const dialog = useDialog();
+    const [follow] = useFollowMutation();
 
     function handleClickPfp(ev: React.MouseEvent<HTMLImageElement>) {
         const src = ev.currentTarget.src;
@@ -40,6 +42,10 @@ export default function UserProfileHeader({
 
     function handleClickEdit() {
         dialog.open(<UserProfileEditDialog />);
+    }
+
+    function handleClickFollow() {
+        follow(user.username);
     }
 
     return (
@@ -92,11 +98,17 @@ export default function UserProfileHeader({
                 </div>
                 <div className='flex flex-col gap-2 sm:flex-row sm:gap-4'>
                     <div>
-                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='font-semibold'>
+                            {user.followingCount}
+                        </span>
+                        &nbsp;
                         <span className='text-gray-400'>Following</span>
                     </div>
                     <div>
-                        <span className='font-semibold'>0</span>&nbsp;
+                        <span className='font-semibold'>
+                            {user.followerCount}
+                        </span>
+                        &nbsp;
                         <span className='text-gray-400'>Followers</span>
                     </div>
                     <div>
@@ -126,13 +138,26 @@ export default function UserProfileHeader({
                         </>
                     ) : (
                         <>
-                            <Button
-                                size='small'
-                                className='flex items-center gap-1'
-                            >
-                                <UserPlusIcon className='size-4' />
-                                <span>Follow</span>
-                            </Button>
+                            {user.followedByMe ? (
+                                <Button
+                                    size='small'
+                                    type='secondary'
+                                    onClick={handleClickFollow}
+                                    className='flex items-center gap-1'
+                                >
+                                    <UserPlusIcon className='size-4' />
+                                    <span>Unfollow</span>
+                                </Button>
+                            ) : (
+                                <Button
+                                    size='small'
+                                    onClick={handleClickFollow}
+                                    className='flex items-center gap-1'
+                                >
+                                    <UserPlusIcon className='size-4' />
+                                    <span>Follow</span>
+                                </Button>
+                            )}
                             <Button
                                 size='small'
                                 className='flex items-center gap-1'

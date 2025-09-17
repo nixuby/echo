@@ -18,7 +18,7 @@ export const usersApi = createApi({
     endpoints: (builder) => ({
         // Get user info
         getUser: builder.query<OtherClientUser, string>({
-            query: (id) => `/${id}`,
+            query: (id) => `/user/${id}`,
             providesTags: ['User'],
         }),
 
@@ -93,6 +93,14 @@ export const usersApi = createApi({
                 }
             },
         }),
+
+        follow: builder.mutation<boolean, string>({
+            query: (username) => ({
+                url: `/follow/${username}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -103,4 +111,5 @@ export const {
     useGetNotificationsInfiniteQuery,
     useGetNotificationSettingsQuery,
     useToggleNotificationSettingMutation,
+    useFollowMutation,
 } = usersApi;

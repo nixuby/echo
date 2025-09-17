@@ -16,7 +16,10 @@ export type OtherClientUser = {
     bio: string;
     isVerified: boolean;
     createdAt: string;
+    followerCount: number;
+    followingCount: number;
     postCount: number;
+    followedByMe: boolean;
 };
 
 export type ServerUser = {

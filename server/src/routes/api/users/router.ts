@@ -254,28 +254,185 @@ usersRouter.post('/notification-settings', async (req, res) => {
     return res.status(200).json(result);
 });
 
+async function getFollowers(username: string) {
+    const user = await prisma.user.findUnique({
+        where: {
+            username,
+        },
+        select: {
+            followers: {
+                select: {
+                    follower: {
+                        select: {
+                            username: true,
+                            name: true,
+                            isVerified: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    return user?.followers ?? [];
+}
+
+usersRouter.get('/followers/:username', async (req, res) => {
+    const username = req.params.username;
+    if (!username) {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+    return res.json(await getFollowers(username));
+});
+
+usersRouter.get('/followers', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+    return res.json(await getFollowers(req.user.username));
+});
+
+async function getFollowing(username: string) {
+    const user = await prisma.user.findUnique({
+        where: {
+            username,
+        },
+        select: {
+            following: {
+                select: {
+                    follows: {
+                        select: {
+                            username: true,
+                            name: true,
+                            isVerified: true,
+                        },
+                    },
+                },
+            },
+        },
+    });
+
+    return user?.following ?? [];
+}
+
+usersRouter.get('/following/:username', async (req, res) => {
+    const username = req.params.username;
+    if (!username) {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+    return res.json(await getFollowing(username));
+});
+
+usersRouter.get('/following', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+    return res.json(await getFollowing(req.user.username));
+});
+
+usersRouter.post('/follow/:username', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const usernameToFollow = req.params.username;
+
+    if (!usernameToFollow || typeof usernameToFollow !== 'string') {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+
+    if (usernameToFollow === req.user.username) {
+        return res
+            .status(400)
+            .json({ errors: { root: 'You cannot follow yourself' } });
+    }
+
+    const isFollowed = await prisma.$transaction(async (tx) => {
+        const userToFollow = await tx.user.findUnique({
+            where: { username: usernameToFollow },
+            select: { id: true },
+        });
+
+        if (!userToFollow) {
+            res.status(404).json({ errors: { root: 'User not found' } });
+            return;
+        }
+
+        const alreadyFollowing = await tx.userFollow.findUnique({
+            where: {
+                followerId_followsId: {
+                    followerId: req.user!.id,
+                    followsId: userToFollow.id,
+                },
+            },
+        });
+
+        if (alreadyFollowing) {
+            await tx.userFollow.delete({
+                where: {
+                    followerId_followsId: {
+                        followerId: req.user!.id,
+                        followsId: userToFollow.id,
+                    },
+                },
+            });
+            return false;
+        } else {
+            await tx.userFollow.create({
+                data: {
+                    followerId: req.user!.id,
+                    followsId: userToFollow.id,
+                },
+            });
+            return true;
+        }
+    });
+
+    return res.status(200).json(isFollowed);
+});
+
 // TODO: move to "/user/:username" to prevent collision
-usersRouter.get('/:username', async (req, res) => {
+usersRouter.get('/user/:username', async (req, res) => {
     const username = req.params.username;
 
     if (username.length === 0) {
         return res.status(400).json({ errors: { root: 'Invalid request' } });
     }
 
-    const prUser = await prisma.user.findUnique({
-        where: { username },
-        select: {
-            username: true,
-            name: true,
-            bio: true,
-            isVerified: true,
-            createdAt: true,
-            _count: {
-                select: {
-                    posts: true,
+    const [prUser, followedByMe] = await prisma.$transaction(async (tx) => {
+        const prUser = await tx.user.findUnique({
+            where: { username },
+            select: {
+                id: true,
+                username: true,
+                name: true,
+                bio: true,
+                isVerified: true,
+                createdAt: true,
+                _count: {
+                    select: {
+                        posts: {
+                            where: { type: 'ORIGINAL' },
+                        },
+                        followers: true,
+                        following: true,
+                    },
                 },
             },
-        },
+        });
+
+        const followedByMe = prUser
+            ? await tx.userFollow.findUnique({
+                  where: {
+                      followerId_followsId: {
+                          followerId: req.user!.id,
+                          followsId: prUser.id,
+                      },
+                  },
+              })
+            : false;
+
+        return [prUser, Boolean(followedByMe)];
     });
 
     if (!prUser) {
@@ -288,7 +445,10 @@ usersRouter.get('/:username', async (req, res) => {
         bio: prUser.bio,
         isVerified: prUser.isVerified,
         createdAt: prUser.createdAt.toISOString(),
+        followerCount: prUser._count.followers,
+        followingCount: prUser._count.following,
         postCount: prUser._count.posts,
+        followedByMe: followedByMe,
     } satisfies OtherClientUser);
 });
 
