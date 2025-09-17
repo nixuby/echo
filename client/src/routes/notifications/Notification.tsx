@@ -1,4 +1,3 @@
-import { formatRelativeTime } from '@/components/post/post';
 import env from '@/env';
 import {
     ArrowPathRoundedSquareIcon,
@@ -14,6 +13,7 @@ import type {
 } from '@shared/types';
 import { Link } from 'react-router';
 import clsx from 'clsx/lite';
+import formatRelativeDate from '@/util/format-relative-date';
 
 export type NotificationProps = {
     notification: ClientNotification;
@@ -33,7 +33,7 @@ export default function Notification({ notification }: NotificationProps) {
             </div>
             <div className='flex flex-col'>
                 <div className='text-sm text-gray-400'>
-                    {formatRelativeTime(new Date(notification.createdAt))}
+                    {formatRelativeDate(new Date(notification.createdAt))}
                 </div>
                 {(() => {
                     switch (notification.type) {
