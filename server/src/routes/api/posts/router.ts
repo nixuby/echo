@@ -372,7 +372,7 @@ postsRouter.post('/publish', async (req, res) => {
                 });
             }
 
-            if (reply) {
+            if (reply && parent && parent.author.id !== userId) {
                 await createNotification(
                     parent!.author.id,
                     {
@@ -490,14 +490,16 @@ postsRouter.post('/:id/repost', async (req, res) => {
                 },
             });
 
-            await createNotification(
-                originalPost.author.id,
-                {
-                    type: 'post_shared',
-                    data: { postId: originalId, userId: req.user!.id },
-                },
-                tx
-            );
+            if (originalPost.author.id !== req.user!.id) {
+                await createNotification(
+                    originalPost.author.id,
+                    {
+                        type: 'post_shared',
+                        data: { postId: originalId, userId: req.user!.id },
+                    },
+                    tx
+                );
+            }
 
             return post;
         });
