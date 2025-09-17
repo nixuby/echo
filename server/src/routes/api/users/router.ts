@@ -4,7 +4,13 @@ import path from 'node:path';
 import { existsSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import sharp from 'sharp';
-import { OtherClientUser } from '@shared/types.js';
+import {
+    ClientNotification,
+    OtherClientUser,
+    ServerNotification,
+} from '@shared/types.js';
+import { toClientNotification } from '@/notifications.js';
+import { Prisma } from 'generated/prisma/index.js';
 
 const usersRouter = express.Router();
 
@@ -116,6 +122,72 @@ usersRouter.post('/bio', async (req, res) => {
     return res.status(204).end();
 });
 
+async function toClientNotifications(
+    tx: Prisma.TransactionClient,
+    notifications: Array<ServerNotification>
+): Promise<Array<ClientNotification>> {
+    const clientNotifs: Array<ClientNotification> = [];
+
+    for (const notif of notifications) {
+        const clientNotif = await toClientNotification(tx, notif);
+        clientNotifs.push(clientNotif);
+    }
+
+    return clientNotifs;
+}
+
+usersRouter.get('/notifications', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const page = Number(req.query.page || '0');
+
+    if (isNaN(page) || page < 0) {
+        return res
+            .status(400)
+            .json({ errors: { root: 'Invalid page number' } });
+    }
+
+    const clientNotifs = await prisma.$transaction(async (tx) => {
+        const notificationsRaw = await tx.notification.findMany({
+            where: { userId: req.user!.id },
+            select: {
+                id: true,
+                type: true,
+                data: true,
+                isRead: true,
+                createdAt: true,
+            },
+            orderBy: { createdAt: 'desc' },
+            skip: page * 10,
+            take: 10,
+        });
+
+        for (const notif of notificationsRaw) {
+            notif.data = JSON.parse(notif.data);
+        }
+
+        const notifications =
+            notificationsRaw as any as Array<ServerNotification>;
+
+        const clientNotifs = await toClientNotifications(tx, notifications);
+
+        // mark as read
+
+        await tx.notification.updateMany({
+            where: { id: { in: notifications.map((n) => n.id) } },
+            data: { isRead: true },
+        });
+
+        return clientNotifs;
+    });
+
+    res.json(clientNotifs);
+});
+
+export default usersRouter;
+
 usersRouter.get('/:username', async (req, res) => {
     const username = req.params.username;
 
@@ -152,5 +224,3 @@ usersRouter.get('/:username', async (req, res) => {
         postCount: prUser._count.posts,
     } satisfies OtherClientUser);
 });
-
-export default usersRouter;

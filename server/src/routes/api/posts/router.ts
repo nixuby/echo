@@ -5,10 +5,50 @@ import { Prisma } from 'generated/prisma/index.js';
 import sharp from 'sharp';
 import ffmpeg from 'fluent-ffmpeg';
 import fs from 'node:fs/promises';
+import { createNotification } from '@/notifications.js';
 
 const postsRouter = express.Router();
 
-const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
+type SafePostSelect = {
+    id: true;
+    type: true;
+    author: {
+        select: {
+            name: true;
+            username: true;
+            isVerified: true;
+        };
+    };
+    content: true;
+    likeCount: true;
+    replyCount: true;
+    repostCount: true;
+    createdAt: true;
+    updatedAt: true;
+    likes:
+        | false
+        | {
+              where: { userId: string };
+              select: { id: true };
+          };
+    parentId: boolean;
+    parent: false | { select: SafePostSelect };
+    attachments: { select: { id: true; type: true } };
+    _count:
+        | false
+        | {
+              select: {
+                  children: {
+                      where: { type: 'REPOST'; userId: string };
+                  };
+              };
+          };
+};
+
+const SAFE_POST_SELECT = (
+    userId?: string,
+    withParent?: boolean
+): SafePostSelect => ({
     id: true,
     type: true,
     author: {
@@ -30,7 +70,7 @@ const SAFE_POST_SELECT = (userId?: string, withParent?: boolean): any => ({
               select: { id: true },
           }
         : false,
-    parentId: withParent,
+    parentId: withParent ?? false,
     parent: withParent
         ? {
               select: SAFE_POST_SELECT(userId, false),
@@ -291,7 +331,11 @@ postsRouter.post('/publish', async (req, res) => {
               where: {
                   id: parentId,
               },
-              select: { id: true, type: true },
+              select: {
+                  id: true,
+                  type: true,
+                  author: { select: { id: true } },
+              },
           })
         : null;
 
@@ -317,7 +361,7 @@ postsRouter.post('/publish', async (req, res) => {
                 select: SAFE_POST_SELECT(userId, false),
             });
 
-            const postId = post.id as unknown as string;
+            const postId = post.id;
 
             await processAttachments(tx, postId, attachments);
 
@@ -327,6 +371,18 @@ postsRouter.post('/publish', async (req, res) => {
                     data: { replyCount: { increment: 1 } },
                 });
             }
+
+            if (reply) {
+                await createNotification(
+                    parent!.author.id,
+                    {
+                        type: 'post_replied',
+                        data: { postId, userId },
+                    },
+                    tx
+                );
+            }
+
             return [post];
         });
 
@@ -362,6 +418,11 @@ postsRouter.post('/:id/repost', async (req, res) => {
         select: {
             id: true,
             type: true,
+            author: {
+                select: {
+                    id: true,
+                },
+            },
             _count: {
                 select: {
                     children: {
@@ -409,27 +470,37 @@ postsRouter.post('/:id/repost', async (req, res) => {
         return res.status(204);
     } else {
         // Create the repost
-        const post = (
-            await prisma.$transaction([
-                prisma.post.create({
-                    data: {
-                        type: 'REPOST',
-                        author: { connect: { id: req.user.id } },
-                        content: '<repost>',
-                        parent: { connect: { id: originalId } },
-                    },
-                    select: SAFE_POST_SELECT(req.user?.id, true),
-                }),
-                prisma.post.update({
-                    where: {
-                        id: originalId,
-                    },
-                    data: {
-                        repostCount: { increment: 1 },
-                    },
-                }),
-            ])
-        )[0];
+        const post = await prisma.$transaction(async (tx) => {
+            const post = await tx.post.create({
+                data: {
+                    type: 'REPOST',
+                    author: { connect: { id: req.user!.id } },
+                    content: '<repost>',
+                    parent: { connect: { id: originalId } },
+                },
+                select: SAFE_POST_SELECT(req.user?.id, true),
+            });
+
+            await tx.post.update({
+                where: {
+                    id: originalId,
+                },
+                data: {
+                    repostCount: { increment: 1 },
+                },
+            });
+
+            await createNotification(
+                originalPost.author.id,
+                {
+                    type: 'post_shared',
+                    data: { postId: originalId, userId: req.user!.id },
+                },
+                tx
+            );
+
+            return post;
+        });
 
         return res.status(201).json(toClientPost(post));
     }
@@ -447,6 +518,12 @@ postsRouter.post('/:id/like', async (req, res) => {
         select: {
             id: true,
             type: true,
+            author: {
+                select: {
+                    id: true,
+                    username: true,
+                },
+            },
             likes: {
                 where: { userId: req.user.id },
                 select: { id: true },
@@ -493,6 +570,14 @@ postsRouter.post('/:id/like', async (req, res) => {
             ])
         )[1].likeCount;
         likedByMe = true;
+
+        // Create notification for the post author
+        if (post.author.id !== req.user.id) {
+            await createNotification(post.author.id, {
+                type: 'post_liked',
+                data: { postId, userId: req.user.id },
+            });
+        }
     }
 
     return res.status(200).json({ likeCount, likedByMe });

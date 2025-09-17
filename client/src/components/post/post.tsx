@@ -23,7 +23,7 @@ const dtf = new Intl.DateTimeFormat('en-US');
 // Less than a day ago -> "x hours ago"
 // Less than a month ago -> "x days ago"
 // Otherwise -> "MM/DD/YY"
-function formatRelativeTime(date: Date) {
+export function formatRelativeTime(date: Date) {
     const MINUTE_MS = 60_000;
     const HOUR_MS = 3_600_000;
     const DAY_MS = 86_400_000;

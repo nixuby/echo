@@ -1,4 +1,4 @@
-import { type ServerUser } from '@shared/types.js';
+import { ClientUser, type ServerUser } from '@shared/types.js';
 
 declare global {
     namespace Express {
@@ -7,11 +7,10 @@ declare global {
 }
 
 // Safe user
-export type User = ServerUser;
+export type User = ClientUser;
 
 export function toSafeUser(user: any): User {
     return {
-        id: user.id,
         email: user.email,
         name: user.name,
         username: user.username,
@@ -22,5 +21,9 @@ export function toSafeUser(user: any): User {
                 : typeof user.emailVerifiedAt === 'string'
                 ? user.emailVerifiedAt
                 : user.emailVerifiedAt.toISOString(),
+        bio: user.bio,
+        isVerified: user.isVerified,
+        notificationCount: user.notificationCount ?? 0,
+        createdAt: user.createdAt.toISOString(),
     };
 }

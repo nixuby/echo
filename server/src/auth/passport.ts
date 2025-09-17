@@ -6,7 +6,14 @@ passport.serializeUser((user, done) => done(null, user.id));
 
 passport.deserializeUser(async (id: string, done) => {
     try {
-        const user = await prisma.user.findUnique({ where: { id } });
+        const user = await prisma.user.findUnique({
+            where: { id },
+            include: {
+                _count: {
+                    select: { notifications: { where: { isRead: false } } },
+                },
+            },
+        });
         if (!user) return done(null, false);
         return done(null, {
             id: user.id,
@@ -15,6 +22,10 @@ passport.deserializeUser(async (id: string, done) => {
             username: user.username,
             isEmailVerified: user.isEmailVerified,
             emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+            bio: user.bio,
+            isVerified: user.isVerified,
+            createdAt: user.createdAt.toISOString(),
+            notificationCount: user._count.notifications,
         });
     } catch (e) {
         done(e as Error);

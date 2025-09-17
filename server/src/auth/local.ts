@@ -9,7 +9,14 @@ export const localStrategy = new passportLocal.Strategy(
     },
     async (username, password, done) => {
         try {
-            const user = await prisma.user.findUnique({ where: { username } });
+            const user = await prisma.user.findUnique({
+                where: { username },
+                include: {
+                    _count: {
+                        select: { notifications: { where: { isRead: false } } },
+                    },
+                },
+            });
             if (!user || !user.password) {
                 return done(null, false, {
                     message: 'Invalid username or password',
@@ -28,6 +35,10 @@ export const localStrategy = new passportLocal.Strategy(
                 username: user.username,
                 isEmailVerified: user.isEmailVerified,
                 emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
+                bio: user.bio,
+                isVerified: user.isVerified,
+                createdAt: user.createdAt.toISOString(),
+                notificationCount: user._count.notifications,
             });
         } catch (e) {
             return done(e as Error, false, { message: 'Server error' });

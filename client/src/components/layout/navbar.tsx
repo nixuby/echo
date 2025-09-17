@@ -41,8 +41,20 @@ export default function NavBar({ mobile }: NavBarProps) {
                         to='/notifications'
                         active={pathname.startsWith('/notifications')}
                     >
-                        <BellIcon className='size-6' />
-                        <span>Notifications</span>
+                        <div className='relative'>
+                            <BellIcon className='size-6' />
+                            {user?.notificationCount &&
+                            user.notificationCount > 0 ? (
+                                <div className='absolute -top-0.5 -right-0.5 size-2 rounded-full bg-amber-500' />
+                            ) : null}
+                        </div>
+                        <span>
+                            Notifications
+                            {user?.notificationCount &&
+                            user.notificationCount > 0 ? (
+                                <>&nbsp;({user?.notificationCount})</>
+                            ) : null}
+                        </span>
                     </NavBarLink>
                     <NavBarLink
                         to='/messages'

@@ -2,6 +2,7 @@ import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type { ClientUser } from '@shared/types';
 import { postsApi } from '../posts/posts-api';
+import { usersApi } from '../user/users-api';
 
 export const authApi = createApi({
     reducerPath: 'authApi',
@@ -9,9 +10,11 @@ export const authApi = createApi({
         baseUrl: `${env.API_URL}/auth/`,
         credentials: 'include',
     }),
+    tagTypes: ['Me'],
     endpoints: (builder) => ({
         me: builder.query<{ user: ClientUser }, void>({
             query: () => 'me',
+            providesTags: ['Me'],
         }),
 
         signIn: builder.mutation<
@@ -24,6 +27,9 @@ export const authApi = createApi({
                     await queryFulfilled;
                     dispatch(
                         postsApi.util.invalidateTags(['PostFeed', 'Post']),
+                    );
+                    dispatch(
+                        usersApi.util.invalidateTags(['User', 'Notifications']),
                     );
                 } catch {}
             },
@@ -48,6 +54,9 @@ export const authApi = createApi({
                     await queryFulfilled;
                     dispatch(
                         postsApi.util.invalidateTags(['PostFeed', 'Post']),
+                    );
+                    dispatch(
+                        usersApi.util.invalidateTags(['User', 'Notifications']),
                     );
                 } catch {}
             },

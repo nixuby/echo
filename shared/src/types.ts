@@ -6,6 +6,7 @@ export type ClientUser = {
     isEmailVerified: boolean;
     emailVerifiedAt: string | null;
     isVerified: boolean;
+    notificationCount: number;
     createdAt: string;
 };
 
@@ -27,10 +28,11 @@ export type ServerUser = {
     isEmailVerified: boolean;
     emailVerifiedAt: string | null; // Date string
     isVerified: boolean;
+    notificationCount: number;
     createdAt: string;
 };
 
-//
+// Posts
 
 export type PostType = 'ORIGINAL' | 'REPLY' | 'REPOST';
 
@@ -59,3 +61,59 @@ export type PostAttachment = {
     id: string;
     type: string; // MIME type
 };
+
+// Notifications
+
+export type NotificationUser = {
+    name: string | null;
+    username: string;
+    isVerified: boolean;
+};
+
+export type ServerNotification =
+    | {
+          id: string;
+          type: 'new_follower';
+          data: {
+              userId: string;
+          };
+          isRead: boolean;
+          createdAt: Date;
+      }
+    | {
+          id: string;
+          type: 'post_liked' | 'post_replied' | 'post_shared';
+          data: {
+              postId: string;
+              userId: string;
+          };
+          isRead: boolean;
+          createdAt: Date;
+      };
+
+export type ClientNotification =
+    | {
+          id: string;
+          type: 'new_follower';
+          data: {
+              user: NotificationUser;
+          };
+          isRead: boolean;
+          createdAt: string;
+      }
+    | {
+          id: string;
+          type: 'post_liked' | 'post_replied' | 'post_shared';
+          data: {
+              postId: string;
+              user: NotificationUser;
+          };
+          isRead: boolean;
+          createdAt: string;
+      };
+
+export type NotificationType = ServerNotification['type'];
+
+export const NOTIFICATION_TYPES: NotificationType[] = ['new_follower', 'post_liked', 'post_replied'];
+
+export type NotificationSettings = Record<NotificationType, boolean>;
