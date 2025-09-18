@@ -409,7 +409,7 @@ usersRouter.get('/user/:username', async (req, res) => {
         return res.status(400).json({ errors: { root: 'Invalid request' } });
     }
 
-    const [prUser, followedByMe] = await prisma.$transaction(async (tx) => {
+    const [prUser, followedByMe] = (await prisma.$transaction(async (tx) => {
         const prUser = await tx.user.findUnique({
             where: { username },
             select: {
@@ -443,7 +443,22 @@ usersRouter.get('/user/:username', async (req, res) => {
             : false;
 
         return [prUser, Boolean(followedByMe)];
-    });
+    })) as [
+        {
+            id: string;
+            username: string;
+            name: string | null;
+            bio: string;
+            createdAt: Date;
+            isVerified: boolean;
+            _count: {
+                posts: number;
+                following: number;
+                followers: number;
+            };
+        } | null,
+        boolean
+    ];
 
     if (!prUser) {
         return res.status(404).json({ errors: { root: 'User not found' } });
@@ -460,6 +475,225 @@ usersRouter.get('/user/:username', async (req, res) => {
         postCount: prUser._count.posts,
         followedByMe: followedByMe,
     } satisfies OtherClientUser);
+});
+
+usersRouter.get('/search', async (req, res) => {
+    const query = req.query.q;
+
+    if (!query || typeof query !== 'string' || query.length < 3) {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+
+    const users = await prisma.user.findMany({
+        where: {
+            OR: [
+                { username: { contains: query } },
+                { name: { contains: query } },
+            ],
+        },
+        select: {
+            username: true,
+            name: true,
+            isVerified: true,
+        },
+    });
+
+    return res.json(users);
+});
+
+usersRouter.get('/chats', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const chats = await prisma.chat.findMany({
+        where: {
+            participants: { some: { userId: req.user.id } },
+            messages: { some: {} },
+        },
+        select: {
+            id: true,
+            participants: {
+                select: {
+                    user: {
+                        select: {
+                            username: true,
+                            name: true,
+                            isVerified: true,
+                        },
+                    },
+                },
+                where: { userId: { not: req.user.id } },
+                take: 1,
+            },
+        },
+    });
+
+    res.json(
+        chats.map((chat) => ({
+            id: chat.id,
+            user: chat.participants[0].user,
+        }))
+    );
+});
+
+usersRouter.post('/chat/new/:username', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    // Create a chat with the user if it doesn't exist
+
+    const usernameToChat = req.params.username;
+
+    if (!usernameToChat || typeof usernameToChat !== 'string') {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+
+    if (usernameToChat === req.user.username) {
+        return res
+            .status(400)
+            .json({ errors: { root: 'You cannot chat with yourself' } });
+    }
+
+    const chatId = await prisma.$transaction(async (tx) => {
+        const userToChat = await tx.user.findUnique({
+            where: { username: usernameToChat },
+            select: { id: true },
+        });
+
+        if (!userToChat) {
+            res.status(404).json({ errors: { root: 'User not found' } });
+            return;
+        }
+
+        const existingChat = await tx.chatParticipant.findMany({
+            where: {
+                userId: { in: [req.user!.id, userToChat.id] },
+                chat: {
+                    participants: {
+                        every: {
+                            userId: { in: [req.user!.id, userToChat.id] },
+                        },
+                    },
+                },
+            },
+            select: { chatId: true },
+        });
+
+        if (existingChat.length >= 2) {
+            return existingChat[0].chatId;
+        }
+
+        const newChat = await tx.chat.create({
+            data: {
+                participants: {
+                    create: [
+                        { userId: req.user!.id },
+                        { userId: userToChat.id },
+                    ],
+                },
+            },
+            select: { id: true },
+        });
+
+        return newChat.id;
+    });
+
+    if (chatId) res.json(chatId);
+});
+
+usersRouter.post('/chat/:chatId/', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const chatId = req.params.chatId;
+
+    if (!chatId || typeof chatId !== 'string') {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+
+    const content = req.body.content;
+
+    if (!content || typeof content !== 'string' || content.length === 0) {
+        return res.status(400).json({ errors: { root: 'Invalid message' } });
+    }
+
+    const message = await prisma.$transaction(async (tx) => {
+        const isParticipant = await tx.chatParticipant.findUnique({
+            where: {
+                chatId_userId: {
+                    chatId,
+                    userId: req.user!.id,
+                },
+            },
+        });
+
+        if (!isParticipant) {
+            res.status(403).json({ errors: { root: 'Forbidden' } });
+            return;
+        }
+
+        await tx.chatMessage.create({
+            data: {
+                chatId,
+                senderId: req.user!.id,
+                content,
+            },
+        });
+    });
+
+    return res.status(204).end();
+});
+
+usersRouter.get('/chat/:chatId/messages', async (req, res) => {
+    if (!req.user) {
+        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+    }
+
+    const chatId = req.params.chatId;
+
+    if (!chatId || typeof chatId !== 'string') {
+        return res.status(400).json({ errors: { root: 'Invalid request' } });
+    }
+
+    const messages = await prisma.$transaction(async (tx) => {
+        const isParticipant = await tx.chatParticipant.findUnique({
+            where: {
+                chatId_userId: {
+                    chatId,
+                    userId: req.user!.id,
+                },
+            },
+        });
+
+        if (!isParticipant) {
+            res.status(403).json({ errors: { root: 'Forbidden' } });
+            return;
+        }
+
+        const messages = await tx.chatMessage.findMany({
+            where: { chatId },
+            select: {
+                id: true,
+                sender: {
+                    select: {
+                        id: true,
+                        name: true,
+                        username: true,
+                        isVerified: true,
+                    },
+                },
+                content: true,
+                createdAt: true,
+            },
+        });
+
+        return messages;
+    });
+
+    if (messages) res.json(messages);
 });
 
 export default usersRouter;

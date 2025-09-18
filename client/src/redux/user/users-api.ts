@@ -14,7 +14,7 @@ export const usersApi = createApi({
         baseUrl: `${env.API_URL}/users`,
         credentials: 'include',
     }),
-    tagTypes: ['User', 'Notifications'],
+    tagTypes: ['User', 'Notifications', 'Chat'],
     endpoints: (builder) => ({
         // Get user info
         getUser: builder.query<OtherClientUser, string>({
@@ -101,6 +101,71 @@ export const usersApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        search: builder.query<
+            Array<{
+                name: string | null;
+                username: string;
+                isVerified: boolean;
+            }>,
+            string
+        >({
+            query: (q) => ({
+                url: '/search',
+                params: { q },
+            }),
+        }),
+
+        getChats: builder.query<
+            Array<{
+                id: string;
+                user: {
+                    name: string | null;
+                    username: string;
+                    isVerified: boolean;
+                };
+            }>,
+            void
+        >({
+            query: () => '/chats',
+            providesTags: ['User', 'Chat'],
+        }),
+
+        createChat: builder.mutation<string, string>({
+            query: (username) => ({
+                url: `/chat/new/${username}`,
+                method: 'POST',
+            }),
+            invalidatesTags: ['Chat'],
+        }),
+
+        sendMessage: builder.mutation<
+            void,
+            { chatId: string; content: string }
+        >({
+            query: ({ chatId, content }) => ({
+                url: `/chat/${chatId}`,
+                method: 'POST',
+                body: { content },
+            }),
+            invalidatesTags: ['Chat'],
+        }),
+
+        getMessages: builder.query<
+            Array<{
+                id: string;
+                sender: {
+                    name: string | null;
+                    username: string;
+                    isVerified: boolean;
+                };
+                content: string;
+                createdAt: string;
+            }>,
+            string
+        >({
+            query: (chatId) => `/chat/${chatId}/messages`,
+        }),
     }),
 });
 
@@ -112,4 +177,9 @@ export const {
     useGetNotificationSettingsQuery,
     useToggleNotificationSettingMutation,
     useFollowMutation,
+    useSearchQuery,
+    useGetChatsQuery,
+    useCreateChatMutation,
+    useSendMessageMutation,
+    useGetMessagesQuery,
 } = usersApi;

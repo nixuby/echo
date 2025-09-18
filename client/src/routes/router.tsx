@@ -13,6 +13,9 @@ import NamePage from './settings/account-info/name/page';
 import UserProfilePage from './[id]/page';
 import NotificationsPage from './notifications/page';
 import NotificationsSettingsPage from './settings/notifications/page';
+import MessagePage from './message/page';
+import NewChatPage from './message/new/page';
+import ChatPage from './chat/[id]';
 
 const router = createBrowserRouter([
     {
@@ -58,6 +61,18 @@ const router = createBrowserRouter([
     {
         path: 'notifications',
         Component: NotificationsPage,
+    },
+    {
+        path: 'message',
+        Component: MessagePage,
+    },
+    {
+        path: 'message/new',
+        Component: NewChatPage,
+    },
+    {
+        path: 'chat/:id',
+        Component: ChatPage,
     },
     {
         path: 'post/:id',

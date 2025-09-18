@@ -57,8 +57,8 @@ export default function NavBar({ mobile }: NavBarProps) {
                         </span>
                     </NavBarLink>
                     <NavBarLink
-                        to='/messages'
-                        active={pathname.startsWith('/messages')}
+                        to='/message'
+                        active={pathname.startsWith('/message')}
                     >
                         <ChatBubbleLeftIcon className='size-6' />
                         <span>Messages</span>

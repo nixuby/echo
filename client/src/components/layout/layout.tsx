@@ -1,14 +1,16 @@
 import Header from './header';
 import MobileNavBar from './mobile-navbar';
 import NavBar from './navbar';
+import clsx from 'clsx/lite';
 
 export type LayoutProps = {
     title?: string; // Page title
     children?: React.ReactNode;
+    className?: string;
 };
 
 // Default layout
-export default function Layout({ title, children }: LayoutProps) {
+export default function Layout({ title, children, className }: LayoutProps) {
     return (
         <>
             <title>{title ? `${title} — Echo` : 'Echo'}</title>
@@ -17,7 +19,9 @@ export default function Layout({ title, children }: LayoutProps) {
                     <Header />
                     <div className='flex grow items-start'>
                         <NavBar />
-                        <main className='grow'>{children}</main>
+                        <main className={clsx('grow', className)}>
+                            {children}
+                        </main>
                     </div>
                     <MobileNavBar />
                 </div>

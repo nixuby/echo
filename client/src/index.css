@@ -60,3 +60,7 @@
         transform: translate(var(--target-x), var(--target-y)) scale(0.1);
     }
 }
+
+._triangle-clip {
+    clip-path: polygon(0% 0%, 100% 0%, 100% 100%);
+}

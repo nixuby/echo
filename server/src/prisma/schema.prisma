@@ -56,6 +56,9 @@ model User {
     following UserFollow[] @relation("UserFollows")
     followers UserFollow[] @relation("UserFollowers")
 
+    chats    ChatParticipant[]
+    messages ChatMessage[]
+
     @@unique([provider, providerId])
 }
 
@@ -125,4 +128,32 @@ model UserFollow {
     createdAt  DateTime @default(now())
 
     @@unique([followerId, followsId])
+}
+
+model Chat {
+    id           String            @id @default(uuid())
+    createdAt    DateTime          @default(now())
+    participants ChatParticipant[]
+    messages     ChatMessage[]
+}
+
+model ChatParticipant {
+    id     String @id @default(uuid())
+    chat   Chat   @relation(fields: [chatId], references: [id])
+    chatId String
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    @@unique([chatId, userId])
+}
+
+model ChatMessage {
+    id        String   @id @default(uuid())
+    chat      Chat     @relation(fields: [chatId], references: [id])
+    chatId    String
+    sender    User     @relation(fields: [senderId], references: [id])
+    senderId  String
+    content   String
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
 }

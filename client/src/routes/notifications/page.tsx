@@ -4,6 +4,7 @@ import { useGetNotificationsInfiniteQuery } from '@/redux/user/users-api';
 import Notification from './Notification';
 import { useEffect, useRef } from 'react';
 import isElementInViewport from '@/util/is-element-in-viewport';
+import TitleBar from '@/components/layout/titlebar';
 
 export default function NotificationsPage() {
     const ref = useRef<HTMLDivElement>(null);
@@ -30,6 +31,7 @@ export default function NotificationsPage() {
         <ProtectedRoute>
             <Layout title='Notifications'>
                 <div className='flex flex-col'>
+                    <TitleBar>Notification</TitleBar>
                     {notifications.map((notification) => (
                         <Notification
                             key={notification.id}
