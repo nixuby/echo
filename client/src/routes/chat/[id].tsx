@@ -37,21 +37,23 @@ export default function ChatPage() {
         <ProtectedRoute>
             <Layout
                 title='Chat'
-                className='flex flex-col justify-between self-stretch'
+                className='relative flex h-[calc(100vh_-_3rem)] flex-col justify-between'
             >
-                <div className='flex grow flex-col border-b border-gray-800'>
-                    <TitleBar>Chat</TitleBar>
-                    <div className='flex flex-col gap-2 px-4 py-2'>
-                        {data?.map((msg) => (
-                            <Message
-                                you={msg.sender.username === user.username}
-                                key={msg.id}
-                                {...msg}
-                            />
-                        ))}
+                <TitleBar>Chat</TitleBar>
+                <div className='grow overflow-y-auto'>
+                    <div className='flex grow flex-col'>
+                        <div className='flex flex-col gap-2 px-4 py-2'>
+                            {data?.map((msg) => (
+                                <Message
+                                    you={msg.sender.username === user.username}
+                                    key={msg.id}
+                                    {...msg}
+                                />
+                            ))}
+                        </div>
                     </div>
                 </div>
-                <div className='flex gap-2 px-4 py-2'>
+                <div className='sticky bottom-0 left-0 flex w-full gap-2 border-t border-gray-800 bg-gray-950 px-4 py-2'>
                     <TextBox
                         label='Message'
                         value={input}
