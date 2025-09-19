@@ -1,14 +1,14 @@
 import { useAppSelector } from '@/redux/hooks';
 import { useGetMessagesQuery } from '@/redux/user/users-api';
 import Message from './message';
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 
 export type ChatProps = {
+    ref: React.RefObject<HTMLDivElement | null>;
     chatId: string;
 };
 
-export default function Chat({ chatId }: ChatProps) {
-    const ref = useRef<HTMLDivElement>(null);
+export default function Chat({ ref, chatId }: ChatProps) {
     const user = useAppSelector((s) => s.auth.user);
     const { data } = useGetMessagesQuery(chatId ?? '');
 

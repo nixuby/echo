@@ -636,16 +636,28 @@ usersRouter.post('/chat/:chatId/', async (req, res) => {
             return;
         }
 
-        await tx.chatMessage.create({
+        return await tx.chatMessage.create({
             data: {
                 chatId,
                 senderId: req.user!.id,
                 content,
             },
+            select: {
+                id: true,
+                sender: {
+                    select: {
+                        name: true,
+                        username: true,
+                        isVerified: true,
+                    },
+                },
+                content: true,
+                createdAt: true,
+            },
         });
     });
 
-    return res.status(204).end();
+    return res.json(message);
 });
 
 usersRouter.get('/chat/:chatId/messages', async (req, res) => {

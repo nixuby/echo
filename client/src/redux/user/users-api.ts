@@ -14,7 +14,7 @@ export const usersApi = createApi({
         baseUrl: `${env.API_URL}/users`,
         credentials: 'include',
     }),
-    tagTypes: ['User', 'Notifications', 'Chat'],
+    tagTypes: ['User', 'Notifications', 'ChatList'],
     endpoints: (builder) => ({
         // Get user info
         getUser: builder.query<OtherClientUser, string>({
@@ -128,7 +128,7 @@ export const usersApi = createApi({
             void
         >({
             query: () => '/chats',
-            providesTags: ['User', 'Chat'],
+            providesTags: ['User', 'ChatList'],
         }),
 
         createChat: builder.mutation<string, string>({
@@ -136,11 +136,20 @@ export const usersApi = createApi({
                 url: `/chat/new/${username}`,
                 method: 'POST',
             }),
-            invalidatesTags: ['Chat'],
+            invalidatesTags: ['ChatList'],
         }),
 
         sendMessage: builder.mutation<
-            void,
+            {
+                id: string;
+                sender: {
+                    name: string | null;
+                    username: string;
+                    isVerified: boolean;
+                };
+                content: string;
+                createdAt: string;
+            },
             { chatId: string; content: string }
         >({
             query: ({ chatId, content }) => ({
@@ -148,7 +157,58 @@ export const usersApi = createApi({
                 method: 'POST',
                 body: { content },
             }),
-            invalidatesTags: ['Chat'],
+            onQueryStarted: async (
+                { chatId, content },
+                { dispatch, getState, queryFulfilled },
+            ) => {
+                // get user
+                const user = authApi.endpoints.me.select()(getState() as any)
+                    .data?.user!;
+
+                const tempId =
+                    'temp-id-' + Math.random().toString(36).substring(2, 15);
+
+                const patch = dispatch(
+                    usersApi.util.updateQueryData(
+                        'getMessages',
+                        chatId,
+                        (draft) => {
+                            draft.push({
+                                id: tempId,
+                                sender: {
+                                    name: user.name,
+                                    username: user.username,
+                                    isVerified: user.isVerified,
+                                },
+                                content,
+                                createdAt: new Date().toISOString(),
+                            });
+                        },
+                    ),
+                );
+
+                try {
+                    const res = await queryFulfilled;
+                    if (res.data) {
+                        dispatch(
+                            usersApi.util.updateQueryData(
+                                'getMessages',
+                                chatId,
+                                (draft) => {
+                                    const msg = draft.find(
+                                        (m) => m.id === tempId,
+                                    );
+                                    if (msg) {
+                                        msg.id = res.data.id;
+                                    }
+                                },
+                            ),
+                        );
+                    }
+                } catch {
+                    patch.undo();
+                }
+            },
         }),
 
         getMessages: builder.query<

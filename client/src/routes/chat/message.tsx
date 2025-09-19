@@ -17,12 +17,14 @@ type MessageProps = {
 
 export default function Message({
     you,
+    id,
     sender,
     content,
     createdAt,
 }: MessageProps) {
     return (
         <div
+            id={id}
             className={clsx(
                 'flex w-full max-w-3/4 gap-5',
                 you ? 'flex-row-reverse self-end' : 'self-start',
