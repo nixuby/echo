@@ -431,16 +431,17 @@ usersRouter.get('/user/:username', async (req, res) => {
             },
         });
 
-        const followedByMe = prUser
-            ? await tx.userFollow.findUnique({
-                  where: {
-                      followerId_followsId: {
-                          followerId: req.user!.id,
-                          followsId: prUser.id,
+        const followedByMe =
+            req.user && prUser
+                ? await tx.userFollow.findUnique({
+                      where: {
+                          followerId_followsId: {
+                              followerId: req.user.id,
+                              followsId: prUser.id,
+                          },
                       },
-                  },
-              })
-            : false;
+                  })
+                : false;
 
         return [prUser, Boolean(followedByMe)];
     })) as [
