@@ -40,7 +40,7 @@ export default function ChatPage() {
                 className='relative flex h-[calc(100vh_-_3rem)] flex-col justify-between'
             >
                 <TitleBar>Chat</TitleBar>
-                <div className='grow overflow-y-auto'>
+                <div className='_scrollbar-thin grow overflow-y-auto'>
                     <div className='flex grow flex-col'>
                         <div className='flex flex-col gap-2 px-4 py-2'>
                             {data?.map((msg) => (
