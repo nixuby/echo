@@ -1,0 +1,30 @@
+import Button from '@/components/shared/button';
+import TextBox from '@/components/shared/textbox';
+import { useSendMessageMutation } from '@/redux/user/users-api';
+import { useState } from 'react';
+
+export type CreateMessageProps = {
+    chatId: string;
+};
+
+export default function CreateMessage({ chatId }: CreateMessageProps) {
+    const [sendMessage] = useSendMessageMutation();
+    const [input, setInput] = useState('');
+
+    function handleClick() {
+        if (!chatId) return;
+        setInput('');
+        sendMessage({ chatId, content: input });
+    }
+
+    function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
+        setInput(ev.target.value);
+    }
+
+    return (
+        <div className='sticky bottom-0 left-0 flex w-full gap-2 border-t border-gray-800 bg-gray-950 px-4 py-2'>
+            <TextBox label='Message' value={input} onChange={handleChange} />
+            <Button onClick={handleClick}>Send</Button>
+        </div>
+    );
+}
