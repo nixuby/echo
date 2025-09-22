@@ -10,8 +10,11 @@ function need(envname: string, defaultValue?: string): string {
 }
 
 const ENV = {
+    HOST: need('HOST'),
+    PORT: Number(need('PORT', '5179')) || 5179,
     PW_HASH_SEED: need('PW_HASH_SEED'),
     SESSION_SECRET: need('SESSION_SECRET'),
+    CORS_ORIGIN: need('CORS_ORIGIN'),
 } as const;
 
 export default ENV;
