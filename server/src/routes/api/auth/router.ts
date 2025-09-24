@@ -78,7 +78,7 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     const safeUser = toSafeUser(user);
 
-    req.login(safeUser, (err2) => {
+    req.login(user as any, (err2) => {
         if (err2)
             return res
                 .status(500)
