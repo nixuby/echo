@@ -10,28 +10,26 @@ export type ChatProps = {
 
 export default function Chat({ ref, chatId }: ChatProps) {
     const user = useAppSelector((s) => s.auth.user);
-    const { data } = useGetMessagesQuery(chatId ?? '');
-
-    const messagesLoaded = !!data;
+    const { data, isSuccess } = useGetMessagesQuery(chatId ?? '');
 
     useEffect(() => {
-        ref.current?.scrollTo(0, ref.current.scrollHeight);
-    }, [messagesLoaded]);
+        if (isSuccess) ref.current?.scrollTo(0, ref.current.scrollHeight);
+    }, [isSuccess, data]);
 
     return (
-        <div ref={ref} className='_scrollbar-thin grow overflow-y-auto'>
-            <div className='flex grow flex-col'>
-                <div className='flex flex-col gap-2 px-4 py-2'>
-                    {messagesLoaded &&
-                        data.map((msg) => (
-                            <Message
-                                you={msg.sender.username === user?.username}
-                                key={msg.id}
-                                {...msg}
-                            />
-                        ))}
-                </div>
-            </div>
+        <div
+            ref={ref}
+            className='_scrollbar-thin flex grow flex-col gap-2 overflow-y-auto px-4 py-2'
+        >
+            <div className='grow' />
+            {isSuccess &&
+                data.map((msg) => (
+                    <Message
+                        you={msg.sender.username === user?.username}
+                        key={msg.id}
+                        {...msg}
+                    />
+                ))}
         </div>
     );
 }
