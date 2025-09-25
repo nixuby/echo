@@ -10,6 +10,7 @@ import { setUser } from '@/redux/auth/auth-slice';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { changeEmailFormSchema } from '@shared/validation';
 import TitleBar from '@/components/layout/titlebar';
+import { Link } from 'react-router';
 
 type ChangeEmailForm = {
     email: string;
@@ -19,7 +20,7 @@ export default function EmailPage() {
     const dispatch = useAppDispatch();
     const user = useAppSelector((s) => s.auth.user)!;
     const [changeEmail, { isLoading }] = useChangeEmailMutation();
-    const [success, setSuccess] = useState<boolean>(false);
+    const [success, setSuccess] = useState<[boolean, string]>([false, '']);
 
     const {
         register,
@@ -39,8 +40,8 @@ export default function EmailPage() {
     function handleSubmit(data: ChangeEmailForm) {
         changeEmail(data)
             .unwrap()
-            .then(({ user }) => {
-                setSuccess(true);
+            .then(({ user, token }) => {
+                setSuccess([true, token]);
                 dispatch(setUser(user));
             })
             .catch((res) => {
@@ -82,16 +83,22 @@ export default function EmailPage() {
                             label='Email'
                             {...register('email')}
                             error={errors.email?.message}
-                            disabled={success}
+                            disabled={success[0]}
                         />
                         {errors.root && (
                             <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
                                 {errors.root.message}
                             </div>
                         )}
-                        {success ? (
+                        {success[0] ? (
                             <div className='border border-green-400/40 bg-green-400/20 px-4 py-2 text-sm text-green-400'>
-                                Email changed successfully!
+                                Email changed successfully!{' '}
+                                <Link
+                                    to={`/verify-email/${success[1]}`}
+                                    className='text-xs underline'
+                                >
+                                    Verify Email
+                                </Link>
                             </div>
                         ) : (
                             <Button

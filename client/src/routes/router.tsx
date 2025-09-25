@@ -17,6 +17,7 @@ import MessagePage from './message/page';
 import NewChatPage from './message/new/page';
 import ChatPage from './chat/[id]';
 import RootLayout from './root-layout';
+import VerifyEmailPage from './verify-email/[token]/page';
 
 const router = createBrowserRouter([
     {
@@ -82,6 +83,10 @@ const router = createBrowserRouter([
             {
                 path: 'post/:id',
                 Component: PostPage,
+            },
+            {
+                path: 'verify-email/:token',
+                Component: VerifyEmailPage,
             },
             {
                 path: ':id',

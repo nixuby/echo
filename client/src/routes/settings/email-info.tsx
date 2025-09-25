@@ -13,6 +13,7 @@ type ResendState =
       }
     | {
           type: 'success';
+          token: string;
       }
     | {
           type: 'error';
@@ -42,8 +43,8 @@ export default function SettingsPageEmailInfo() {
         setResendState({ type: 'loading' });
         resendVerificationEmail()
             .unwrap()
-            .then(() => {
-                setResendState({ type: 'success' });
+            .then(({ token }) => {
+                setResendState({ type: 'success', token });
             })
             .catch((res) => {
                 const error = res?.data?.errors?.root ?? 'Error sending email';
@@ -82,11 +83,21 @@ export default function SettingsPageEmailInfo() {
                                 </button>
                             ) : (
                                 <span>
-                                    {resendState.type === 'loading'
-                                        ? 'Sending...'
-                                        : resendState.type === 'success'
-                                          ? 'Email sent successfully!'
-                                          : resendState.error}
+                                    {resendState.type === 'loading' ? (
+                                        'Sending...'
+                                    ) : resendState.type === 'success' ? (
+                                        <>
+                                            Email sent!{' '}
+                                            <Link
+                                                to={`/verify-email/${resendState.token}`}
+                                                className='text-xs underline'
+                                            >
+                                                Verify Email
+                                            </Link>
+                                        </>
+                                    ) : (
+                                        resendState.error
+                                    )}
                                 </span>
                             )}
                             <span className='hidden md:inline'>&middot;</span>

@@ -33,7 +33,7 @@ export const settingsApi = createApi({
         }),
 
         changeEmail: builder.mutation<
-            { user: ClientUser },
+            { user: ClientUser; token: string },
             { email: string | null }
         >({
             query: (payload) => ({
@@ -43,10 +43,18 @@ export const settingsApi = createApi({
             }),
         }),
 
-        resendVerificationEmail: builder.mutation<void, void>({
+        resendVerificationEmail: builder.mutation<{ token: string }, void>({
             query: () => ({
                 url: '/email/resend-verification',
                 method: 'POST',
+            }),
+        }),
+
+        verifyEmail: builder.mutation<{ user: ClientUser }, { token: string }>({
+            query: (payload) => ({
+                url: '/email/verify',
+                method: 'POST',
+                body: payload,
             }),
         }),
     }),
@@ -57,4 +65,5 @@ export const {
     useChangeUsernameMutation,
     useChangeEmailMutation,
     useResendVerificationEmailMutation,
+    useVerifyEmailMutation,
 } = settingsApi;
