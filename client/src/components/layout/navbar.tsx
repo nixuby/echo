@@ -27,9 +27,9 @@ export default function NavBar({ mobile }: NavBarProps) {
     return (
         <nav
             className={clsx(
-                'sticky top-12 hidden w-64 min-w-64 flex-col justify-between overflow-y-auto border-r border-gray-800 bg-gray-950 text-white sm:flex',
-                !mobile && 'h-[calc(100vh_-_3rem)]',
-                mobile && 'flex! h-screen',
+                'hidden w-64 min-w-64 flex-col justify-between overflow-y-auto border-r border-gray-800 bg-gray-950 text-white sm:flex',
+                !mobile && 'sticky top-12 h-[calc(100vh_-_3rem)]',
+                mobile && 'flex! h-full',
             )}
         >
             <div className='flex flex-col'>

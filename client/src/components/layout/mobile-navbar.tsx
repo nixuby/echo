@@ -3,6 +3,7 @@ import {
     Bars3Icon,
     BellIcon,
     ChatBubbleLeftIcon,
+    HomeIcon,
     UserIcon,
 } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
@@ -24,32 +25,39 @@ export default function MobileNavBar() {
     return (
         <>
             {isOpen && <MobileMenu onClose={handleMenuClose} />}
-            <nav className='fixed bottom-0 left-0 z-21 grid h-16 w-full grid-cols-4 border-t border-gray-800 bg-gray-950/70 backdrop-blur-sm sm:hidden'>
+            <nav className='fixed bottom-0 left-0 z-21 grid h-16 w-full grid-cols-5 border-t border-gray-800 bg-gray-950/70 backdrop-blur-sm sm:hidden'>
                 <button
                     type='button'
                     onClick={handleClickMenu}
-                    className='flex flex-col items-center justify-center gap-1 text-sm transition-colors hover:bg-gray-900'
+                    className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <Bars3Icon className='size-6' />
                     <span>Menu</span>
                 </button>
                 <Link
                     to='/message'
-                    className='flex flex-col items-center justify-center gap-1 text-sm transition-colors hover:bg-gray-900'
+                    className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <ChatBubbleLeftIcon className='size-6' />
                     <span>Messages</span>
                 </Link>
                 <Link
+                    to='/'
+                    className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
+                >
+                    <HomeIcon className='size-6' />
+                    <span>Home</span>
+                </Link>
+                <Link
                     to='/notifications'
-                    className='flex flex-col items-center justify-center gap-1 text-sm transition-colors hover:bg-gray-900'
+                    className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <BellIcon className='size-6' />
                     <span>Notifications</span>
                 </Link>
                 <Link
                     to={user ? `/@${user.username}` : '/sign-in'}
-                    className='flex flex-col items-center justify-center gap-1 text-sm transition-colors hover:bg-gray-900'
+                    className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <UserIcon className='size-6' />
                     <span>Profile</span>
