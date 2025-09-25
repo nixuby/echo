@@ -16,75 +16,82 @@ import NotificationsSettingsPage from './settings/notifications/page';
 import MessagePage from './message/page';
 import NewChatPage from './message/new/page';
 import ChatPage from './chat/[id]';
+import RootLayout from './root-layout';
 
 const router = createBrowserRouter([
     {
         path: '/',
-        Component: HomePage,
-    },
-    {
-        path: 'sign-in',
-        Component: SignInPage,
-    },
-    {
-        path: 'create-account',
-        Component: CreateAccountPage,
-    },
-    {
-        path: 'sign-out',
-        Component: SignOutPage,
-    },
-    {
-        path: 'settings',
-        Component: SettingsPage,
-    },
-    {
-        path: 'settings/account-info',
-        Component: AccountInfoPage,
-    },
-    {
-        path: 'settings/account-info/name',
-        Component: NamePage,
-    },
-    {
-        path: 'settings/account-info/username',
-        Component: UsernamePage,
-    },
-    {
-        path: 'settings/account-info/email',
-        Component: EmailPage,
-    },
-    {
-        path: 'settings/notifications',
-        Component: NotificationsSettingsPage,
-    },
-    {
-        path: 'notifications',
-        Component: NotificationsPage,
-    },
-    {
-        path: 'message',
-        Component: MessagePage,
-    },
-    {
-        path: 'message/new',
-        Component: NewChatPage,
-    },
-    {
-        path: 'chat/:id',
-        Component: ChatPage,
-    },
-    {
-        path: 'post/:id',
-        Component: PostPage,
-    },
-    {
-        path: ':id',
-        Component: UserProfilePage,
-    },
-    {
-        path: '*',
-        Component: Error404Page,
+        Component: RootLayout,
+        children: [
+            {
+                path: '/',
+                Component: HomePage,
+            },
+            {
+                path: 'sign-in',
+                Component: SignInPage,
+            },
+            {
+                path: 'create-account',
+                Component: CreateAccountPage,
+            },
+            {
+                path: 'sign-out',
+                Component: SignOutPage,
+            },
+            {
+                path: 'settings',
+                Component: SettingsPage,
+            },
+            {
+                path: 'settings/account-info',
+                Component: AccountInfoPage,
+            },
+            {
+                path: 'settings/account-info/name',
+                Component: NamePage,
+            },
+            {
+                path: 'settings/account-info/username',
+                Component: UsernamePage,
+            },
+            {
+                path: 'settings/account-info/email',
+                Component: EmailPage,
+            },
+            {
+                path: 'settings/notifications',
+                Component: NotificationsSettingsPage,
+            },
+            {
+                path: 'notifications',
+                Component: NotificationsPage,
+            },
+            {
+                path: 'message',
+                Component: MessagePage,
+            },
+            {
+                path: 'message/new',
+                Component: NewChatPage,
+            },
+            {
+                path: 'chat/:id',
+                Component: ChatPage,
+            },
+            {
+                path: 'post/:id',
+                Component: PostPage,
+            },
+            {
+                path: ':id',
+                Component: UserProfilePage,
+            },
+            {
+                path: '*',
+                Component: Error404Page,
+            },
+        ],
     },
 ]);
 
