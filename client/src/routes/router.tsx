@@ -18,6 +18,7 @@ import NewChatPage from './message/new/page';
 import ChatPage from './chat/[id]';
 import RootLayout from './root-layout';
 import VerifyEmailPage from './verify-email/[token]/page';
+import LanguagePage from './settings/language/page';
 
 const router = createBrowserRouter([
     {
@@ -59,6 +60,10 @@ const router = createBrowserRouter([
             {
                 path: 'settings/account-info/email',
                 Component: EmailPage,
+            },
+            {
+                path: 'settings/language',
+                Component: LanguagePage,
             },
             {
                 path: 'settings/notifications',

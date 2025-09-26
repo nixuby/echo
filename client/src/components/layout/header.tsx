@@ -1,4 +1,4 @@
-import { t } from '@/i18next';
+import { LanguageIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
 
 export default function Header() {
@@ -14,9 +14,16 @@ export default function Header() {
 
             <input
                 type='text'
-                placeholder={t('search')}
+                placeholder='Search'
                 className='grow border-l border-gray-800 px-4 transition-colors outline-none hover:bg-gray-900 focus:bg-gray-800 focus:ring'
             />
+
+            <Link
+                to='/settings/language'
+                className='flex items-center justify-center border-l border-gray-800 px-4 transition-colors hover:bg-gray-900'
+            >
+                <LanguageIcon className='size-6' />
+            </Link>
         </header>
     );
 }

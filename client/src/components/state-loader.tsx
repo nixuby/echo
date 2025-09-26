@@ -10,7 +10,7 @@ export type StateLoaderProps = {
 
 // Fetch state from the server
 export default function StateLoader({ children }: StateLoaderProps) {
-    const LANG = 'en';
+    const LANG = localStorage.getItem('lang') || 'en';
 
     const [isEverythingLoaded, setIsEverythingLoaded] = useState(false);
 
