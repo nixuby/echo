@@ -18,9 +18,14 @@ export default function StateLoader({ children }: StateLoaderProps) {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        if (!meQuery.isSuccess) return;
-        initalizeI18next(meQuery.data.user.language || LANG);
-    }, [meQuery.data]);
+        if (meQuery.isError) {
+            initalizeI18next(LANG);
+        } else if (meQuery.isSuccess) {
+            const lang = meQuery.data.user.language || LANG;
+            initalizeI18next(lang);
+            document.documentElement.lang = lang;
+        }
+    }, [meQuery.isSuccess, meQuery.isError, meQuery.data]);
 
     useEffect(() => {
         if (meQuery.isSuccess) {
@@ -45,10 +50,5 @@ export default function StateLoader({ children }: StateLoaderProps) {
         );
     }
 
-    return (
-        <>
-            <html lang={LANG} />
-            {children}
-        </>
-    );
+    return children;
 }
