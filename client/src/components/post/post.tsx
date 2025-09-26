@@ -9,6 +9,7 @@ import clsx from 'clsx/lite';
 import env from '@/env';
 import PostAttachments from './post-attachments';
 import formatRelativeDate from '@/util/format-relative-date';
+import { t } from '@/i18next';
 
 export type PostProps = {
     clickable?: boolean;
@@ -55,8 +56,11 @@ export default function Post({
         >
             {repost && (
                 <div className='text-sm font-semibold text-gray-400'>
-                    Reposted by {post.author.name ?? post.author.username}{' '}
-                    &middot; {formatRelativeDate(new Date(post.createdAt))}
+                    {t('post.reposted-by', {
+                        name: post.author.name ?? post.author.username,
+                    })}{' '}
+                    &middot;{' '}
+                    {formatRelativeDate(t('locale'), new Date(post.createdAt))}
                 </div>
             )}
             <div className='flex w-full items-start gap-2'>
@@ -103,6 +107,7 @@ export default function Post({
                             <span>
                                 &middot;{' '}
                                 {formatRelativeDate(
+                                    t('locale'),
                                     new Date(originalPost.createdAt),
                                 )}
                             </span>

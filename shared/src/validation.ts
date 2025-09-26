@@ -4,33 +4,27 @@ export const nameSchema = z.string().max(32, 'Name must be at most 32 characters
 
 export const usernameSchema = z
     .string()
-    .min(3, 'Username must be at least 3 characters long')
-    .max(32, 'Username must be at most 32 characters long')
-    .regex(
-        /^[a-zA-Z][a-zA-Z0-9_]+$/,
-        'Username can only contain letters, numbers, and underscores and must start with a letter'
-    );
+    .min(3, 'username.too-short')
+    .max(32, 'username.too-long')
+    .regex(/^[a-zA-Z][a-zA-Z0-9_]+$/, 'username.invalid');
 
-export const passwordSchema = z
-    .string()
-    .min(6, 'Password must be at least 6 characters long')
-    .max(128, 'Password must be at most 128 characters long');
+export const passwordSchema = z.string().min(6, 'password.too-short').max(128, 'password.too-long');
 
-export const emailSchema = z.email('Invalid email address').max(256, 'Email must be at most 256 characters long');
+export const emailSchema = z.email('email.invalid').max(256, 'email.too-long');
 
 export const createAccountFormSchema = z
     .object({
         username: usernameSchema,
         password: passwordSchema,
-        confirm: z.string().nonempty('Please confirm your password'),
+        confirm: z.string().nonempty('confirm'),
         tos: z.boolean(),
     })
     .refine((data) => data.password === data.confirm, {
-        message: 'Passwords must match',
+        message: 'password.mismatch',
         path: ['confirm'],
     })
     .refine((data) => data.tos, {
-        message: 'You must accept the Terms of Service',
+        message: 'tos',
         path: ['tos'],
     });
 

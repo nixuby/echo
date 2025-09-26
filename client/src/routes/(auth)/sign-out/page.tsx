@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useAppDispatch } from '../../../redux/hooks';
 import { setUser } from '../../../redux/auth/auth-slice';
+import { t } from '@/i18next';
 
 export default function SignOutPage() {
     const navigate = useNavigate();
@@ -24,8 +25,8 @@ export default function SignOutPage() {
     }, []);
 
     return (
-        <AuthLayout noclose title='Signing Out...'>
-            Signing out, please wait...
+        <AuthLayout noclose title={t('signing-out')}>
+            {t('signing-out-please-wait')}
         </AuthLayout>
     );
 }

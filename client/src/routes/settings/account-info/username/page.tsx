@@ -8,6 +8,7 @@ import { useChangeUsernameMutation } from '@/redux/settings/settings-api';
 import { useState } from 'react';
 import { setUser } from '@/redux/auth/auth-slice';
 import TitleBar from '@/components/layout/titlebar';
+import { t, tErr } from '@/i18next';
 
 type ChangeUsernameForm = {
     username: string;
@@ -55,33 +56,31 @@ export default function UsernamePage() {
         <ProtectedRoute>
             <Layout title='Settings / Account Information'>
                 <div className='flex flex-col'>
-                    <TitleBar>Change Username</TitleBar>
+                    <TitleBar>{t('settings.change-username.label')}</TitleBar>
                     <form
                         className='flex w-[min(100%,350px)] flex-col gap-2 px-4 py-2'
                         onSubmit={onSubmit(handleSubmit)}
                     >
                         <p className='text-sm text-gray-400'>
-                            After changing your username, you will need to use
-                            the new username to log in.
+                            {t('settings.change-username.description.0')}
                         </p>
                         <p className='text-sm text-gray-400'>
-                            The old username will be available for others to
-                            use.
+                            {t('settings.change-username.description.1')}
                         </p>
                         <TextBox
-                            label='Username'
+                            label={t('settings.change-username.label')}
                             {...register('username')}
-                            error={errors.username?.message}
+                            error={tErr(errors.username?.message)}
                             disabled={success}
                         />
                         {errors.root && (
                             <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
-                                {errors.root.message}
+                                {tErr(errors.root.message)}
                             </div>
                         )}
                         {success ? (
                             <div className='border border-green-400/40 bg-green-400/20 px-4 py-2 text-sm text-green-400'>
-                                Username changed successfully!
+                                {t('settings.change-username.success')}
                             </div>
                         ) : (
                             <Button
@@ -90,7 +89,7 @@ export default function UsernamePage() {
                                     isLoading || username === user.username
                                 }
                             >
-                                Save
+                                {t('confirm')}
                             </Button>
                         )}
                     </form>

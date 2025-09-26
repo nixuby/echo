@@ -1,3 +1,4 @@
+import { t } from '@/i18next';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
 
@@ -37,13 +38,13 @@ export default function AuthLayout({
                 </div>
                 <footer className='flex gap-2 text-xs text-gray-400'>
                     <Link to='/about' className='text-nowrap hover:underline'>
-                        About
+                        {t('about')}
                     </Link>
                     <Link to='/tos' className='text-nowrap hover:underline'>
-                        Terms of Service
+                        {t('tos')}
                     </Link>
                     <Link to='/privacy' className='text-nowrap hover:underline'>
-                        Privacy Policy
+                        {t('privacy-policy')}
                     </Link>
                 </footer>
             </div>

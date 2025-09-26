@@ -4,6 +4,7 @@ import { useNavigate, useParams } from 'react-router';
 import clsx from 'clsx/lite';
 import { useAppDispatch } from '@/redux/hooks';
 import { setUser } from '@/redux/auth/auth-slice';
+import { t } from '@/i18next';
 
 type VerifyEmailPageParams = {
     token: string;
@@ -29,13 +30,12 @@ export default function VerifyEmailPage() {
                     dispatch(setUser(res.data.user));
                     setResult({
                         success: true,
-                        message: 'Email verified successfully!',
+                        message: t('email-verify.success'),
                     });
                 } else if (res.error) {
-                    const msg = (res.error as any).data.errors.root;
                     setResult({
                         success: false,
-                        message: 'Failed to verify email. ' + msg,
+                        message: t('email-verify.failed'),
                     });
                 }
 
@@ -66,7 +66,7 @@ export default function VerifyEmailPage() {
                             : '',
                     )}
                 >
-                    {result ? result.message : 'Verifying email...'}
+                    {result ? result.message : t('email-verify.loading')}
                 </span>
             </div>
         </div>

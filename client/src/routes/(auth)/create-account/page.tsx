@@ -15,6 +15,7 @@ import { createAccountFormSchema } from '@shared/validation';
 import { useCreateAccountMutation } from '@/redux/auth/auth-api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setUser } from '@/redux/auth/auth-slice';
+import { t, tErr } from '@/i18next';
 
 export default function CreateAccountPage() {
     const navigate = useNavigate();
@@ -49,7 +50,8 @@ export default function CreateAccountPage() {
                 dispatch(setUser(res.user));
                 navigate('/');
             })
-            .catch((error) => {
+            .catch((res) => {
+                const error = res?.data?.errors;
                 for (const field in error) {
                     setError(field as keyof CreateAccountForm, {
                         message: error[field],
@@ -59,49 +61,52 @@ export default function CreateAccountPage() {
     }
 
     return (
-        <AuthLayout title='Create Account'>
+        <AuthLayout title={t('create-account')}>
             <form
                 action=''
                 onSubmit={handleSubmit(submitForm)}
                 className='flex flex-col gap-4'
             >
                 <TextBox
-                    label='Username'
-                    error={errors.username?.message}
+                    label={t('username')}
+                    error={tErr(errors.username?.message)}
                     {...register('username')}
                 />
                 <TextBox
-                    label='Password'
+                    label={t('password')}
                     type='password'
-                    error={errors.password?.message}
+                    error={tErr(errors.password?.message)}
                     {...register('password')}
                 />
                 <TextBox
-                    label='Confirm'
+                    label={t('confirm-password')}
                     type='password'
-                    error={errors.confirm?.message}
+                    error={tErr(errors.confirm?.message)}
                     {...register('confirm')}
                 />
-                <CheckBox error={errors.tos?.message} {...register('tos')}>
-                    I agree to the{' '}
+                <CheckBox
+                    error={tErr(errors.tos?.message)}
+                    {...register('tos')}
+                >
+                    {t('tos-agree')}{' '}
                     <Link
                         to='/tos'
                         className='text-gray-400 transition hover:text-gray-300 hover:underline'
                     >
-                        Terms of Service
+                        {t('tos')}
                     </Link>
                 </CheckBox>
                 {errors.root && (
                     <div className='border border-red-400/40 bg-red-400/20 px-4 py-2 text-sm text-red-400'>
-                        {errors.root.message}
+                        {tErr(errors.root.message)}
                     </div>
                 )}
                 <Button submit disabled={isLoading}>
-                    Create Account
+                    {t('create-account')}
                 </Button>
                 <div className='relative h-px w-full bg-gray-800 text-sm'>
                     <span className='absolute top-0 left-1/2 -mx-2 -translate-y-1/2 bg-gray-950 px-2 text-gray-400'>
-                        or
+                        {t('or')}
                     </span>
                 </div>
                 <div className='flex flex-col gap-2'>
@@ -109,10 +114,10 @@ export default function CreateAccountPage() {
                         to='/sign-in'
                         className='border border-gray-600 bg-gray-950 px-4 py-2 text-center text-sm font-semibold transition hover:bg-gray-900'
                     >
-                        Sign In
+                        {t('sign-in')}
                     </Link>
-                    <AuthProviderButton type='signup' provider='google' />
-                    <AuthProviderButton type='signup' provider='apple' />
+                    <AuthProviderButton provider='google' />
+                    <AuthProviderButton provider='apple' />
                 </div>
             </form>
         </AuthLayout>

@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useMeQuery } from '@/redux/auth/auth-api';
 import { setUser } from '@/redux/auth/auth-slice';
 import { useAppDispatch } from '@/redux/hooks';
+import { initalizeI18next } from '@/i18next';
 
 export type StateLoaderProps = {
     children?: React.ReactNode;
@@ -9,10 +10,16 @@ export type StateLoaderProps = {
 
 // Fetch state from the server
 export default function StateLoader({ children }: StateLoaderProps) {
+    const LANG = 'en'; // TODO: load from state
+
     const [isEverythingLoaded, setIsEverythingLoaded] = useState(false);
 
     const meQuery = useMeQuery();
     const dispatch = useAppDispatch();
+
+    useEffect(() => {
+        initalizeI18next(LANG);
+    });
 
     useEffect(() => {
         if (meQuery.isSuccess) {
@@ -37,5 +44,10 @@ export default function StateLoader({ children }: StateLoaderProps) {
         );
     }
 
-    return children;
+    return (
+        <>
+            <html lang={LANG} />
+            {children}
+        </>
+    );
 }

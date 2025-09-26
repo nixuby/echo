@@ -1,0 +1,169 @@
+{
+    "translation": {
+        "locale": "es",
+        "name": "Español",
+
+        "home": "Inicio",
+        "communities": "Comunidades",
+        "premium": "Premium",
+        "career": "Carrera",
+        "sign-in": "Iniciar sesión",
+        "sign-out": "Cerrar sesión",
+        "create-account": "Crear cuenta",
+        "username": "Nombre de usuario",
+        "password": "Contraseña",
+        "confirm-password": "Confirmar",
+        "forgot-password": "¿Olvidaste tu contraseña?",
+        "tos-agree": "Acepto los",
+        "tos": "Términos de Servicio",
+        "or": "o",
+        "sign-in-google": "Iniciar sesión con Google",
+        "sign-in-apple": "Iniciar sesión con Apple",
+        "about": "Acerca de",
+        "privacy-policy": "Política de Privacidad",
+        "signing-out": "Cerrando sesión...",
+        "signing-out-please-wait": "Cerrando sesión, por favor espera...",
+        "select-a-file": "Seleccionar un archivo",
+
+        "add": "Agregar",
+        "confirm": "Confirmar",
+        "cancel": "Cancelar",
+        "edit": "Editar",
+        "search": "Buscar",
+
+        "post": {
+            "label": "Publicación",
+            "attach": "Adjuntar",
+            "publish": "Publicar",
+            "reposted-by": "Reposteado por {{name}}",
+            "attach-media": "Adjuntar medios",
+            "no-files-attached": "No hay archivos adjuntos. Haz clic en \"Agregar\" para adjuntar archivos.",
+            "replies": "Respuestas"
+        },
+
+        "profile": {
+            "label": "Perfil",
+            "edit": "Editar",
+            "message": "Mensajear",
+            "get-verified": "Obtener verificación",
+            "joined": "Se unió el {{date}}",
+            "following": "Siguiendo",
+            "followers": "Seguidores",
+            "posts": "Publicaciones",
+            "follow": "Seguir",
+            "unfollow": "Dejar de seguir",
+            "edit-profile-picture": "Editar foto de perfil",
+            "edit-cover-photo": "Editar foto de portada",
+            "edit-bio": "Editar biografía"
+        },
+
+        "notifications": {
+            "label": "Notificaciones",
+            "types": {
+                "post_liked.name": "Publicación gustada",
+                "post_liked.description": "<1/> le gusta tu <2>publicación</2>",
+                "post_shared.name": "Publicación compartida",
+                "post_shared.description": "<1/> volvió a publicar tu <2>publicación</2>",
+                "post_replied.name": "Publicación respondida",
+                "post_replied.description": "<1/> respondió a tu <2>publicación</2>",
+                "new_follower.name": "Nuevo seguidor",
+                "new_follower.description": "<1/> te sigue"
+            }
+        },
+
+        "messages": {
+            "label": "Mensajes",
+            "chat": "Chat",
+            "message": "Mensaje",
+            "new-chat": "Nuevo chat",
+            "send": "Enviar"
+        },
+
+        "settings": {
+            "label": "Configuraciones",
+            "account-info.label": "Información de la cuenta",
+            "account-info.subtitle": "Actualiza la información de tu cuenta",
+            "change-password.label": "Cambiar contraseña",
+            "change-password.subtitle": "Cambia tu contraseña regularmente para mantener tu cuenta segura",
+            "notifications.label": "Notificaciones",
+            "notifications.subtitle": "Gestiona tus preferencias de notificación",
+            "language.label": "Idioma",
+            "language.subtitle": "Gestiona tus preferencias de idioma",
+            "help.label": "Ayuda",
+            "help.subtitle": "Obtén asistencia con tu cuenta y configuraciones",
+            "sign-out.label": "Cerrar sesión",
+            "sign-out.subtitle": "Cerrar sesión de tu cuenta",
+
+            "current-email-verified": "Tu correo electrónico actual está verificado.",
+            "current-email-unverified": "Tu correo electrónico actual no está verificado.",
+
+            "set-email.label": "Correo electrónico",
+            "set-email.subtitle": "Establece una dirección de correo electrónico para recuperar tu cuenta",
+
+            "change-name": {
+                "label": "Nombre",
+                "subtitle": "Cambia tu nombre completo",
+                "success": "Nombre cambiado con éxito",
+                "description.0": "El nombre es tu nombre para mostrar. No se usa para iniciar sesión.",
+                "description.1": "El nombre para mostrar puede contener cualquier carácter, incluyendo espacios y emojis. No es único y puede ser compartido por diferentes usuarios.",
+                "description.2": "Puedes restablecer tu nombre para mostrar dejando este campo en blanco."
+            },
+
+            "change-username": {
+                "label": "Nombre de usuario",
+                "subtitle": "Cambia tu nombre de usuario",
+                "description.0": "Después de cambiar tu nombre de usuario, deberás usar el nuevo nombre de usuario para iniciar sesión.",
+                "description.1": "El nombre de usuario antiguo estará disponible para que otros lo utilicen."
+            },
+
+            "change-email": {
+                "label": "Correo electrónico",
+                "subtitle": "Cambia tu dirección de correo electrónico",
+                "success": "Correo electrónico cambiado con éxito",
+                "verify": "Verificar correo electrónico",
+                "description": "Recibirá un correo electrónico de confirmación en su nueva dirección de correo electrónico."
+            }
+        },
+
+        "email-verify": {
+            "loading": "Verificando correo electrónico...",
+            "success": "Correo electrónico verificado con éxito",
+            "failed": "La verificación del correo electrónico falló o el enlace de verificación ha expirado."
+        },
+
+        "not-found": {
+            "label": "No encontrado",
+            "description": "Esta página no existe.",
+            "return-home": "Volver al inicio"
+        },
+
+        "errors": {
+            "validation-failed": "Validación fallida",
+
+            "auth": {
+                "missing-credentials": "Nombre de usuario y contraseña son obligatorios",
+                "invalid-credentials": "Nombre de usuario o contraseña inválidos",
+                "missing-fields": "Faltan campos requeridos",
+                "autologin-failed": "Error de inicio de sesión automático"
+            },
+
+            "username": {
+                "too-short": "El nombre de usuario debe tener al menos 3 caracteres",
+                "too-long": "El nombre de usuario no debe exceder los 32 caracteres",
+                "invalid": "El nombre de usuario solo puede contener letras, números y guiones bajos",
+                "taken": "El nombre de usuario ya está en uso"
+            },
+            "password": {
+                "too-short": "La contraseña debe tener al menos 6 caracteres",
+                "too-long": "La contraseña no debe exceder los 128 caracteres",
+                "mismatch": "Las contraseñas no coinciden"
+            },
+            "email": {
+                "invalid": "Dirección de correo electrónico inválida",
+                "taken": "La dirección de correo electrónico ya está en uso"
+            },
+            "confirm": "Debes confirmar tu contraseña",
+            "tos": "Debes aceptar los Términos de Servicio"
+        }
+    }
+}

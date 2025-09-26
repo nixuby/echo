@@ -9,6 +9,12 @@ export const localStrategy = new passportLocal.Strategy(
     },
     async (username, password, done) => {
         try {
+            if (!username || !password) {
+                return done(null, false, {
+                    message: 'auth.missing-credentials',
+                });
+            }
+
             const user = await prisma.user.findUnique({
                 where: { username },
                 include: {
@@ -19,13 +25,13 @@ export const localStrategy = new passportLocal.Strategy(
             });
             if (!user || !user.password) {
                 return done(null, false, {
-                    message: 'Invalid username or password',
+                    message: 'auth.invalid-credentials',
                 });
             }
             const hashOk = await verifyPassword(password, user.password);
             if (!hashOk) {
                 return done(null, false, {
-                    message: 'Invalid username or password',
+                    message: 'auth.invalid-credentials',
                 });
             }
             return done(null, {

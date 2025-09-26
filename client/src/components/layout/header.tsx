@@ -1,3 +1,4 @@
+import { t } from '@/i18next';
 import { Link } from 'react-router';
 
 export default function Header() {
@@ -13,8 +14,8 @@ export default function Header() {
 
             <input
                 type='text'
-                placeholder='Search'
-                className='grow border-l border-gray-800 px-4 outline-none transition-colors hover:bg-gray-900 focus:bg-gray-800 focus:ring'
+                placeholder={t('search')}
+                className='grow border-l border-gray-800 px-4 transition-colors outline-none hover:bg-gray-900 focus:bg-gray-800 focus:ring'
             />
         </header>
     );

@@ -6,6 +6,7 @@ import { useParams } from 'react-router';
 import Chat from './chat';
 import CreateMessage from './create-message';
 import { useRef } from 'react';
+import { t } from '@/i18next';
 
 export default function ChatPage() {
     const chatId = useParams().id;
@@ -22,10 +23,10 @@ export default function ChatPage() {
     return (
         <ProtectedRoute>
             <Layout
-                title='Chat'
+                title={t('messages.chat')}
                 className='relative flex h-[calc(100vh_-_3rem)] flex-col justify-between'
             >
-                <TitleBar>Chat</TitleBar>
+                <TitleBar>{t('messages.chat')}</TitleBar>
                 <Chat ref={chatRef} chatId={chatId} />
                 <CreateMessage chatId={chatId} onMessageSent={onMessageSent} />
             </Layout>

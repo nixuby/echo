@@ -1,5 +1,6 @@
 import { useDialog } from '@/components/dialog/dialog';
 import Button from '@/components/shared/button';
+import { t } from '@/i18next';
 import { useAppSelector } from '@/redux/hooks';
 import {
     useUpdateBioMutation,
@@ -53,27 +54,27 @@ function Menu({ setPage }: { setPage: (page: string) => void }) {
                 data-page='pfp'
                 className='cursor-pointer border-b border-gray-800 bg-gray-950 px-4 py-2 text-start font-semibold transition-colors hover:bg-gray-900'
             >
-                Edit Profile Picture
+                {t('profile.edit-profile-picture')}
             </button>
             <button
                 onClick={handleClick}
                 data-page='cover'
                 className='cursor-pointer border-b border-gray-800 bg-gray-950 px-4 py-2 text-start font-semibold transition-colors hover:bg-gray-900'
             >
-                Edit Cover Photo
+                {t('profile.edit-cover-photo')}
             </button>
             <button
                 onClick={handleClick}
                 data-page='bio'
                 className='cursor-pointer border-b border-gray-800 bg-gray-950 px-4 py-2 text-start font-semibold transition-colors hover:bg-gray-900'
             >
-                Edit Bio
+                {t('profile.edit-bio')}
             </button>
             <button
                 onClick={handleClickClose}
                 className='cursor-pointer bg-gray-950 px-4 py-2 text-start font-semibold transition-colors hover:bg-gray-900'
             >
-                Close
+                {t('cancel')}
             </button>
         </div>
     );
@@ -137,7 +138,7 @@ function EditProfilePicture() {
     return (
         <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
-                Edit Profile Picture
+                {t('profile.edit-profile-picture')}
             </h2>
             <input
                 ref={ref}
@@ -165,7 +166,7 @@ function EditProfilePicture() {
                 )}
                 <div className='flex flex-col gap-2 self-end'>
                     <Button size='small' onClick={handleClickSelectFile}>
-                        Select File
+                        {t('select-a-file')}
                     </Button>
                     {urlObject && (
                         <Button
@@ -173,7 +174,7 @@ function EditProfilePicture() {
                             size='small'
                             onClick={handleClickConfirm}
                         >
-                            Confirm
+                            {t('confirm')}
                         </Button>
                     )}
                 </div>
@@ -186,7 +187,7 @@ function EditCoverPhoto() {
     return (
         <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
-                Edit Cover Photo
+                {t('profile.edit-cover-photo')}
             </h2>
         </div>
     );
@@ -217,7 +218,7 @@ function EditBio() {
     return (
         <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto'>
             <h2 className='border-b border-gray-800 px-4 py-2 font-bold'>
-                Edit Profile Bio
+                {t('profile.edit-bio')}
             </h2>
             <div className='flex flex-col gap-2 px-4 py-2'>
                 <div>
@@ -241,7 +242,7 @@ function EditBio() {
                     onClick={handleClick}
                     className='self-end'
                 >
-                    Save
+                    {t('confirm')}
                 </Button>
             </div>
         </div>

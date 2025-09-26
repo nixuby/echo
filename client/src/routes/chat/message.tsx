@@ -1,4 +1,5 @@
 import env from '@/env';
+import { t } from '@/i18next';
 import formatRelativeDate from '@/util/format-relative-date';
 import clsx from 'clsx/lite';
 import { Link } from 'react-router';
@@ -50,7 +51,7 @@ export default function Message({
                     )}
                 ></div>
                 <div className='text-xs text-gray-400'>
-                    {formatRelativeDate(new Date(createdAt))}
+                    {formatRelativeDate(t('locale'), new Date(createdAt))}
                 </div>
             </div>
         </div>

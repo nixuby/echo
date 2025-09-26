@@ -4,6 +4,7 @@ import ProtectedRoute from '@/components/protected-route';
 import Button from '@/components/shared/button';
 import TextBox from '@/components/shared/textbox';
 import env from '@/env';
+import { t } from '@/i18next';
 import { useCreateChatMutation, useSearchQuery } from '@/redux/user/users-api';
 import { useState } from 'react';
 import { useNavigate } from 'react-router';
@@ -48,17 +49,19 @@ export default function NewChatPage() {
 
     return (
         <ProtectedRoute>
-            <Layout title='New Chat'>
+            <Layout title={t('messages.new-chat')}>
                 <div className='flex flex-col'>
-                    <TitleBar>New Chat</TitleBar>
+                    <TitleBar>{t('messages.new-chat')}</TitleBar>
                     <div className='flex gap-2 border-b border-gray-800 px-4 py-2'>
                         <TextBox
-                            label='Username'
+                            label={t('username')}
                             value={input}
                             onChange={handleChange}
                         />
                         {/* TODO: Replace with debounce */}
-                        <Button onClick={handleClickSearch}>Search</Button>
+                        <Button onClick={handleClickSearch}>
+                            {t('search')}
+                        </Button>
                     </div>
                     {data?.map((user) => (
                         <button

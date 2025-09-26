@@ -9,6 +9,7 @@ import {
 import { Link } from 'react-router';
 import MobileMenu from './mobile-menu';
 import { useState } from 'react';
+import { t } from '@/i18next';
 
 export default function MobileNavBar() {
     const user = useAppSelector((s) => s.auth.user);
@@ -39,28 +40,28 @@ export default function MobileNavBar() {
                     className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <ChatBubbleLeftIcon className='size-6' />
-                    <span>Messages</span>
+                    <span>{t('messages.label')}</span>
                 </Link>
                 <Link
                     to='/'
                     className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <HomeIcon className='size-6' />
-                    <span>Home</span>
+                    <span>{t('home')}</span>
                 </Link>
                 <Link
                     to='/notifications'
                     className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <BellIcon className='size-6' />
-                    <span>Notifications</span>
+                    <span>{t('notifications.label')}</span>
                 </Link>
                 <Link
                     to={user ? `/@${user.username}` : '/sign-in'}
                     className='flex flex-col items-center justify-center gap-1 text-xs transition-colors hover:bg-gray-900'
                 >
                     <UserIcon className='size-6' />
-                    <span>Profile</span>
+                    <span>{t('profile.label')}</span>
                 </Link>
             </nav>
         </>

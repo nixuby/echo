@@ -13,10 +13,11 @@ import UserProfileEditDialog from './user-profile-edit-dialog';
 import env from '@/env';
 import { useDialog } from '@/components/dialog/dialog';
 import { useFollowMutation } from '@/redux/user/users-api';
+import { t } from '@/i18next';
 
-function formatDate(datestr: string) {
+function formatDate(locale: string, datestr: string) {
     const date = new Date(datestr);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString(locale, {
         year: 'numeric',
         month: 'long',
         day: 'numeric',
@@ -83,7 +84,7 @@ export default function UserProfileHeader({
                                     className='flex items-center gap-1 border border-gray-700 bg-gray-900 px-2 py-0.5 text-xs font-semibold transition-colors hover:bg-gray-800'
                                 >
                                     <CheckBadgeIcon className='size-4 text-indigo-600' />
-                                    <span>Get Verified</span>
+                                    <span>{t('profile.get-verified')}</span>
                                 </Link>
                             )
                         )}
@@ -94,7 +95,9 @@ export default function UserProfileHeader({
                     <div className='whitespace-pre'>{user.bio}</div>
                 )}
                 <div className='text-gray-400'>
-                    Joined {formatDate(user.createdAt)}
+                    {t('profile.joined', {
+                        date: formatDate(t('locale'), user.createdAt),
+                    })}
                 </div>
                 <div className='flex flex-col gap-2 sm:flex-row sm:gap-4'>
                     <div>
@@ -102,19 +105,25 @@ export default function UserProfileHeader({
                             {user.followingCount}
                         </span>
                         &nbsp;
-                        <span className='text-gray-400'>Following</span>
+                        <span className='text-gray-400'>
+                            {t('profile.following')}
+                        </span>
                     </div>
                     <div>
                         <span className='font-semibold'>
                             {user.followerCount}
                         </span>
                         &nbsp;
-                        <span className='text-gray-400'>Followers</span>
+                        <span className='text-gray-400'>
+                            {t('profile.followers')}
+                        </span>
                     </div>
                     <div>
                         <span className='font-semibold'>{user.postCount}</span>
                         &nbsp;
-                        <span className='text-gray-400'>Posts</span>
+                        <span className='text-gray-400'>
+                            {t('profile.posts')}
+                        </span>
                     </div>
                 </div>
                 <div className='flex items-center gap-2'>
@@ -126,14 +135,14 @@ export default function UserProfileHeader({
                                 className='flex items-center gap-1'
                             >
                                 <PencilIcon className='size-4' />
-                                <span>Edit</span>
+                                <span>{t('profile.edit')}</span>
                             </Button>
                             <Button
                                 size='small'
                                 className='flex items-center gap-1'
                             >
                                 <ChatBubbleLeftIcon className='size-4' />
-                                <span>Message</span>
+                                <span>{t('profile.message')}</span>
                             </Button>
                         </>
                     ) : (
@@ -146,7 +155,7 @@ export default function UserProfileHeader({
                                     className='flex items-center gap-1'
                                 >
                                     <UserPlusIcon className='size-4' />
-                                    <span>Unfollow</span>
+                                    <span>{t('profile.unfollow')}</span>
                                 </Button>
                             ) : (
                                 <Button
@@ -155,7 +164,7 @@ export default function UserProfileHeader({
                                     className='flex items-center gap-1'
                                 >
                                     <UserPlusIcon className='size-4' />
-                                    <span>Follow</span>
+                                    <span>{t('profile.follow')}</span>
                                 </Button>
                             )}
                             <Button
@@ -163,7 +172,7 @@ export default function UserProfileHeader({
                                 className='flex items-center gap-1'
                             >
                                 <ChatBubbleLeftIcon className='size-4' />
-                                <span>Message</span>
+                                <span>{t('profile.message')}</span>
                             </Button>
                         </>
                     )}

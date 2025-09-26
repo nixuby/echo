@@ -1,0 +1,169 @@
+{
+    "translation": {
+        "locale": "en-US",
+        "name": "English",
+
+        "home": "Home",
+        "communities": "Communities",
+        "premium": "Premium",
+        "career": "Career",
+        "sign-in": "Sign In",
+        "sign-out": "Sign Out",
+        "create-account": "Create Account",
+        "username": "Username",
+        "password": "Password",
+        "confirm-password": "Confirm",
+        "forgot-password": "Forgot Password?",
+        "tos-agree": "Agree to the",
+        "tos": "Terms of Service",
+        "or": "or",
+        "sign-in-google": "Sign In with Google",
+        "sign-in-apple": "Sign In with Apple",
+        "about": "About",
+        "privacy-policy": "Privacy Policy",
+        "signing-out": "Signing Out...",
+        "signing-out-please-wait": "Signing out, please wait...",
+        "select-a-file": "Select a File",
+
+        "add": "Add",
+        "confirm": "Confirm",
+        "cancel": "Cancel",
+        "edit": "Edit",
+        "search": "Search",
+
+        "post": {
+            "label": "Post",
+            "attach": "Attach",
+            "publish": "Publish",
+            "reposted-by": "Reposted by {{name}}",
+            "attach-media": "Attach media",
+            "no-files-attached": "No files attached. Click \"Add\" to attach files.",
+            "replies": "Replies"
+        },
+
+        "profile": {
+            "label": "Profile",
+            "edit": "Edit",
+            "message": "Message",
+            "get-verified": "Get Verified",
+            "joined": "Joined at {{date}}",
+            "following": "Following",
+            "followers": "Followers",
+            "posts": "Posts",
+            "follow": "Follow",
+            "unfollow": "Unfollow",
+            "edit-profile-picture": "Edit Profile Picture",
+            "edit-cover-photo": "Edit Cover Photo",
+            "edit-bio": "Edit Bio"
+        },
+
+        "notifications": {
+            "label": "Notifications",
+            "types": {
+                "post_liked.name": "Post liked",
+                "post_liked.description": "<1/> liked your <2>post</2>",
+                "post_shared.name": "Post shared",
+                "post_shared.description": "<1/> shared your <2>post</2>",
+                "post_replied.name": "Post replied",
+                "post_replied.description": "<1/> replied to your <2>post</2>",
+                "new_follower.name": "New follower",
+                "new_follower.description": "<1/> is now following you"
+            }
+        },
+
+        "messages": {
+            "label": "Messages",
+            "chat": "Chat",
+            "message": "Message",
+            "new-chat": "New Chat",
+            "send": "Send"
+        },
+
+        "settings": {
+            "label": "Settings",
+            "account-info.label": "Account Information",
+            "account-info.subtitle": "Update your account information",
+            "change-password.label": "Change Password",
+            "change-password.subtitle": "Change your password regularly to keep your account secure",
+            "notifications.label": "Notifications",
+            "notifications.subtitle": "Manage your notification preferences",
+            "language.label": "Language",
+            "language.subtitle": "Select your preferred language",
+            "help.label": "Help",
+            "help.subtitle": "Get help and support",
+            "sign-out.label": "Sign Out",
+            "sign-out.subtitle": "Sign out of your account",
+
+            "current-email-verified": "Your current email is verified.",
+            "current-email-unverified": "Your current email is not verified.",
+
+            "set-email.label": "Email",
+            "set-email.subtitle": "Set an email address to recover your account",
+
+            "change-name": {
+                "label": "Name",
+                "subtitle": "Change your full name",
+                "success": "Name changed successfully",
+                "description.0": "The name is your display name. It is not used for login.",
+                "description.1": "The display name can contain any characters, including spaces and emojis. It is not unique and can be shared by different users.",
+                "description.2": "You can reset your display name by leaving this field blank."
+            },
+
+            "change-username": {
+                "label": "Username",
+                "subtitle": "Change your username",
+                "description.0": "After changing your username, you will need to use the new username to log in.",
+                "description.1": "The old username will be available for others to use."
+            },
+
+            "change-email": {
+                "label": "Email",
+                "subtitle": "Change your email address",
+                "success": "Email changed successfully",
+                "verify": "Verify email",
+                "description": "You will receive a confirmation email at your new email address."
+            }
+        },
+
+        "email-verify": {
+            "loading": "Verifying email...",
+            "success": "Email verified successfully",
+            "failed": "Email verification failed or the verification link has expired."
+        },
+
+        "not-found": {
+            "label": "Not Found",
+            "description": "This page does not exist.",
+            "return-home": "Return Home"
+        },
+
+        "errors": {
+            "validation-failed": "Validation failed",
+
+            "auth": {
+                "missing-credentials": "Username and password are required",
+                "invalid-credentials": "Invalid username or password",
+                "missing-fields": "Required fields are missing",
+                "autologin-failed": "Automatic login failed"
+            },
+
+            "username": {
+                "too-short": "Username must be at least 3 characters long",
+                "too-long": "Username must not exceed 32 characters",
+                "invalid": "Username can only contain letters, numbers, and underscores",
+                "taken": "Username is already taken"
+            },
+            "password": {
+                "too-short": "Password must be at least 6 characters long",
+                "too-long": "Password must not exceed 128 characters",
+                "mismatch": "Passwords do not match"
+            },
+            "email": {
+                "invalid": "Invalid email format",
+                "taken": "Email address is already in use"
+            },
+            "confirm": "Password confirmation is required",
+            "tos": "You must accept the Terms of Service"
+        }
+    }
+}

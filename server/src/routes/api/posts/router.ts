@@ -299,7 +299,7 @@ async function processAttachments(
 
 postsRouter.post('/publish', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const { content, attachments, parentId } = req.body;
@@ -408,7 +408,7 @@ postsRouter.get('/attachment/:id', async (req, res) => {
 
 postsRouter.post('/:id/repost', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const originalId = req.params.id;
@@ -510,7 +510,7 @@ postsRouter.post('/:id/repost', async (req, res) => {
 
 postsRouter.post('/:id/like', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const postId = req.params.id;

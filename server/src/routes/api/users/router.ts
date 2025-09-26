@@ -47,7 +47,7 @@ usersRouter.post('/pic', async (req, res) => {
     }
 
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     // File as Base64
@@ -109,7 +109,7 @@ usersRouter.post('/pic', async (req, res) => {
 
 usersRouter.post('/bio', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const bio = req.body.bio;
@@ -144,7 +144,7 @@ async function toClientNotifications(
 
 usersRouter.get('/notifications', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const page = Number(req.query.page || '0');
@@ -194,7 +194,7 @@ usersRouter.get('/notifications', async (req, res) => {
 
 usersRouter.get('/notification-settings', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const settings = parseNotificationSettings(
@@ -215,7 +215,7 @@ usersRouter.get('/notification-settings', async (req, res) => {
 
 usersRouter.post('/notification-settings', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const type = req.body.type as NotificationType;
@@ -288,7 +288,7 @@ usersRouter.get('/followers/:username', async (req, res) => {
 
 usersRouter.get('/followers', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
     return res.json(await getFollowers(req.user.username));
 });
@@ -326,14 +326,14 @@ usersRouter.get('/following/:username', async (req, res) => {
 
 usersRouter.get('/following', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
     return res.json(await getFollowing(req.user.username));
 });
 
 usersRouter.post('/follow/:username', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const usernameToFollow = req.params.username;
@@ -504,7 +504,7 @@ usersRouter.get('/search', async (req, res) => {
 
 usersRouter.get('/chats', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const chats = await prisma.chat.findMany({
@@ -540,7 +540,7 @@ usersRouter.get('/chats', async (req, res) => {
 
 usersRouter.post('/chat/new/:username', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     // Create a chat with the user if it doesn't exist
@@ -606,7 +606,7 @@ usersRouter.post('/chat/new/:username', async (req, res) => {
 
 usersRouter.post('/chat/:chatId/', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const chatId = req.params.chatId;
@@ -662,7 +662,7 @@ usersRouter.post('/chat/:chatId/', async (req, res) => {
 
 usersRouter.get('/chat/:chatId/messages', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const chatId = req.params.chatId;

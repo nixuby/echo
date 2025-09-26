@@ -14,6 +14,7 @@ import {
 import { Link, useLocation } from 'react-router';
 import { useAppSelector } from '../../redux/hooks';
 import env from '@/env';
+import { t } from '@/i18next';
 
 export type NavBarProps = {
     mobile?: boolean;
@@ -36,7 +37,7 @@ export default function NavBar({ mobile }: NavBarProps) {
                 <div className='flex flex-col border-b border-gray-800'>
                     <NavBarLink to='/' active={pathname === '/'}>
                         <HomeIcon className='size-6' />
-                        <span>Home</span>
+                        <span>{t('home')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/notifications'
@@ -50,7 +51,7 @@ export default function NavBar({ mobile }: NavBarProps) {
                             ) : null}
                         </div>
                         <span>
-                            Notifications
+                            {t('notifications.label')}
                             {user?.notificationCount &&
                             user.notificationCount > 0 ? (
                                 <>&nbsp;({user?.notificationCount})</>
@@ -62,40 +63,40 @@ export default function NavBar({ mobile }: NavBarProps) {
                         active={pathname.startsWith('/message')}
                     >
                         <ChatBubbleLeftIcon className='size-6' />
-                        <span>Messages</span>
+                        <span>{t('messages.label')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/communities'
                         active={pathname.startsWith('/communities')}
                     >
                         <UserGroupIcon className='size-6' />
-                        <span>Communities</span>
+                        <span>{t('communities')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/premium'
                         active={pathname.startsWith('/premium')}
                     >
                         <StarIcon className='size-6' />
-                        <span>Premium</span>
+                        <span>{t('premium')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/career'
                         active={pathname.startsWith('/career')}
                     >
                         <BriefcaseIcon className='size-6' />
-                        <span>Career</span>
+                        <span>{t('career')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/settings'
                         active={pathname.startsWith('/settings')}
                     >
                         <Cog6ToothIcon className='size-6' />
-                        <span>Settings</span>
+                        <span>{t('settings.label')}</span>
                     </NavBarLink>
                     {!user && (
                         <NavBarLink to='/sign-in' active={false}>
                             <UserIcon className='size-6' />
-                            <span>Sign In</span>
+                            <span>{t('sign-in')}</span>
                         </NavBarLink>
                     )}
                 </div>

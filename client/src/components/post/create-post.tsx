@@ -7,6 +7,7 @@ import AttachDialog, { type AttachedFile } from './attach-dialog';
 import MediaPreviewDialog from '../dialog/media-preview-dialog';
 import { fileToBase64 } from '@shared/file';
 import { useDialog } from '../dialog/dialog';
+import { t } from '@/i18next';
 
 export type CreatePostProps = {
     parentId?: string; // Parent post id for creating replies
@@ -108,13 +109,13 @@ export default function CreatePost({ parentId }: CreatePostProps) {
                     className='flex items-center gap-1'
                 >
                     <PaperClipIcon className='size-5' />
-                    <span>Attach</span>
+                    <span>{t('post.attach')}</span>
                 </Button>
                 <Button
                     onClick={handlePublish}
                     className='flex items-center gap-1'
                 >
-                    <span>Post</span>
+                    <span>{t('post.publish')}</span>
                     <PaperAirplaneIcon className='size-5' />
                 </Button>
             </div>

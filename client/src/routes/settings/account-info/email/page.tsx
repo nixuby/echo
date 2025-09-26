@@ -11,6 +11,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { changeEmailFormSchema } from '@shared/validation';
 import TitleBar from '@/components/layout/titlebar';
 import { Link } from 'react-router';
+import { t } from '@/i18next';
 
 type ChangeEmailForm = {
     email: string;
@@ -57,30 +58,27 @@ export default function EmailPage() {
 
     return (
         <ProtectedRoute>
-            <Layout title='Settings / Account Information'>
+            <Layout title={t('settings.label')}>
                 <div className='flex flex-col'>
-                    <TitleBar>Change Email</TitleBar>
+                    <TitleBar>{t('settings.change-email.label')}</TitleBar>
                     <form
                         className='flex w-[min(100%,350px)] flex-col gap-2 px-4 py-2'
                         onSubmit={onSubmit(handleSubmit)}
                     >
                         <p className='text-sm text-gray-400'>
-                            You will receive a confirmation email at your new
-                            email address.
+                            {t('settings.change-email.description')}
                         </p>
 
                         {user?.email && (
                             <p className='text-sm text-gray-400'>
-                                Your current email is{' '}
-                                {!user?.isEmailVerified && (
-                                    <span className='font-bold'>not</span>
-                                )}{' '}
-                                verified.
+                                {user?.isEmailVerified
+                                    ? t('settings.current-email-verified')
+                                    : t('settings.current-email-unverified')}
                             </p>
                         )}
 
                         <TextBox
-                            label='Email'
+                            label={t('settings.change-email.label')}
                             {...register('email')}
                             error={errors.email?.message}
                             disabled={success[0]}
@@ -92,12 +90,12 @@ export default function EmailPage() {
                         )}
                         {success[0] ? (
                             <div className='border border-green-400/40 bg-green-400/20 px-4 py-2 text-sm text-green-400'>
-                                Email changed successfully!{' '}
+                                {t('settings.change-email.success')}{' '}
                                 <Link
                                     to={`/verify-email/${success[1]}`}
                                     className='text-xs underline'
                                 >
-                                    Verify Email
+                                    {t('settings.change-email.verify')}
                                 </Link>
                             </div>
                         ) : (
@@ -105,7 +103,7 @@ export default function EmailPage() {
                                 submit
                                 disabled={isLoading || email === user?.email}
                             >
-                                Save
+                                {t('confirm')}
                             </Button>
                         )}
                     </form>

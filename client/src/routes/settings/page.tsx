@@ -3,44 +3,45 @@ import Layout from '../../components/layout/layout';
 import SettingsLink from './settings-link';
 import SettingsPageEmailInfo from './email-info';
 import TitleBar from '@/components/layout/titlebar';
+import { t } from '@/i18next';
 
 export default function SettingsPage() {
     return (
         <ProtectedRoute>
-            <Layout title='Settings'>
+            <Layout title={t('settings.label')}>
                 <div className='flex flex-col'>
-                    <TitleBar>Settings</TitleBar>
+                    <TitleBar>{t('settings.label')}</TitleBar>
                     <div className='flex flex-col border-b border-gray-800'>
                         <SettingsPageEmailInfo />
                         <SettingsLink
                             to='/settings/account-info'
-                            title='Account Information'
-                            subtitle='Manage your account information like name, username, and email'
+                            title={t('settings.account-info.label')}
+                            subtitle={t('settings.account-info.subtitle')}
                         />
                         <SettingsLink
                             to='/settings/change-password'
-                            title='Change Password'
-                            subtitle='Update your password to keep your account secure'
+                            title={t('settings.change-password.label')}
+                            subtitle={t('settings.change-password.subtitle')}
                         />
                         <SettingsLink
                             to='/settings/notifications'
-                            title='Notifications'
-                            subtitle='Manage your notification preferences'
+                            title={t('settings.notifications.label')}
+                            subtitle={t('settings.notifications.subtitle')}
                         />
                         <SettingsLink
                             to='/settings/language'
-                            title='Language'
-                            subtitle='Manage your language preferences'
+                            title={t('settings.language.label')}
+                            subtitle={t('settings.language.subtitle')}
                         />
                         <SettingsLink
                             to='/help'
-                            title='Help'
-                            subtitle='Get assistance with your account and settings'
+                            title={t('settings.help.label')}
+                            subtitle={t('settings.help.subtitle')}
                         />
                         <SettingsLink
                             to='/sign-out'
-                            title='Sign Out'
-                            subtitle='Sign out of your account'
+                            title={t('settings.sign-out.label')}
+                            subtitle={t('settings.sign-out.subtitle')}
                         />
                     </div>
                 </div>

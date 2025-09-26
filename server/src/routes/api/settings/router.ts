@@ -10,7 +10,7 @@ const settingsRouter = express.Router();
 
 settingsRouter.post('/name', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const validation = nameSchema.safeParse(req.body.name);
@@ -59,7 +59,7 @@ settingsRouter.post('/name', async (req, res) => {
 
 settingsRouter.post('/username', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const validation = usernameSchema.safeParse(req.body.username);
@@ -137,7 +137,7 @@ async function sendVerificationEmail(userId: string) {
 
 settingsRouter.post('/email', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const timePassed =
@@ -207,7 +207,7 @@ settingsRouter.post('/email', async (req, res) => {
 
 settingsRouter.post('/email/resend-verification', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     try {
@@ -249,7 +249,7 @@ settingsRouter.post('/email/resend-verification', async (req, res) => {
 
 settingsRouter.post('/email/verify', async (req, res) => {
     if (!req.user) {
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     }
 
     const token = req.body.token as string | undefined;

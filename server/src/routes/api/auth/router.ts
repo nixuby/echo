@@ -9,18 +9,26 @@ const authRouter = express.Router();
 
 authRouter.get('/me', (req, res) => {
     if (!req.user)
-        return res.status(401).json({ errors: { root: 'Unauthorized' } });
+        return res.status(401).json({ errors: { root: 'auth.unauthorized' } });
     res.json({ user: req.user });
 });
 
 authRouter.post('/sign-in', (req, res, next) => {
+    const { username, password } = req.body ?? {};
+
+    if (!username || !password) {
+        return res.status(400).json({
+            errors: { root: 'auth.missing-credentials' },
+        });
+    }
+
     passport.authenticate('local', (err: any, user: any, info: any) => {
         if (err) return next(err);
 
         if (!user) {
             return res.status(401).json({
                 errors: {
-                    root: info?.message || 'Invalid username or password',
+                    root: info?.message || 'auth.invalid-credentials',
                 },
             });
         }
@@ -37,13 +45,13 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     if (!username || !password || !confirm || !tos) {
         return res.status(400).json({
-            errors: { root: 'Missing fields' },
+            errors: { root: 'auth.missing-fields' },
         });
     }
 
     if (password !== confirm) {
         return res.status(400).json({
-            errors: { confirm: 'Passwords do not match' },
+            errors: { confirm: 'auth.password.mismatch' },
         });
     }
 
@@ -52,7 +60,7 @@ authRouter.post('/create-account', async (req, res, next) => {
     if (!validation.success) {
         return res.status(400).json({
             errors: {
-                root: 'Validation failed',
+                root: 'validation-failed',
                 // Other validation errors are handled on the client
             },
         });
@@ -64,7 +72,7 @@ authRouter.post('/create-account', async (req, res, next) => {
 
     if (existing)
         return res.status(409).json({
-            errors: { username: 'Username already taken' },
+            errors: { username: 'username.taken' },
         });
 
     const hash = await hashPassword(password);
@@ -82,7 +90,7 @@ authRouter.post('/create-account', async (req, res, next) => {
         if (err2)
             return res
                 .status(500)
-                .json({ errors: { root: 'Auto-login failed' } });
+                .json({ errors: { root: 'auth.autologin-failed' } });
         res.json({ user: safeUser });
     });
 });

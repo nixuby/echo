@@ -7,6 +7,7 @@ import TitleBar from '@/components/layout/titlebar';
 import { useAppSelector } from '@/redux/hooks';
 import CreatePost from '@/components/post/create-post';
 import RepliesPostFeed from '@/components/post/replies-post-feed';
+import { t } from '@/i18next';
 
 export type PostPageParams = {
     id: string;
@@ -20,15 +21,15 @@ export default function PostPage() {
     const { data: post, isSuccess } = useGetPostQuery(params.id);
 
     return (
-        <Layout title='Post'>
-            <TitleBar>Post</TitleBar>
+        <Layout title={t('post.label')}>
+            <TitleBar>{t('post.label')}</TitleBar>
             {isSuccess ? <Post clickable={false} post={post} /> : 'Loading...'}
             <section className='flex flex-col'>
                 <h3
                     id='Reply'
                     className='border-b border-gray-800 px-4 py-2 text-xl font-bold'
                 >
-                    Replies&nbsp;&middot;&nbsp;
+                    {t('post.replies')}&nbsp;&middot;&nbsp;
                     <span className='font-normal text-gray-400'>
                         {post?.replyCount}
                     </span>

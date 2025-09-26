@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react';
 import Button from '../shared/button';
 import { XMarkIcon } from '@heroicons/react/20/solid';
+import { t } from '@/i18next';
 
 export type AttachedFile = [file: File, urlObject?: string];
 
@@ -49,7 +50,7 @@ export default function AttachDialog({
     return (
         <div className='flex max-h-[75vh] w-[min(90vw,350px)] flex-col overflow-y-auto border border-gray-800 bg-gray-950 text-white'>
             <h3 className='border-b border-gray-800 px-4 py-2 font-semibold'>
-                Attach Media
+                {t('post.attach-media')}
             </h3>
             <div className='grid grid-cols-2 gap-2 border-b border-gray-800 px-4 py-2'>
                 {files.map(([file, urlObject], index) => (
@@ -73,7 +74,7 @@ export default function AttachDialog({
                 ))}
                 {files.length === 0 && (
                     <p className='col-span-2 text-center text-sm text-gray-400'>
-                        No files attached. Click "Add" to attach files.
+                        {t('post.no-files-attached')}
                     </p>
                 )}
             </div>
@@ -87,10 +88,10 @@ export default function AttachDialog({
                     className='hidden'
                 />
                 <Button size='small' onClick={handleClickAdd}>
-                    Add
+                    {t('add')}
                 </Button>
                 <Button size='small' onClick={handleClickFinish}>
-                    Finish
+                    {t('confirm')}
                 </Button>
             </div>
         </div>
