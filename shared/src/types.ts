@@ -2,6 +2,7 @@ export type ClientUser = {
     username: string;
     name: string | null;
     bio: string;
+    language: string;
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null;
@@ -14,6 +15,7 @@ export type OtherClientUser = {
     username: string;
     name: string | null;
     bio: string;
+    language: string;
     isVerified: boolean;
     createdAt: string;
     followerCount: number;
@@ -27,6 +29,7 @@ export type ServerUser = {
     username: string;
     name: string | null;
     bio: string;
+    language: string;
     email: string | null;
     isEmailVerified: boolean;
     emailVerifiedAt: string | null; // Date string

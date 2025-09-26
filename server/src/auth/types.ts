@@ -22,6 +22,7 @@ export function toSafeUser(user: any): User {
                 ? user.emailVerifiedAt
                 : user.emailVerifiedAt.toISOString(),
         bio: user.bio,
+        language: user.language,
         isVerified: user.isVerified,
         notificationCount: user.notificationCount ?? 0,
         createdAt: user.createdAt.toISOString(),

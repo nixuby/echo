@@ -10,7 +10,7 @@ export type StateLoaderProps = {
 
 // Fetch state from the server
 export default function StateLoader({ children }: StateLoaderProps) {
-    const LANG = 'en'; // TODO: load from state
+    const LANG = 'en';
 
     const [isEverythingLoaded, setIsEverythingLoaded] = useState(false);
 
@@ -18,8 +18,9 @@ export default function StateLoader({ children }: StateLoaderProps) {
     const dispatch = useAppDispatch();
 
     useEffect(() => {
-        initalizeI18next(LANG);
-    });
+        if (!meQuery.isSuccess) return;
+        initalizeI18next(meQuery.data.user.language || LANG);
+    }, [meQuery.data]);
 
     useEffect(() => {
         if (meQuery.isSuccess) {

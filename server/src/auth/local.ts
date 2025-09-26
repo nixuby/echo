@@ -42,6 +42,7 @@ export const localStrategy = new passportLocal.Strategy(
                 isEmailVerified: user.isEmailVerified,
                 emailVerifiedAt: user.emailVerifiedAt?.toISOString() ?? null,
                 bio: user.bio,
+                language: user.language,
                 isVerified: user.isVerified,
                 createdAt: user.createdAt.toISOString(),
                 notificationCount: user._count.notifications,
