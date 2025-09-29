@@ -61,6 +61,33 @@ export const authApi = createApi({
                 } catch {}
             },
         }),
+
+        getOAuthProfileInfo: builder.query<
+            {
+                uid: string;
+                name: string;
+                picture: string;
+                exists: boolean;
+            },
+            { provider: string; accessToken: string }
+        >({
+            query: ({ provider, accessToken }) => ({
+                url: `oauth/${provider}/profile-info`,
+                method: 'GET',
+                params: { accessToken },
+            }),
+        }),
+
+        oauthSignIn: builder.mutation<
+            { user: ClientUser },
+            { provider: string; accessToken: string; username?: string }
+        >({
+            query: ({ provider, accessToken, username }) => ({
+                url: `oauth/${provider}/sign-in`,
+                method: 'POST',
+                body: { accessToken, username },
+            }),
+        }),
     }),
 });
 
@@ -69,4 +96,6 @@ export const {
     useSignInMutation,
     useCreateAccountMutation,
     useSignOutMutation,
+    useGetOAuthProfileInfoQuery,
+    useOauthSignInMutation,
 } = authApi;

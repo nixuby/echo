@@ -19,6 +19,7 @@ import ChatPage from './chat/[id]';
 import RootLayout from './root-layout';
 import VerifyEmailPage from './verify-email/[token]/page';
 import LanguagePage from './settings/language/page';
+import GoogleOAuthPage from './(auth)/oauth/google/page';
 
 const router = createBrowserRouter([
     {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
             {
                 path: 'sign-out',
                 Component: SignOutPage,
+            },
+            {
+                path: 'oauth/google',
+                Component: GoogleOAuthPage,
             },
             {
                 path: 'settings',

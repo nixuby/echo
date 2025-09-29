@@ -25,6 +25,7 @@ function need<T>(key: string, type: Type = 'string'): T {
 const env = {
     ENV: need<string>('VITE_ENV'),
     API_URL: need<string>('VITE_API_URL'),
+    GOOGLE_OAUTH_URL: need<string>('VITE_GOOGLE_OAUTH_URL'),
 };
 
 export default env;
