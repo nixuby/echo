@@ -4,9 +4,7 @@
         "name": "Español",
 
         "home": "Inicio",
-        "communities": "Comunidades",
         "premium": "Premium",
-        "career": "Carrera",
         "sign-in": "Iniciar sesión",
         "sign-out": "Cerrar sesión",
         "create-account": "Crear cuenta",
@@ -25,6 +23,8 @@
         "signing-out-please-wait": "Cerrando sesión, por favor espera...",
         "select-a-file": "Seleccionar un archivo",
         "oauth-create-account-info": "Podrás cambiar tu nombre, foto de perfil y nombre de usuario después de crear tu cuenta",
+        "explore": "Explorar",
+        "saved": "Guardado",
 
         "add": "Agregar",
         "confirm": "Confirmar",

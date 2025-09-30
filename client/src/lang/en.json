@@ -4,9 +4,7 @@
         "name": "English",
 
         "home": "Home",
-        "communities": "Communities",
         "premium": "Premium",
-        "career": "Career",
         "sign-in": "Sign In",
         "sign-out": "Sign Out",
         "create-account": "Create Account",
@@ -25,6 +23,8 @@
         "signing-out-please-wait": "Signing out, please wait...",
         "select-a-file": "Select a File",
         "oauth-create-account-info": "You will be able to change your name, profile picture and username after creating your account",
+        "explore": "Explore",
+        "saved": "Saved",
 
         "add": "Add",
         "confirm": "Confirm",

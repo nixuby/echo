@@ -3,12 +3,12 @@ import NavBarLink from './navbar-link';
 import clsx from 'clsx/lite';
 import {
     BellIcon,
-    BriefcaseIcon,
+    BookmarkIcon,
     ChatBubbleLeftIcon,
     Cog6ToothIcon,
     HomeIcon,
+    MagnifyingGlassIcon,
     StarIcon,
-    UserGroupIcon,
     UserIcon,
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
@@ -40,6 +40,13 @@ export default function NavBar({ mobile }: NavBarProps) {
                         <span>{t('home')}</span>
                     </NavBarLink>
                     <NavBarLink
+                        to='/explore'
+                        active={pathname.startsWith('/explore')}
+                    >
+                        <MagnifyingGlassIcon className='size-6' />
+                        <span>{t('explore')}</span>
+                    </NavBarLink>
+                    <NavBarLink
                         to='/notifications'
                         active={pathname.startsWith('/notifications')}
                     >
@@ -66,11 +73,11 @@ export default function NavBar({ mobile }: NavBarProps) {
                         <span>{t('messages.label')}</span>
                     </NavBarLink>
                     <NavBarLink
-                        to='/communities'
-                        active={pathname.startsWith('/communities')}
+                        to='/saved'
+                        active={pathname.startsWith('/saved')}
                     >
-                        <UserGroupIcon className='size-6' />
-                        <span>{t('communities')}</span>
+                        <BookmarkIcon className='size-6' />
+                        <span>{t('saved')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/premium'
@@ -78,13 +85,6 @@ export default function NavBar({ mobile }: NavBarProps) {
                     >
                         <StarIcon className='size-6' />
                         <span>{t('premium')}</span>
-                    </NavBarLink>
-                    <NavBarLink
-                        to='/career'
-                        active={pathname.startsWith('/career')}
-                    >
-                        <BriefcaseIcon className='size-6' />
-                        <span>{t('career')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/settings'
