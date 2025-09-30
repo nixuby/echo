@@ -1,8 +1,8 @@
 import express from 'express';
-import postsRouter from './posts/router.js';
-import authRouter from './auth/router.js';
-import settingsRouter from './settings/router.js';
-import usersRouter from './users/router.js';
+import postsRouter from './posts/index.js';
+import authRouter from './auth/index.js';
+import settingsRouter from './settings/index.js';
+import usersRouter from './users/index.js';
 
 const apiRouter = express.Router();
 

@@ -1,11 +1,11 @@
 import express from 'express';
-import rootRouter from './routes/router.js';
 import cors from 'cors';
 import session from 'express-session';
 import env from './env.js';
 import passport from './auth/passport.js';
 import helmet from 'helmet';
 import fileStore from 'session-file-store';
+import apiRouter from './api/router.js';
 
 const FileStore = fileStore(session);
 
@@ -47,8 +47,8 @@ app.use(
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Router
-app.use(rootRouter);
+// API router
+app.use('/api', apiRouter);
 
 // Listen for requests
 app.listen(env.PORT, env.HOST, (error) => {
