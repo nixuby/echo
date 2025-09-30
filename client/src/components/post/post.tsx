@@ -1,7 +1,4 @@
-import {
-    CheckBadgeIcon,
-    EllipsisVerticalIcon,
-} from '@heroicons/react/20/solid';
+import { CheckBadgeIcon } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
 import PostControls from './post-controls';
 import { type Post as TPost } from '@shared/types';
@@ -41,11 +38,6 @@ export default function Post({
         window.scrollTo(0, 0);
     }
 
-    function handleClickMenu(ev: React.MouseEvent<HTMLButtonElement>) {
-        ev.stopPropagation();
-        console.log('Menu');
-    }
-
     return (
         <article
             onClick={clickable ? navigateToPost : undefined}
@@ -78,43 +70,38 @@ export default function Post({
                     />
                 </button>
                 <div className='flex flex-1 flex-col gap-2'>
-                    <div className='flex justify-between'>
-                        <div className='flex items-center gap-1 text-sm'>
-                            <button
-                                type='button'
-                                role='link'
-                                onClick={navigateToUser}
-                                className='flex cursor-pointer items-center gap-1 hover:underline'
-                            >
-                                {originalPost.author.name && (
-                                    <>
-                                        <span className='font-bold'>
-                                            {originalPost.author.name}
-                                        </span>
-                                        {originalPost.author.isVerified && (
-                                            <CheckBadgeIcon className='size-4 text-indigo-600' />
-                                        )}
-                                    </>
-                                )}
-                                <span className='flex items-center gap-1 text-gray-600'>
-                                    @{originalPost.author.username}
-                                    {!originalPost.author.name &&
-                                        originalPost.author.isVerified && (
-                                            <CheckBadgeIcon className='size-4 text-indigo-600' />
-                                        )}
-                                </span>
-                            </button>
-                            <span>
-                                &middot;{' '}
-                                {formatRelativeDate(
-                                    t('locale'),
-                                    new Date(originalPost.createdAt),
-                                )}
+                    <div className='flex items-center gap-1 text-sm'>
+                        <button
+                            type='button'
+                            role='link'
+                            onClick={navigateToUser}
+                            className='flex cursor-pointer items-center gap-1 hover:underline'
+                        >
+                            {originalPost.author.name && (
+                                <>
+                                    <span className='font-bold'>
+                                        {originalPost.author.name}
+                                    </span>
+                                    {originalPost.author.isVerified && (
+                                        <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                    )}
+                                </>
+                            )}
+                            <span className='flex items-center gap-1 text-gray-600'>
+                                @{originalPost.author.username}
+                                {!originalPost.author.name &&
+                                    originalPost.author.isVerified && (
+                                        <CheckBadgeIcon className='size-4 text-indigo-600' />
+                                    )}
                             </span>
-                        </div>
-                        <button type='button' onClick={handleClickMenu}>
-                            <EllipsisVerticalIcon className='size-5' />
                         </button>
+                        <span>
+                            &middot;{' '}
+                            {formatRelativeDate(
+                                t('locale'),
+                                new Date(originalPost.createdAt),
+                            )}
+                        </span>
                     </div>
                     <div
                         className={clsx(
@@ -125,15 +112,7 @@ export default function Post({
                         {originalPost.content}
                     </div>
                     <PostAttachments attachments={originalPost.attachments} />
-                    <PostControls
-                        id={post.id}
-                        originalId={originalPost.id}
-                        likeCount={originalPost.likeCount}
-                        likedByMe={originalPost.likedByMe}
-                        replyCount={originalPost.replyCount}
-                        repostCount={originalPost.repostCount}
-                        repostedByMe={originalPost.repostedByMe}
-                    />
+                    <PostControls id={post.id} post={originalPost} />
                 </div>
             </div>
         </article>

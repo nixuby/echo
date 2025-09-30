@@ -7,32 +7,20 @@ import {
     ArrowPathRoundedSquareIcon,
     BookmarkIcon,
     ChatBubbleLeftIcon,
+    EllipsisHorizontalIcon,
     HeartIcon,
-    ShareIcon,
 } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
 import playButtonAnimation from './post-button-animation';
 import { useAppSelector } from '@/redux/hooks';
+import type { Post } from '@shared/types';
 
 export type PostControlsProps = {
     id: string;
-    originalId: string;
-    likeCount: number;
-    likedByMe: boolean;
-    replyCount: number;
-    repostCount: number;
-    repostedByMe: boolean;
+    post: Post;
 };
 
-export default function PostControls({
-    id,
-    originalId,
-    likeCount,
-    likedByMe,
-    replyCount,
-    repostCount,
-    repostedByMe,
-}: PostControlsProps) {
+export default function PostControls({ id, post }: PostControlsProps) {
     const navigate = useNavigate();
     const [likePost] = useLikePostMutation();
     const [repostPost] = useRepostPostMutation();
@@ -41,26 +29,28 @@ export default function PostControls({
     function handleLike(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
         if (!user) return;
-        if (!likedByMe)
+        if (!post.likedByMe) {
             playButtonAnimation(id, '.__like-btn-container', 'bg-rose-500');
-        likePost({ id: originalId });
+        }
+        likePost({ id: post.id });
     }
 
     function handleReply(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        navigate(`/post/${originalId}#Reply`);
+        navigate(`/post/${post.id}#Reply`);
     }
 
     function handleRepost(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
         if (!user) return;
-        if (!repostedByMe)
+        if (!post.repostedByMe) {
             playButtonAnimation(
                 id,
                 '.__repost-btn-container',
                 'bg-emerald-500',
             );
-        repostPost({ id: originalId });
+        }
+        repostPost({ id: post.id });
     }
 
     function handleBookmark(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -68,9 +58,8 @@ export default function PostControls({
         console.log('Bookmark');
     }
 
-    function handleShare(ev: React.MouseEvent<HTMLButtonElement>) {
+    function handleMenu(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        console.log('Share');
     }
 
     return (
@@ -84,11 +73,11 @@ export default function PostControls({
                     onClick={handleLike}
                     className={clsx(
                         'relative z-5 -mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300',
-                        likedByMe && 'text-rose-500',
+                        post.likedByMe && 'text-rose-500',
                     )}
                 >
                     <HeartIcon className='size-5' />
-                    <span>{likeCount}</span>
+                    <span>{post.likeCount}</span>
                 </button>
             </div>
             <div>
@@ -98,7 +87,7 @@ export default function PostControls({
                     className='-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300'
                 >
                     <ChatBubbleLeftIcon className='size-5' />
-                    <span>{replyCount}</span>
+                    <span>{post.replyCount}</span>
                 </button>
             </div>
             <div className='__repost-btn-container relative'>
@@ -107,19 +96,27 @@ export default function PostControls({
                     onClick={handleRepost}
                     className={clsx(
                         '-mx-2 -my-1 flex cursor-pointer items-center gap-1.5 px-2 py-1 transition-colors hover:text-indigo-300',
-                        repostedByMe && 'text-emerald-500',
+                        post.repostedByMe && 'text-emerald-500',
                     )}
                 >
                     <ArrowPathRoundedSquareIcon className='size-5' />
-                    <span>{repostCount}</span>
+                    <span>{post.repostCount}</span>
                 </button>
             </div>
             <div className='flex items-center justify-end gap-1'>
-                <button type='button' onClick={handleBookmark}>
+                <button
+                    type='button'
+                    onClick={handleBookmark}
+                    className='cursor-pointer transition hover:text-indigo-300'
+                >
                     <BookmarkIcon className='size-5' />
                 </button>
-                <button type='button' onClick={handleShare}>
-                    <ShareIcon className='size-5' />
+                <button
+                    type='button'
+                    onClick={handleMenu}
+                    className='cursor-pointer transition hover:text-indigo-300'
+                >
+                    <EllipsisHorizontalIcon className='size-5' />
                 </button>
             </div>
         </div>
