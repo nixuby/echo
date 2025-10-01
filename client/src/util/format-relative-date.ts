@@ -1,9 +1,18 @@
 import { t } from '@/i18next';
 
+const cache: Record<
+    string,
+    { rel: Intl.RelativeTimeFormat; date: Intl.DateTimeFormat }
+> = {};
+
 function getFormat(locale: string) {
+    if (cache[locale]) {
+        return cache[locale];
+    }
     const rel = new Intl.RelativeTimeFormat(locale, { style: 'narrow' });
     const date = new Intl.DateTimeFormat(locale);
-    return { rel, date };
+    cache[locale] = { rel, date };
+    return cache[locale];
 }
 
 // Less than a minute ago -> "just now"
