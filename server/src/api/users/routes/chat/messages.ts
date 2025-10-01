@@ -8,6 +8,7 @@ usersRouter.get('/chat/:chatId/messages', async (req, res) => {
 
     const chatId = req.params.chatId;
     const page = parseInt((req.query.page as string) ?? '0', 10);
+    const offset = parseInt((req.query.offset as string) ?? '0', 10);
 
     if (Number.isNaN(page) || page < 0) {
         return res.status(400).json({ errors: { root: 'Invalid request' } });
@@ -48,12 +49,12 @@ usersRouter.get('/chat/:chatId/messages', async (req, res) => {
                 createdAt: true,
             },
             orderBy: { createdAt: 'desc' },
-            skip: page * 20,
+            skip: page * 20 + offset,
             take: 20,
         });
 
         return messages;
     });
 
-    if (messages) res.json(messages);
+    if (messages) res.json({ messages, last: messages.length < 20 });
 });

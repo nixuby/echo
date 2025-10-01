@@ -1,6 +1,7 @@
 import env from '@/env';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
+    ClientMessage,
     ClientNotification,
     NotificationSettings,
     NotificationType,
@@ -173,10 +174,7 @@ export const usersApi = createApi({
                         'getMessages',
                         chatId,
                         (draft) => {
-                            const needNewPage =
-                                draft.pages[draft.pages.length - 1].length < 20;
-                            if (needNewPage) draft.pages.unshift([]);
-                            draft.pages[0].unshift({
+                            draft.pages[0].messages.unshift({
                                 id: tempId,
                                 sender: {
                                     name: user.name,
@@ -186,6 +184,10 @@ export const usersApi = createApi({
                                 content,
                                 createdAt: new Date().toISOString(),
                             });
+
+                            draft.pageParams[
+                                draft.pageParams.length - 1
+                            ].offset += 1;
                         },
                     ),
                 );
@@ -198,9 +200,17 @@ export const usersApi = createApi({
                                 'getMessages',
                                 chatId,
                                 (draft) => {
-                                    const msg = draft.pages
-                                        .flat()
-                                        .find((m) => m.id === tempId);
+                                    // Update id
+
+                                    const msg = (() => {
+                                        for (const page of draft.pages) {
+                                            const m = page.messages.find(
+                                                (m) => m.id === tempId,
+                                            );
+                                            if (m) return m;
+                                        }
+                                    })();
+
                                     if (msg) {
                                         msg.id = res.data.id;
                                     }
@@ -215,29 +225,29 @@ export const usersApi = createApi({
         }),
 
         getMessages: builder.infiniteQuery<
-            Array<{
-                id: string;
-                sender: {
-                    name: string | null;
-                    username: string;
-                    isVerified: boolean;
-                };
-                content: string;
-                createdAt: string;
-            }>,
+            {
+                messages: Array<ClientMessage>;
+                last: boolean;
+            },
             string,
-            number
+            {
+                page: number;
+                offset: number;
+            }
         >({
             infiniteQueryOptions: {
-                initialPageParam: 0,
+                initialPageParam: { page: 0, offset: 0 },
                 getNextPageParam: (lastPage, _allPages, lastPageParam) =>
-                    lastPage.length === 20 ? lastPageParam + 1 : null,
+                    !lastPage.last
+                        ? {
+                              page: lastPageParam.page + 1,
+                              offset: lastPageParam.offset,
+                          }
+                        : null,
             },
             query: ({ pageParam, queryArg }) => ({
                 url: `/chat/${queryArg}/messages`,
-                params: {
-                    page: pageParam,
-                },
+                params: pageParam,
             }),
             providesTags: (_result, _error, chatId) => [
                 { type: 'User', id: chatId },

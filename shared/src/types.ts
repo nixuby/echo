@@ -123,3 +123,16 @@ export type NotificationType = ServerNotification['type'];
 export const NOTIFICATION_TYPES: NotificationType[] = ['new_follower', 'post_liked', 'post_replied', 'post_shared'];
 
 export type NotificationSettings = Record<NotificationType, boolean>;
+
+// Messages
+
+export type ClientMessage = {
+    id: string;
+    sender: {
+        name: string | null;
+        username: string;
+        isVerified: boolean;
+    };
+    content: string;
+    createdAt: string;
+};
