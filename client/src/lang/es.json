@@ -77,7 +77,8 @@
             "chat": "Chat",
             "message": "Mensaje",
             "new-chat": "Nuevo chat",
-            "send": "Enviar"
+            "send": "Enviar",
+            "just-now": "justo ahora"
         },
 
         "settings": {

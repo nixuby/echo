@@ -1,3 +1,5 @@
+import { t } from '@/i18next';
+
 function getFormat(locale: string) {
     const rel = new Intl.RelativeTimeFormat(locale, { style: 'narrow' });
     const date = new Intl.DateTimeFormat(locale);
@@ -22,7 +24,7 @@ export default function formatRelativeDate(locale: string, date: Date) {
     const { rel, date: dtf } = getFormat(locale);
 
     if (diff < MINUTE_MS) {
-        return 'just now';
+        return t('messages.just-now');
     } else if (diff < HOUR_MS) {
         return rel.format(-Math.floor(diff / MINUTE_MS), 'minute');
     } else if (diff < DAY_MS) {
