@@ -173,7 +173,10 @@ export const usersApi = createApi({
                         'getMessages',
                         chatId,
                         (draft) => {
-                            draft.push({
+                            const needNewPage =
+                                draft.pages[draft.pages.length - 1].length < 20;
+                            if (needNewPage) draft.pages.unshift([]);
+                            draft.pages[0].unshift({
                                 id: tempId,
                                 sender: {
                                     name: user.name,
@@ -195,9 +198,9 @@ export const usersApi = createApi({
                                 'getMessages',
                                 chatId,
                                 (draft) => {
-                                    const msg = draft.find(
-                                        (m) => m.id === tempId,
-                                    );
+                                    const msg = draft.pages
+                                        .flat()
+                                        .find((m) => m.id === tempId);
                                     if (msg) {
                                         msg.id = res.data.id;
                                     }
@@ -211,7 +214,7 @@ export const usersApi = createApi({
             },
         }),
 
-        getMessages: builder.query<
+        getMessages: builder.infiniteQuery<
             Array<{
                 id: string;
                 sender: {
@@ -222,9 +225,24 @@ export const usersApi = createApi({
                 content: string;
                 createdAt: string;
             }>,
-            string
+            string,
+            number
         >({
-            query: (chatId) => `/chat/${chatId}/messages`,
+            infiniteQueryOptions: {
+                initialPageParam: 0,
+                getNextPageParam: (lastPage, _allPages, lastPageParam) =>
+                    lastPage.length === 20 ? lastPageParam + 1 : null,
+            },
+            query: ({ pageParam, queryArg }) => ({
+                url: `/chat/${queryArg}/messages`,
+                params: {
+                    page: pageParam,
+                },
+            }),
+            providesTags: (_result, _error, chatId) => [
+                { type: 'User', id: chatId },
+                'ChatList',
+            ],
         }),
     }),
 });
@@ -241,5 +259,5 @@ export const {
     useGetChatsQuery,
     useCreateChatMutation,
     useSendMessageMutation,
-    useGetMessagesQuery,
+    useGetMessagesInfiniteQuery,
 } = usersApi;
