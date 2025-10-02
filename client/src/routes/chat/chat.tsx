@@ -1,5 +1,8 @@
 import { useAppSelector } from '@/redux/hooks';
-import { useGetMessagesInfiniteQuery } from '@/redux/user/users-api';
+import {
+    useGetMessagesInfiniteQuery,
+    usePollMessagesQuery,
+} from '@/redux/user/users-api';
 import Message from './message';
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { t } from '@/i18next';
@@ -25,8 +28,17 @@ export default function Chat({ ref, chatId }: ChatProps) {
     const messages =
         data?.pages.flatMap((page) => page.messages).reverse() ?? [];
     const [loaded, setLoaded] = useState(false);
-
-    console.log({ hasNextPage });
+    const { data: newMessages } = usePollMessagesQuery(
+        {
+            chatId,
+            since: messages.length
+                ? messages[messages.length - 1].createdAt
+                : undefined,
+        },
+        {
+            pollingInterval: 1000,
+        },
+    );
 
     useEffect(() => {
         if (isSuccess && data.pages.length > 0 && !loaded) {
@@ -50,6 +62,17 @@ export default function Chat({ ref, chatId }: ChatProps) {
         observer.observe(loadMoreRef.current);
         return () => observer.disconnect();
     });
+
+    useEffect(() => {
+        // if scrollbar is at the bottom, scroll to bottom when new messages arrive
+        if (
+            ref.current &&
+            ref.current.scrollHeight - ref.current.scrollTop <=
+                ref.current.clientHeight + 100
+        ) {
+            ref.current.scrollTo(0, ref.current.scrollHeight);
+        }
+    }, [newMessages]);
 
     let previousDate: Date = new Date(0);
     let previousUser: string = '';

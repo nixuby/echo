@@ -4,6 +4,7 @@ import './routes/chat/chat.js';
 import './routes/chat/chats.js';
 import './routes/chat/messages.js';
 import './routes/chat/new.js';
+import './routes/chat/poll.js';
 import './routes/bio.js';
 import './routes/follow.js';
 import './routes/followers.js';

@@ -254,6 +254,34 @@ export const usersApi = createApi({
                 'ChatList',
             ],
         }),
+
+        pollMessages: builder.query<
+            Array<ClientMessage>,
+            { chatId: string; since?: string }
+        >({
+            query: ({ chatId, since }) => ({
+                url: `/chat/${chatId}/poll`,
+                params: { since },
+            }),
+            async onQueryStarted({ chatId }, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: newMessages } = await queryFulfilled;
+                    if (newMessages.length === 0) return;
+                    dispatch(
+                        usersApi.util.updateQueryData(
+                            'getMessages',
+                            chatId,
+                            (draft) => {
+                                draft.pages[0].messages.unshift(...newMessages);
+                                draft.pageParams[
+                                    draft.pageParams.length - 1
+                                ].offset += newMessages.length;
+                            },
+                        ),
+                    );
+                } catch {}
+            },
+        }),
     }),
 });
 
@@ -270,4 +298,5 @@ export const {
     useCreateChatMutation,
     useSendMessageMutation,
     useGetMessagesInfiniteQuery,
+    usePollMessagesQuery,
 } = usersApi;
