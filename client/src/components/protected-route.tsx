@@ -1,5 +1,6 @@
 import { useAppSelector } from '@/redux/hooks';
 import { Navigate } from 'react-router';
+import Layout from './layout/layout';
 
 export type ProtectedRouteProps = {
     children?: React.ReactNode;
@@ -12,10 +13,12 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
     if (!user) {
         console.warn('Protected route');
         return (
-            <Navigate
-                replace
-                to={`/sign-in?redirectTo=${window.location.pathname}`}
-            />
+            <Layout>
+                <Navigate
+                    replace
+                    to={`/sign-in?redirectTo=${window.location.pathname}`}
+                />
+            </Layout>
         );
     }
 
