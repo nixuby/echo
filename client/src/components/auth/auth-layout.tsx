@@ -37,14 +37,11 @@ export default function AuthLayout({
                     <main>{children}</main>
                 </div>
                 <footer className='flex gap-2 text-xs text-gray-400'>
-                    <Link to='/about' className='text-nowrap hover:underline'>
-                        {t('about')}
-                    </Link>
                     <Link to='/tos' className='text-nowrap hover:underline'>
-                        {t('tos')}
+                        {t('terms')}
                     </Link>
                     <Link to='/privacy' className='text-nowrap hover:underline'>
-                        {t('privacy-policy')}
+                        {t('privacy')}
                     </Link>
                 </footer>
             </div>
