@@ -15,7 +15,7 @@ import { createAccountFormSchema } from '@shared/validation';
 import { useCreateAccountMutation } from '@/redux/auth/auth-api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setUser } from '@/redux/auth/auth-slice';
-import { t, tErr } from '@/i18next';
+import { changeLanguage, t, tErr } from '@/i18next';
 
 export default function CreateAccountPage() {
     const navigate = useNavigate();
@@ -48,6 +48,7 @@ export default function CreateAccountPage() {
             .unwrap()
             .then((res) => {
                 dispatch(setUser(res.user));
+                changeLanguage(res.user.language);
                 navigate('/');
             })
             .catch((res) => {

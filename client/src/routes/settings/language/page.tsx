@@ -1,13 +1,15 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import { t } from '@/i18next';
+import { changeLanguage as changeLanguageClt, t } from '@/i18next';
 import { useAppSelector } from '@/redux/hooks';
 import { useChangeLanguageMutation } from '@/redux/settings/settings-api';
 import LANGUAGES from '@shared/lang';
+import { useNavigate } from 'react-router';
 
 export default function LanguagePage() {
+    const navigate = useNavigate();
     const user = useAppSelector((s) => s.auth.user);
-    const [changeLanguage] = useChangeLanguageMutation();
+    const [changeLanguageSrv] = useChangeLanguageMutation();
 
     const currentLanguage =
         user?.language || localStorage.getItem('lang') || 'en';
@@ -19,13 +21,16 @@ export default function LanguagePage() {
         if (lang === currentLanguage) return;
 
         if (user) {
-            changeLanguage({ language: lang }).then(() => {
-                window.location.reload();
+            changeLanguageSrv({ language: lang }).then(() => {
+                changeLanguageClt(lang);
             });
         } else {
             localStorage.setItem('lang', lang);
-            window.location.reload();
+            changeLanguageClt(lang);
         }
+
+        // Force re-rendering the page to update texts
+        navigate(location.pathname, { replace: true });
     }
 
     return (

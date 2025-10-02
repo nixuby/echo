@@ -64,6 +64,10 @@ export function initalizeI18next(lng: string) {
     });
 }
 
+export function changeLanguage(lng?: string) {
+    i18next.changeLanguage(lng ? lng : localStorage.getItem('lang') || 'en');
+}
+
 const t = i18next.t;
 const tErr = (key?: string) => (key ? t(`errors.${key}`) : undefined);
 

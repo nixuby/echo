@@ -8,7 +8,7 @@ import AuthProviderButton from '@/components/auth/auth-provider-button';
 import { useSignInMutation } from '@/redux/auth/auth-api';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { setUser } from '@/redux/auth/auth-slice';
-import { t, tErr } from '@/i18next';
+import { changeLanguage, t, tErr } from '@/i18next';
 
 export default function SignInPage() {
     const navigate = useNavigate();
@@ -32,6 +32,7 @@ export default function SignInPage() {
             .unwrap()
             .then((res) => {
                 dispatch(setUser(res.user));
+                changeLanguage(res.user.language);
                 const redirectTo = searchParams.get('redirectTo') ?? '/';
                 navigate(redirectTo);
             })
