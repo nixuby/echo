@@ -1,5 +1,6 @@
 import { LanguageIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
+import HeaderSearchBar from './header-search';
 
 export default function Header() {
     return (
@@ -11,13 +12,7 @@ export default function Header() {
                 <img src='/echo.svg' alt='Logo' className='size-6' />
                 <h1>Echo</h1>
             </Link>
-
-            <input
-                type='text'
-                placeholder='Search'
-                className='grow border-l border-gray-800 px-4 transition-colors outline-none hover:bg-gray-900 focus:bg-gray-800 focus:ring'
-            />
-
+            <HeaderSearchBar />
             <Link
                 to='/settings/language'
                 className='flex items-center justify-center border-l border-gray-800 px-4 transition-colors hover:bg-gray-900'

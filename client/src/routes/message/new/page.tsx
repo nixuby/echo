@@ -16,9 +16,12 @@ export default function NewChatPage() {
     const [searchQuery, setSearchQuery] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const { data } = useSearchQuery(searchQuery, {
-        skip: searchQuery.length < 3,
-    });
+    const { data } = useSearchQuery(
+        { q: searchQuery },
+        {
+            skip: searchQuery.length < 3,
+        },
+    );
 
     const [createChat] = useCreateChatMutation();
 
@@ -63,30 +66,33 @@ export default function NewChatPage() {
                             {t('search')}
                         </Button>
                     </div>
-                    {data?.map((user) => (
-                        <button
-                            key={user.username}
-                            data-username={user.username}
-                            onClick={handleClickUser}
-                            className='flex cursor-pointer items-center gap-4 border-b border-gray-800 bg-gray-950 px-4 py-2 transition hover:bg-gray-900'
-                        >
-                            <img
-                                src={`${env.API_URL}/users/pic/${user.username}-sm`}
-                                alt='User Profile Picture'
-                                className='block size-12 rounded-full'
-                            />
-                            {user.name ? (
-                                <div className='flex flex-col'>
-                                    <span>{user.name}</span>
-                                    <span className='text-sm text-gray-400'>
-                                        @{user.username}
-                                    </span>
-                                </div>
-                            ) : (
-                                <div>@{user.username}</div>
-                            )}
-                        </button>
-                    ))}
+                    {data &&
+                        data.users &&
+                        data.users.map((user) => (
+                            <button
+                                key={user.username}
+                                type='button'
+                                data-username={user.username}
+                                onClick={handleClickUser}
+                                className='flex cursor-pointer items-center gap-4 border-b border-gray-800 bg-gray-950 px-4 py-2 transition hover:bg-gray-900'
+                            >
+                                <img
+                                    src={`${env.API_URL}/users/pic/${user.username}-sm`}
+                                    alt='User Profile Picture'
+                                    className='block size-12 rounded-full'
+                                />
+                                {user.name ? (
+                                    <div className='flex flex-col'>
+                                        <span>{user.name}</span>
+                                        <span className='text-left text-sm text-gray-400'>
+                                            @{user.username}
+                                        </span>
+                                    </div>
+                                ) : (
+                                    <div>@{user.username}</div>
+                                )}
+                            </button>
+                        ))}
                 </div>
             </Layout>
         </ProtectedRoute>

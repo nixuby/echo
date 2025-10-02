@@ -3,9 +3,11 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import type {
     ClientMessage,
     ClientNotification,
+    ClientUser,
     NotificationSettings,
     NotificationType,
     OtherClientUser,
+    Post,
 } from '@shared/types';
 import { authApi } from '../auth/auth-api';
 
@@ -104,16 +106,12 @@ export const usersApi = createApi({
         }),
 
         search: builder.query<
-            Array<{
-                name: string | null;
-                username: string;
-                isVerified: boolean;
-            }>,
-            string
+            { users?: Array<ClientUser>; posts?: Array<Post> },
+            { q: string; type?: string; limit?: number }
         >({
-            query: (q) => ({
+            query: (params) => ({
                 url: '/search',
-                params: { q },
+                params,
             }),
         }),
 

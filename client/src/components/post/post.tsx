@@ -11,12 +11,14 @@ import { t } from '@/i18next';
 export type PostProps = {
     clickable?: boolean;
     short?: boolean;
+    preview?: boolean;
     post: TPost;
 };
 
 export default function Post({
     clickable = true,
     short = false,
+    preview = false,
     post,
 }: PostProps) {
     const navigate = useNavigate();
@@ -112,7 +114,9 @@ export default function Post({
                         {originalPost.content}
                     </div>
                     <PostAttachments attachments={originalPost.attachments} />
-                    <PostControls id={post.id} post={originalPost} />
+                    {!preview && (
+                        <PostControls id={post.id} post={originalPost} />
+                    )}
                 </div>
             </div>
         </article>
