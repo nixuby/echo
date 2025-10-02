@@ -52,6 +52,7 @@ export default function Chat({ ref, chatId }: ChatProps) {
     });
 
     let previousDate: Date = new Date(0);
+    let previousUser: string = '';
 
     return (
         <div
@@ -68,15 +69,23 @@ export default function Chat({ ref, chatId }: ChatProps) {
             ) : null}
             <div className='grow' />
             {isSuccess &&
-                messages.map((msg) => {
+                messages.map((message) => {
                     const prevDate = previousDate;
-                    previousDate = new Date(msg.createdAt);
+                    const prevUser = previousUser;
+
+                    previousDate = new Date(message.createdAt);
+                    previousUser = message.sender.username;
+
+                    const datesDifferent = areDaysDifferent(
+                        prevDate,
+                        new Date(message.createdAt),
+                    );
+
+                    const usersDifferent = message.sender.username !== prevUser;
+
                     return (
-                        <Fragment key={msg.id}>
-                            {areDaysDifferent(
-                                prevDate,
-                                new Date(msg.createdAt),
-                            ) && (
+                        <Fragment key={message.id}>
+                            {datesDifferent && (
                                 <div className='relative'>
                                     <div className='absolute top-1/2 left-0 z-0 h-px w-full bg-gray-600' />
                                     <div className='relative z-1 flex w-full justify-center'>
@@ -86,14 +95,17 @@ export default function Chat({ ref, chatId }: ChatProps) {
                                                 {
                                                     dateStyle: 'medium',
                                                 },
-                                            ).format(new Date(msg.createdAt))}
+                                            ).format(
+                                                new Date(message.createdAt),
+                                            )}
                                         </span>
                                     </div>
                                 </div>
                             )}
                             <Message
-                                you={msg.sender.username === user?.username}
-                                {...msg}
+                                you={message.sender.username === user?.username}
+                                message={message}
+                                details={usersDifferent || datesDifferent}
                             />
                         </Fragment>
                     );
