@@ -2,6 +2,7 @@ import Button from '@/components/shared/button';
 import TextBox from '@/components/shared/textbox';
 import { t } from '@/i18next';
 import { useSendMessageMutation } from '@/redux/user/users-api';
+import { PaperAirplaneIcon } from '@heroicons/react/20/solid';
 import { useState } from 'react';
 
 export type CreateMessageProps = {
@@ -16,8 +17,15 @@ export default function CreateMessage({
     const [sendMessage] = useSendMessageMutation();
     const [input, setInput] = useState('');
 
+    function handleKeyDown(ev: React.KeyboardEvent) {
+        if (ev.key === 'Enter' && !ev.shiftKey) {
+            ev.preventDefault();
+            handleClick();
+        }
+    }
+
     function handleClick() {
-        if (!chatId) return;
+        if (!chatId || input.trim().length === 0) return;
         setInput('');
         sendMessage({ chatId, content: input }).then(() => {
             onMessageSent?.();
@@ -34,8 +42,11 @@ export default function CreateMessage({
                 label={t('messages.message')}
                 value={input}
                 onChange={handleChange}
+                onKeyDown={handleKeyDown}
             />
-            <Button onClick={handleClick}>{t('messages.send')}</Button>
+            <Button onClick={handleClick}>
+                <PaperAirplaneIcon className='size-6' />
+            </Button>
         </div>
     );
 }
