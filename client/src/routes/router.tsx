@@ -20,6 +20,8 @@ import RootLayout from './root-layout';
 import VerifyEmailPage from './verify-email/[token]/page';
 import LanguagePage from './settings/language/page';
 import GoogleOAuthPage from './(auth)/oauth/google/page';
+import TosPage from './(info)/tos/page';
+import PrivacyPolicyPage from './(info)/privacy/page';
 
 const router = createBrowserRouter([
     {
@@ -97,6 +99,14 @@ const router = createBrowserRouter([
             {
                 path: 'verify-email/:token',
                 Component: VerifyEmailPage,
+            },
+            {
+                path: 'tos',
+                Component: TosPage,
+            },
+            {
+                path: 'privacy',
+                Component: PrivacyPolicyPage,
             },
             {
                 path: ':id',
