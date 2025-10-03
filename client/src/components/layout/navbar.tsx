@@ -7,8 +7,6 @@ import {
     ChatBubbleLeftIcon,
     Cog6ToothIcon,
     HomeIcon,
-    MagnifyingGlassIcon,
-    StarIcon,
     UserIcon,
 } from '@heroicons/react/20/solid';
 import { Link, useLocation } from 'react-router';
@@ -38,13 +36,6 @@ export default function NavBar({ mobile }: NavBarProps) {
                     <NavBarLink to='/' active={pathname === '/'}>
                         <HomeIcon className='size-6' />
                         <span>{t('home')}</span>
-                    </NavBarLink>
-                    <NavBarLink
-                        to='/explore'
-                        active={pathname.startsWith('/explore')}
-                    >
-                        <MagnifyingGlassIcon className='size-6' />
-                        <span>{t('explore')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/notifications'
@@ -78,13 +69,6 @@ export default function NavBar({ mobile }: NavBarProps) {
                     >
                         <BookmarkIcon className='size-6' />
                         <span>{t('saved')}</span>
-                    </NavBarLink>
-                    <NavBarLink
-                        to='/premium'
-                        active={pathname.startsWith('/premium')}
-                    >
-                        <StarIcon className='size-6' />
-                        <span>{t('premium')}</span>
                     </NavBarLink>
                     <NavBarLink
                         to='/settings'
