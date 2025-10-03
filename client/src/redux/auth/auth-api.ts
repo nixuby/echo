@@ -33,6 +33,7 @@ export const authApi = createApi({
                     );
                 } catch {}
             },
+            invalidatesTags: ['Me'],
         }),
 
         createAccount: builder.mutation<
@@ -45,6 +46,7 @@ export const authApi = createApi({
             }
         >({
             query: (body) => ({ url: 'create-account', method: 'POST', body }),
+            invalidatesTags: ['Me'],
         }),
 
         signOut: builder.mutation<null, void>({
@@ -60,6 +62,7 @@ export const authApi = createApi({
                     );
                 } catch {}
             },
+            invalidatesTags: ['Me'],
         }),
 
         getOAuthProfileInfo: builder.query<
@@ -87,6 +90,7 @@ export const authApi = createApi({
                 method: 'POST',
                 body: { accessToken, username },
             }),
+            invalidatesTags: ['Me'],
         }),
     }),
 });
