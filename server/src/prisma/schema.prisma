@@ -30,7 +30,7 @@ model User {
 
     bio String @default("")
 
-    // Auth provider (local | google | apple)
+    // Auth provider (local | google)
     provider String @default("local")
 
     // Unique identifier for the provider

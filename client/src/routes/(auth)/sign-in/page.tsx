@@ -93,7 +93,6 @@ export default function SignInPage() {
                         {t('create-account')}
                     </Link>
                     <AuthProviderButton provider='google' />
-                    <AuthProviderButton provider='apple' />
                 </div>
             </form>
         </AuthLayout>

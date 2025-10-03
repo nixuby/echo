@@ -1,6 +1,5 @@
 import { Link } from 'react-router';
 import GoogleLogoIcon from '../icon/google-icon';
-import AppleLogoIcon from '../icon/apple-icon';
 import { t } from '@/i18next';
 import env from '@/env';
 
@@ -8,10 +7,6 @@ const PROVIDERS = {
     google: {
         url: env.GOOGLE_OAUTH_URL,
         icon: <GoogleLogoIcon className='size-5' />,
-    },
-    apple: {
-        url: '/auth/apple',
-        icon: <AppleLogoIcon className='size-5' />,
     },
 };
 
