@@ -42,11 +42,6 @@ export default function SettingsPage() {
                         title={t('settings.language.label')}
                         subtitle={t('settings.language.subtitle')}
                     />
-                    <SettingsLink
-                        to='/help'
-                        title={t('settings.help.label')}
-                        subtitle={t('settings.help.subtitle')}
-                    />
                     {signedIn && (
                         <SettingsLink
                             to='/sign-out'
