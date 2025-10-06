@@ -1,7 +1,8 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
 import { changeLanguage as changeLanguageClt, t } from '@/i18next';
-import { useAppSelector } from '@/redux/hooks';
+import { setUser } from '@/redux/auth/auth-slice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { useChangeLanguageMutation } from '@/redux/settings/settings-api';
 import LANGUAGES from '@shared/lang';
 import { useNavigate } from 'react-router';
@@ -9,6 +10,7 @@ import { useNavigate } from 'react-router';
 export default function LanguagePage() {
     const navigate = useNavigate();
     const user = useAppSelector((s) => s.auth.user);
+    const dispatch = useAppDispatch();
     const [changeLanguageSrv] = useChangeLanguageMutation();
 
     const currentLanguage =
@@ -23,6 +25,12 @@ export default function LanguagePage() {
         if (user) {
             changeLanguageSrv({ language: lang }).then(() => {
                 changeLanguageClt(lang);
+                dispatch(
+                    setUser({
+                        ...user,
+                        language: lang,
+                    }),
+                );
             });
         } else {
             localStorage.setItem('lang', lang);
