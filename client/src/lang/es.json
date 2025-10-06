@@ -86,8 +86,6 @@
             "label": "Configuraciones",
             "account-info.label": "Información de la cuenta",
             "account-info.subtitle": "Actualiza la información de tu cuenta",
-            "change-password.label": "Cambiar contraseña",
-            "change-password.subtitle": "Cambia tu contraseña regularmente para mantener tu cuenta segura",
             "notifications.label": "Notificaciones",
             "notifications.subtitle": "Gestiona tus preferencias de notificación",
             "language.label": "Idioma",
@@ -123,6 +121,15 @@
                 "success": "Correo electrónico cambiado con éxito",
                 "verify": "Verificar correo electrónico",
                 "description": "Recibirá un correo electrónico de confirmación en su nueva dirección de correo electrónico."
+            },
+
+            "change-password": {
+                "label": "Contraseña",
+                "subtitle": "Cambia la contraseña de tu cuenta",
+                "current": "Contraseña actual",
+                "new": "Nueva contraseña",
+                "confirm": "Confirmar nueva contraseña",
+                "success": "Contraseña cambiada con éxito"
             }
         },
 

@@ -86,8 +86,6 @@
             "label": "Settings",
             "account-info.label": "Account Information",
             "account-info.subtitle": "Update your account information",
-            "change-password.label": "Change Password",
-            "change-password.subtitle": "Change your password regularly to keep your account secure",
             "notifications.label": "Notifications",
             "notifications.subtitle": "Manage your notification preferences",
             "language.label": "Language",
@@ -123,6 +121,15 @@
                 "success": "Email changed successfully",
                 "verify": "Verify email",
                 "description": "You will receive a confirmation email at your new email address."
+            },
+
+            "change-password": {
+                "label": "Password",
+                "subtitle": "Change your account password",
+                "current": "Current Password",
+                "new": "New Password",
+                "confirm": "Confirm New Password",
+                "success": "Password changed successfully"
             }
         },
 

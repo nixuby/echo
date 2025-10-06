@@ -31,3 +31,14 @@ export const createAccountFormSchema = z
 export const changeEmailFormSchema = z.object({
     email: emailSchema,
 });
+
+export const changePasswordFormSchema = z
+    .object({
+        current: passwordSchema,
+        new: passwordSchema,
+        confirm: z.string().nonempty('confirm'),
+    })
+    .refine((data) => data.new === data.confirm, {
+        message: 'password.mismatch',
+        path: ['confirm'],
+    });

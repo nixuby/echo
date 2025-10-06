@@ -58,6 +58,17 @@ export const settingsApi = createApi({
             }),
         }),
 
+        changePassword: builder.mutation<
+            { user: ClientUser },
+            { current: string; new: string; confirm: string }
+        >({
+            query: (payload) => ({
+                url: '/password',
+                method: 'POST',
+                body: payload,
+            }),
+        }),
+
         changeLanguage: builder.mutation<
             { user: ClientUser },
             { language: string }
@@ -78,4 +89,5 @@ export const {
     useResendVerificationEmailMutation,
     useVerifyEmailMutation,
     useChangeLanguageMutation,
+    useChangePasswordMutation,
 } = settingsApi;

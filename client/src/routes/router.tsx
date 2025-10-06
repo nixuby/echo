@@ -22,6 +22,7 @@ import LanguagePage from './settings/language/page';
 import GoogleOAuthPage from './(auth)/oauth/google/page';
 import TosPage from './(info)/tos/page';
 import PrivacyPolicyPage from './(info)/privacy/page';
+import ChangePasswordPage from './settings/change-password/page';
 
 const router = createBrowserRouter([
     {
@@ -67,6 +68,10 @@ const router = createBrowserRouter([
             {
                 path: 'settings/account-info/email',
                 Component: EmailPage,
+            },
+            {
+                path: 'settings/change-password',
+                Component: ChangePasswordPage,
             },
             {
                 path: 'settings/language',
