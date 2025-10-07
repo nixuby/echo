@@ -92,6 +92,24 @@ export const authApi = createApi({
             }),
             invalidatesTags: ['Me'],
         }),
+
+        requestPasswordReset: builder.mutation<
+            { token: string },
+            { email: string }
+        >({
+            query: (body) => ({
+                url: 'request-password-reset',
+                method: 'POST',
+                body,
+            }),
+        }),
+
+        resetPassword: builder.mutation<
+            null,
+            { token: string; password: string; confirm: string }
+        >({
+            query: (body) => ({ url: 'reset-password', method: 'POST', body }),
+        }),
     }),
 });
 
@@ -102,4 +120,6 @@ export const {
     useSignOutMutation,
     useGetOAuthProfileInfoQuery,
     useOauthSignInMutation,
+    useRequestPasswordResetMutation,
+    useResetPasswordMutation,
 } = authApi;

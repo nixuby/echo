@@ -32,7 +32,8 @@ settingsRouter.post('/email/verify', async (req, res) => {
         if (
             !verificationRecord ||
             verificationRecord.expiresAt < new Date() ||
-            verificationRecord.deletedAt
+            verificationRecord.deletedAt ||
+            verificationRecord.type !== 'verify_email'
         ) {
             return res.status(400).json({ errors: { root: 'Invalid token' } });
         }

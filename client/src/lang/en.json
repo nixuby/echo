@@ -139,6 +139,14 @@
             "failed": "Email verification failed or the verification link has expired."
         },
 
+        "reset-password": {
+            "label": "Reset Password",
+            "email": "Email",
+            "email-success": "If an account with that email exists, a password reset link has been sent.",
+            "reset-link": "Debug: reset password",
+            "success": "Password reset successfully. You can now sign in with your new password."
+        },
+
         "not-found": {
             "label": "Not Found",
             "description": "This page does not exist.",
@@ -147,12 +155,14 @@
 
         "errors": {
             "validation-failed": "Validation failed",
+            "unknown": "Unknown error",
 
             "auth": {
                 "missing-credentials": "Username and password are required",
                 "invalid-credentials": "Invalid username or password",
                 "missing-fields": "Required fields are missing",
-                "autologin-failed": "Automatic login failed"
+                "autologin-failed": "Automatic login failed",
+                "user-not-found": "User not found"
             },
 
             "username": {

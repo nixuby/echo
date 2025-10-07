@@ -139,6 +139,14 @@
             "failed": "La verificación del correo electrónico falló o el enlace de verificación ha expirado."
         },
 
+        "reset-password": {
+            "label": "Restablecer contraseña",
+            "email": "Correo electrónico",
+            "email-success": "Si existe una cuenta con ese correo electrónico, se ha enviado un enlace para restablecer la contraseña.",
+            "reset-link": "Depurar: restablecer contraseña",
+            "success": "Restablecimiento de contraseña exitoso. Ahora puedes iniciar sesión con tu nueva contraseña."
+        },
+
         "not-found": {
             "label": "No encontrado",
             "description": "Esta página no existe.",
@@ -147,12 +155,14 @@
 
         "errors": {
             "validation-failed": "Validación fallida",
+            "unknown": "Error desconocido",
 
             "auth": {
                 "missing-credentials": "Nombre de usuario y contraseña son obligatorios",
                 "invalid-credentials": "Nombre de usuario o contraseña inválidos",
                 "missing-fields": "Faltan campos requeridos",
-                "autologin-failed": "Error de inicio de sesión automático"
+                "autologin-failed": "Error de inicio de sesión automático",
+                "user-not-found": "Usuario no encontrado"
             },
 
             "username": {

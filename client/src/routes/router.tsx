@@ -23,6 +23,8 @@ import GoogleOAuthPage from './(auth)/oauth/google/page';
 import TosPage from './(info)/tos/page';
 import PrivacyPolicyPage from './(info)/privacy/page';
 import ChangePasswordPage from './settings/change-password/page';
+import RequestResetPasswordPage from './(auth)/reset-password/page';
+import ResetPasswordPage from './(auth)/reset-password/[token]/page';
 
 const router = createBrowserRouter([
     {
@@ -48,6 +50,14 @@ const router = createBrowserRouter([
             {
                 path: 'oauth/google',
                 Component: GoogleOAuthPage,
+            },
+            {
+                path: 'reset-password',
+                Component: RequestResetPasswordPage,
+            },
+            {
+                path: 'reset-password/:token',
+                Component: ResetPasswordPage,
             },
             {
                 path: 'settings',
