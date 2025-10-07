@@ -1,5 +1,5 @@
 import env from '@/env';
-import { useSearchQuery } from '@/redux/user/users-api';
+import { useLazySearchQuery } from '@/redux/user/users-api';
 import { useEffect, useId, useState } from 'react';
 import { Link } from 'react-router';
 import Post from '../post/post';
@@ -8,15 +8,16 @@ export default function HeaderSearchBar() {
     const containerId = useId();
     const [showResults, setShowResults] = useState(false);
     const [input, setInput] = useState('');
-    const { data } = useSearchQuery(
-        { q: input, type: 'users,posts', limit: 6 },
-        { skip: input.length < 3 },
-    );
+    const [fetchSearch, { data, reset: resetSearch }] = useLazySearchQuery();
 
     // Debounce search input
     useEffect(() => {
         const handler = setTimeout(() => {
-            console.log('Search input:', input);
+            if (input.trim().length >= 3) {
+                fetchSearch({ q: input, type: 'users,posts', limit: 6 });
+            } else {
+                resetSearch();
+            }
         }, 300);
 
         return () => {
@@ -66,6 +67,7 @@ export default function HeaderSearchBar() {
                                     <div className='grid w-max grid-cols-4 md:grid-cols-6'>
                                         {data.users.map((user) => (
                                             <Link
+                                                key={user.username}
                                                 to={`/@${user.username}`}
                                                 onClick={() =>
                                                     setShowResults(false)
@@ -95,7 +97,12 @@ export default function HeaderSearchBar() {
                                 <div>
                                     <div className='flex flex-col'>
                                         {data.posts?.map((post) => (
-                                            <Post short preview post={post} />
+                                            <Post
+                                                key={post.id}
+                                                short
+                                                preview
+                                                post={post}
+                                            />
                                         ))}
                                     </div>
                                 </div>

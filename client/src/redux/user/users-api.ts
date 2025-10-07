@@ -292,6 +292,7 @@ export const {
     useToggleNotificationSettingMutation,
     useFollowMutation,
     useSearchQuery,
+    useLazySearchQuery,
     useGetChatsQuery,
     useCreateChatMutation,
     useSendMessageMutation,
