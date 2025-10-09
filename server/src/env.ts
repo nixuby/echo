@@ -14,7 +14,7 @@ const ENV = {
     PORT: Number(need('PORT', '5179')) || 5179,
     PW_HASH_SEED: need('PW_HASH_SEED'),
     SESSION_SECRET: need('SESSION_SECRET'),
-    CORS_ORIGIN: need('CORS_ORIGIN'),
+    CORS_ORIGINS: need('CORS_ORIGINS').split(','), // Comma-separated list of allowed origins
     DEV: need('DEV', 'false').toLowerCase() === 'true',
 } as const;
 
