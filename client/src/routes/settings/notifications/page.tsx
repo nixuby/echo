@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import { t } from '@/i18next';
 import {
     useGetNotificationSettingsQuery,
@@ -10,17 +10,18 @@ import { CheckIcon, XMarkIcon } from '@heroicons/react/20/solid';
 import { NOTIFICATION_TYPES, type NotificationType } from '@shared/types';
 
 export default function NotificationsSettingsPage() {
-    const { data: settings } = useGetNotificationSettingsQuery();
-    const [toggleNotificationSetting] = useToggleNotificationSettingMutation();
+    return protectedRoute(() => {
+        const { data: settings } = useGetNotificationSettingsQuery();
+        const [toggleNotificationSetting] =
+            useToggleNotificationSettingMutation();
 
-    function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
-        const type = ev.currentTarget.dataset.type as NotificationType;
-        if (!type && !NOTIFICATION_TYPES.includes(type)) return;
-        toggleNotificationSetting(type);
-    }
+        function handleClick(ev: React.MouseEvent<HTMLButtonElement>) {
+            const type = ev.currentTarget.dataset.type as NotificationType;
+            if (!type && !NOTIFICATION_TYPES.includes(type)) return;
+            toggleNotificationSetting(type);
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('settings.notifications.label')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('settings.notifications.label')}</TitleBar>
@@ -46,6 +47,6 @@ export default function NotificationsSettingsPage() {
                         ))}
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

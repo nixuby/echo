@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import Button from '@/components/shared/button';
 import TextBox from '@/components/shared/textbox';
 import { t, tErr } from '@/i18next';
@@ -16,26 +16,26 @@ type ChangePasswordForm = {
 };
 
 export default function ChangePasswordPage() {
-    const [changePassword] = useChangePasswordMutation();
-    const {
-        register,
-        formState: { errors },
-        handleSubmit: onSubmit,
-    } = useForm<ChangePasswordForm>({
-        defaultValues: {
-            current: '',
-            new: '',
-            confirm: '',
-        },
-        resolver: zodResolver(changePasswordFormSchema),
-    });
+    return protectedRoute(() => {
+        const [changePassword] = useChangePasswordMutation();
+        const {
+            register,
+            formState: { errors },
+            handleSubmit: onSubmit,
+        } = useForm<ChangePasswordForm>({
+            defaultValues: {
+                current: '',
+                new: '',
+                confirm: '',
+            },
+            resolver: zodResolver(changePasswordFormSchema),
+        });
 
-    function handleSubmit(data: ChangePasswordForm) {
-        changePassword(data);
-    }
+        function handleSubmit(data: ChangePasswordForm) {
+            changePassword(data);
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('settings.label')} className='flex flex-col'>
                 <TitleBar>{t('settings.change-password.label')}</TitleBar>
                 <form
@@ -82,6 +82,6 @@ export default function ChangePasswordPage() {
                     </Button>
                 </form>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

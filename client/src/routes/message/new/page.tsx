@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import Button from '@/components/shared/button';
 import TextBox from '@/components/shared/textbox';
 import env from '@/env';
@@ -10,48 +10,48 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router';
 
 export default function NewChatPage() {
-    const navigate = useNavigate();
+    return protectedRoute(() => {
+        const navigate = useNavigate();
 
-    const [input, setInput] = useState('');
-    const [searchQuery, setSearchQuery] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
+        const [input, setInput] = useState('');
+        const [searchQuery, setSearchQuery] = useState('');
+        const [isLoading, setIsLoading] = useState(false);
 
-    const { data } = useSearchQuery(
-        { q: searchQuery },
-        {
-            skip: searchQuery.length < 3,
-        },
-    );
+        const { data } = useSearchQuery(
+            { q: searchQuery },
+            {
+                skip: searchQuery.length < 3,
+            },
+        );
 
-    const [createChat] = useCreateChatMutation();
+        const [createChat] = useCreateChatMutation();
 
-    function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
-        setInput(ev.target.value);
-    }
+        function handleChange(ev: React.ChangeEvent<HTMLInputElement>) {
+            setInput(ev.target.value);
+        }
 
-    function handleClickSearch() {
-        setSearchQuery(input);
-    }
+        function handleClickSearch() {
+            setSearchQuery(input);
+        }
 
-    function handleClickUser(ev: React.MouseEvent<HTMLButtonElement>) {
-        if (isLoading) return;
-        setIsLoading(true);
-        const username = ev.currentTarget.dataset.username;
-        if (!username) return;
-        createChat(username)
-            .then((res) => {
-                const chatId = res.data;
-                if (chatId) {
-                    navigate(`/chat/${chatId}`);
-                }
-            })
-            .finally(() => {
-                setIsLoading(false);
-            });
-    }
+        function handleClickUser(ev: React.MouseEvent<HTMLButtonElement>) {
+            if (isLoading) return;
+            setIsLoading(true);
+            const username = ev.currentTarget.dataset.username;
+            if (!username) return;
+            createChat(username)
+                .then((res) => {
+                    const chatId = res.data;
+                    if (chatId) {
+                        navigate(`/chat/${chatId}`);
+                    }
+                })
+                .finally(() => {
+                    setIsLoading(false);
+                });
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('messages.new-chat')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('messages.new-chat')}</TitleBar>
@@ -95,6 +95,6 @@ export default function NewChatPage() {
                         ))}
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import env from '@/env';
 import { t } from '@/i18next';
 import { useGetChatsQuery } from '@/redux/user/users-api';
@@ -8,10 +8,10 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
 
 export default function MessagePage() {
-    const { data } = useGetChatsQuery();
+    return protectedRoute(() => {
+        const { data } = useGetChatsQuery();
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('messages.label')}>
                 <TitleBar>{t('messages.label')}</TitleBar>
                 <div className='flex flex-col'>
@@ -40,6 +40,6 @@ export default function MessagePage() {
                     ))}
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

@@ -1,15 +1,15 @@
 import Layout from '@/components/layout/layout';
 import SettingsLink from '../settings-link';
 import { useAppSelector } from '@/redux/hooks';
-import ProtectedRoute from '@/components/protected-route';
 import TitleBar from '@/components/layout/titlebar';
 import { t } from '@/i18next';
+import protectedRoute from '@/components/protected-route';
 
 export default function AccountInfoPage() {
-    const user = useAppSelector((s) => s.auth.user)!;
+    return protectedRoute(() => {
+        const user = useAppSelector((s) => s.auth.user)!;
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('settings.label')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('settings.account-info.label')}</TitleBar>
@@ -40,6 +40,6 @@ export default function AccountInfoPage() {
                     </div>
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

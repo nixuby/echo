@@ -1,6 +1,6 @@
 import Layout from '@/components/layout/layout';
 import TitleBar from '@/components/layout/titlebar';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import { useAppSelector } from '@/redux/hooks';
 import { useParams } from 'react-router';
 import Chat from './chat';
@@ -9,19 +9,19 @@ import { useRef } from 'react';
 import { t } from '@/i18next';
 
 export default function ChatPage() {
-    const chatId = useParams().id;
-    const user = useAppSelector((s) => s.auth.user);
-    const chatRef = useRef<HTMLDivElement>(null);
+    return protectedRoute(() => {
+        const chatId = useParams().id;
+        const user = useAppSelector((s) => s.auth.user);
+        const chatRef = useRef<HTMLDivElement>(null);
 
-    if (!user) return null;
-    if (!chatId) return null;
+        if (!user) return null;
+        if (!chatId) return null;
 
-    function onMessageSent() {
-        chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
-    }
+        function onMessageSent() {
+            chatRef.current?.scrollTo(0, chatRef.current.scrollHeight);
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout
                 title={t('messages.chat')}
                 className='relative flex h-[calc(100vh_-_3rem)] flex-col justify-between'
@@ -30,6 +30,6 @@ export default function ChatPage() {
                 <Chat ref={chatRef} chatId={chatId} />
                 <CreateMessage chatId={chatId} onMessageSent={onMessageSent} />
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

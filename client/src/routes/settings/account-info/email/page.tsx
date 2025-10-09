@@ -1,6 +1,5 @@
 import Layout from '@/components/layout/layout';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import ProtectedRoute from '@/components/protected-route';
 import TextBox from '@/components/shared/textbox';
 import Button from '@/components/shared/button';
 import { useForm } from 'react-hook-form';
@@ -12,52 +11,53 @@ import { changeEmailFormSchema } from '@shared/validation';
 import TitleBar from '@/components/layout/titlebar';
 import { Link } from 'react-router';
 import { t } from '@/i18next';
+import protectedRoute from '@/components/protected-route';
 
 type ChangeEmailForm = {
     email: string;
 };
 
 export default function EmailPage() {
-    const dispatch = useAppDispatch();
-    const user = useAppSelector((s) => s.auth.user)!;
-    const [changeEmail, { isLoading }] = useChangeEmailMutation();
-    const [success, setSuccess] = useState<[boolean, string]>([false, '']);
+    return protectedRoute(() => {
+        const dispatch = useAppDispatch();
+        const user = useAppSelector((s) => s.auth.user)!;
+        const [changeEmail, { isLoading }] = useChangeEmailMutation();
+        const [success, setSuccess] = useState<[boolean, string]>([false, '']);
 
-    const {
-        register,
-        handleSubmit: onSubmit,
-        formState: { errors },
-        setError,
-        watch,
-    } = useForm<ChangeEmailForm>({
-        defaultValues: {
-            email: user?.email ?? '',
-        },
-        resolver: zodResolver(changeEmailFormSchema),
-    });
+        const {
+            register,
+            handleSubmit: onSubmit,
+            formState: { errors },
+            setError,
+            watch,
+        } = useForm<ChangeEmailForm>({
+            defaultValues: {
+                email: user?.email ?? '',
+            },
+            resolver: zodResolver(changeEmailFormSchema),
+        });
 
-    const email = watch('email');
+        const email = watch('email');
 
-    function handleSubmit(data: ChangeEmailForm) {
-        changeEmail(data)
-            .unwrap()
-            .then(({ user, token }) => {
-                setSuccess([true, token]);
-                dispatch(setUser(user));
-            })
-            .catch((res) => {
-                if (!res?.data?.errors) return;
-                const errors = res.data.errors as Record<string, string>;
-                for (const field in errors) {
-                    setError(field as keyof ChangeEmailForm, {
-                        message: errors[field],
-                    });
-                }
-            });
-    }
+        function handleSubmit(data: ChangeEmailForm) {
+            changeEmail(data)
+                .unwrap()
+                .then(({ user, token }) => {
+                    setSuccess([true, token]);
+                    dispatch(setUser(user));
+                })
+                .catch((res) => {
+                    if (!res?.data?.errors) return;
+                    const errors = res.data.errors as Record<string, string>;
+                    for (const field in errors) {
+                        setError(field as keyof ChangeEmailForm, {
+                            message: errors[field],
+                        });
+                    }
+                });
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('settings.label')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('settings.change-email.label')}</TitleBar>
@@ -109,6 +109,6 @@ export default function EmailPage() {
                     </form>
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

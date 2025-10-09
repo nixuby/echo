@@ -2,12 +2,7 @@ import { useAppSelector } from '@/redux/hooks';
 import { Navigate } from 'react-router';
 import Layout from './layout/layout';
 
-export type ProtectedRouteProps = {
-    children?: React.ReactNode;
-};
-
-// Route requiring user authentication
-export default function ProtectedRoute({ children }: ProtectedRouteProps) {
+export default function protectedRoute(component: () => React.ReactNode) {
     const user = useAppSelector((s) => s.auth.user);
 
     if (!user) {
@@ -22,5 +17,5 @@ export default function ProtectedRoute({ children }: ProtectedRouteProps) {
         );
     }
 
-    return children;
+    return component();
 }

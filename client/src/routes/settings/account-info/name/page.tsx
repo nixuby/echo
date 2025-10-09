@@ -1,6 +1,5 @@
 import Layout from '@/components/layout/layout';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import ProtectedRoute from '@/components/protected-route';
 import TextBox from '@/components/shared/textbox';
 import Button from '@/components/shared/button';
 import { useForm } from 'react-hook-form';
@@ -9,51 +8,52 @@ import { useState } from 'react';
 import { setUser } from '@/redux/auth/auth-slice';
 import TitleBar from '@/components/layout/titlebar';
 import { t, tErr } from '@/i18next';
+import protectedRoute from '@/components/protected-route';
 
 type ChangeNameForm = {
     name: string;
 };
 
 export default function NamePage() {
-    const dispatch = useAppDispatch();
-    const user = useAppSelector((s) => s.auth.user);
-    const [changeName, { isLoading }] = useChangeNameMutation();
-    const [success, setSuccess] = useState<boolean>(false);
+    return protectedRoute(() => {
+        const dispatch = useAppDispatch();
+        const user = useAppSelector((s) => s.auth.user);
+        const [changeName, { isLoading }] = useChangeNameMutation();
+        const [success, setSuccess] = useState<boolean>(false);
 
-    const {
-        register,
-        handleSubmit: onSubmit,
-        formState: { errors },
-        setError,
-        watch,
-    } = useForm<ChangeNameForm>({
-        defaultValues: {
-            name: user?.name ?? '',
-        },
-    });
+        const {
+            register,
+            handleSubmit: onSubmit,
+            formState: { errors },
+            setError,
+            watch,
+        } = useForm<ChangeNameForm>({
+            defaultValues: {
+                name: user?.name ?? '',
+            },
+        });
 
-    const name = watch('name');
+        const name = watch('name');
 
-    function handleSubmit(data: ChangeNameForm) {
-        changeName(data)
-            .unwrap()
-            .then(({ user }) => {
-                setSuccess(true);
-                dispatch(setUser(user));
-            })
-            .catch((res) => {
-                if (!res?.data?.errors) return;
-                const errors = res.data.errors as Record<string, string>;
-                for (const field in errors) {
-                    setError(field as keyof ChangeNameForm, {
-                        message: errors[field],
-                    });
-                }
-            });
-    }
+        function handleSubmit(data: ChangeNameForm) {
+            changeName(data)
+                .unwrap()
+                .then(({ user }) => {
+                    setSuccess(true);
+                    dispatch(setUser(user));
+                })
+                .catch((res) => {
+                    if (!res?.data?.errors) return;
+                    const errors = res.data.errors as Record<string, string>;
+                    for (const field in errors) {
+                        setError(field as keyof ChangeNameForm, {
+                            message: errors[field],
+                        });
+                    }
+                });
+        }
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('settings.label')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('settings.change-name.label')}</TitleBar>
@@ -96,6 +96,6 @@ export default function NamePage() {
                     </form>
                 </div>
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }

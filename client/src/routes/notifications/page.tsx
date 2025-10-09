@@ -1,5 +1,5 @@
 import Layout from '@/components/layout/layout';
-import ProtectedRoute from '@/components/protected-route';
+import protectedRoute from '@/components/protected-route';
 import { useGetNotificationsInfiniteQuery } from '@/redux/user/users-api';
 import Notification from './Notification';
 import { useEffect, useRef } from 'react';
@@ -7,30 +7,30 @@ import TitleBar from '@/components/layout/titlebar';
 import { t } from '@/i18next';
 
 export default function NotificationsPage() {
-    const loadMoreRef = useRef<HTMLDivElement>(null);
-    const { data, fetchNextPage, hasNextPage, isFetching } =
-        useGetNotificationsInfiniteQuery();
+    return protectedRoute(() => {
+        const loadMoreRef = useRef<HTMLDivElement>(null);
+        const { data, fetchNextPage, hasNextPage, isFetching } =
+            useGetNotificationsInfiniteQuery();
 
-    const notifications = data ? data.pages.flat() : [];
+        const notifications = data ? data.pages.flat() : [];
 
-    useEffect(() => {
-        if (!loadMoreRef.current) return;
+        useEffect(() => {
+            if (!loadMoreRef.current) return;
 
-        const observer = new IntersectionObserver(
-            (entries) => {
-                if (entries[0].isIntersecting && !isFetching) {
-                    fetchNextPage();
-                }
-            },
-            { threshold: 1 },
-        );
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    if (entries[0].isIntersecting && !isFetching) {
+                        fetchNextPage();
+                    }
+                },
+                { threshold: 1 },
+            );
 
-        observer.observe(loadMoreRef.current);
-        return () => observer.disconnect();
-    }, [isFetching]);
+            observer.observe(loadMoreRef.current);
+            return () => observer.disconnect();
+        }, [isFetching]);
 
-    return (
-        <ProtectedRoute>
+        return (
             <Layout title={t('notifications.label')}>
                 <div className='flex flex-col'>
                     <TitleBar>{t('notifications.label')}</TitleBar>
@@ -56,6 +56,6 @@ export default function NotificationsPage() {
                     <div className='h-16' />
                 )}
             </Layout>
-        </ProtectedRoute>
-    );
+        );
+    });
 }
