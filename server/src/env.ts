@@ -15,6 +15,7 @@ const ENV = {
     PW_HASH_SEED: need('PW_HASH_SEED'),
     SESSION_SECRET: need('SESSION_SECRET'),
     CORS_ORIGIN: need('CORS_ORIGIN'),
+    DEV: need('DEV', 'false').toLowerCase() === 'true',
 } as const;
 
 export default ENV;
