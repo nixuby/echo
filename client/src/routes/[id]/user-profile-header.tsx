@@ -137,13 +137,6 @@ export default function UserProfileHeader({
                                 <PencilIcon className='size-4' />
                                 <span>{t('profile.edit')}</span>
                             </Button>
-                            <Button
-                                size='small'
-                                className='flex items-center gap-1'
-                            >
-                                <ChatBubbleLeftIcon className='size-4' />
-                                <span>{t('profile.message')}</span>
-                            </Button>
                         </>
                     ) : (
                         <>
