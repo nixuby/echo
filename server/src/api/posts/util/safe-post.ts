@@ -32,6 +32,9 @@ export type SafePostSelect = {
                   children: {
                       where: { type: 'REPOST'; userId: string };
                   };
+                  saves: {
+                      where: { userId: string };
+                  };
               };
           };
 };
@@ -79,6 +82,7 @@ export const SAFE_POST_SELECT = (
                   children: {
                       where: { type: 'REPOST', userId },
                   },
+                  saves: { where: { userId: userId } },
               },
           }
         : false,
@@ -95,6 +99,7 @@ export function toClientPost(post: any): Post {
         replyCount: post.replyCount,
         repostCount: post.repostCount,
         repostedByMe: post._count?.children > 0,
+        savedByMe: post._count?.saves > 0,
         parentId: post.parentId,
         parent: post.parent ? toClientPost(post.parent) : null,
         attachments: post.attachments,

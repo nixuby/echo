@@ -156,6 +156,8 @@
         "errors": {
             "validation-failed": "Validación fallida",
             "unknown": "Error desconocido",
+            "invalid": "Solicitud inválida",
+            "internal": "Error interno del servidor",
 
             "auth": {
                 "missing-credentials": "Nombre de usuario y contraseña son obligatorios",

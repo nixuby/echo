@@ -23,6 +23,10 @@ export type FeedQueryParams =
           type: 'reply';
           parentId: string;
           sort?: SortType;
+      }
+    | {
+          type: 'saved';
+          sort?: SortType;
       };
 
 async function updatePostQueryData(
@@ -123,7 +127,9 @@ export const postsApi = createApi({
                     ...queryArg,
                 },
             }),
-            providesTags: ['PostFeed'],
+            providesTags: (result, _error, arg) => [
+                { type: 'PostFeed', id: arg.type },
+            ],
         }),
 
         getPost: builder.query<Post, string>({
@@ -210,7 +216,34 @@ export const postsApi = createApi({
                     },
                 );
             },
-            invalidatesTags: ['PostFeed'],
+            // invalidate profile feed
+            invalidatesTags: [{ type: 'PostFeed', id: 'profile' }],
+        }),
+
+        savePost: builder.mutation<{ saved: boolean }, { id: string }>({
+            query: ({ id }) => ({
+                url: `/save`,
+                method: 'POST',
+                body: { postId: id },
+            }),
+            async onQueryStarted(
+                { id },
+                { dispatch, queryFulfilled, getState },
+            ) {
+                await updatePostQueryData(
+                    id,
+                    dispatch,
+                    queryFulfilled,
+                    getState,
+                    (draft) => {
+                        const originalPost =
+                            draft.type === 'REPOST' ? draft.parent : draft;
+                        if (!originalPost) return;
+                        originalPost.savedByMe = !originalPost.savedByMe;
+                    },
+                );
+            },
+            invalidatesTags: [{ type: 'PostFeed', id: 'saved' }],
         }),
     }),
 });
@@ -221,4 +254,5 @@ export const {
     usePublishPostMutation,
     useLikePostMutation,
     useRepostPostMutation,
+    useSavePostMutation,
 } = postsApi;

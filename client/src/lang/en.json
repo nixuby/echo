@@ -156,6 +156,8 @@
         "errors": {
             "validation-failed": "Validation failed",
             "unknown": "Unknown error",
+            "invalid": "Invalid request",
+            "internal": "Internal server error",
 
             "auth": {
                 "missing-credentials": "Username and password are required",

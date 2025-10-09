@@ -2,11 +2,9 @@ import prisma from '@/prisma.js';
 import { Post } from '@shared/types.js';
 import express from 'express';
 import { Prisma } from 'generated/prisma/index.js';
-import sharp from 'sharp';
-import fs from 'node:fs/promises';
-import { createNotification } from '@/notifications.js';
 import { SAFE_POST_SELECT, toClientPost } from '../util/safe-post.js';
 import postsRouter from '../router.js';
+import env from '@/env.js';
 
 function parseSort(sort: any): Prisma.PostOrderByWithRelationInput {
     if (sort === 'newest') return { createdAt: 'desc' };
@@ -17,6 +15,8 @@ function parseSort(sort: any): Prisma.PostOrderByWithRelationInput {
 
 function paginate(page: number) {
     const LIMIT = 10;
+
+    page = isNaN(page) || page < 0 ? 0 : Math.floor(page);
 
     return {
         skip: page * LIMIT,
@@ -85,6 +85,28 @@ async function getReplyFeed(req: express.Request): Promise<Array<Post>> {
     return posts.map(toClientPost);
 }
 
+async function getSavedFeed(req: express.Request): Promise<Array<Post>> {
+    if (!req.user) {
+        throw new Error('#auth.unauthorized');
+    }
+
+    const page = Number(req.query.page);
+    const sort = parseSort(req.query.sort);
+
+    const posts = await prisma.savedPost.findMany({
+        where: { userId: req.user.id },
+        select: {
+            post: {
+                select: SAFE_POST_SELECT(req.user.id, true),
+            },
+        },
+        orderBy: { createdAt: 'desc' },
+        ...paginate(page),
+    });
+
+    return posts.map(({ post }) => toClientPost(post));
+}
+
 postsRouter.get('/feed', async (req, res) => {
     const fetchFn = (() => {
         switch (req.query.type) {
@@ -92,13 +114,29 @@ postsRouter.get('/feed', async (req, res) => {
                 return getProfileFeed;
             case 'reply':
                 return getReplyFeed;
+            case 'saved':
+                return getSavedFeed;
             default:
                 return getHomeFeed;
         }
     })();
 
-    const posts = await fetchFn(req);
-    return res.json(posts);
+    try {
+        const posts = await fetchFn(req);
+        return res.json(posts);
+    } catch (e) {
+        if (e instanceof Error) {
+            const msg = e.message.startsWith('#')
+                ? e.message.slice(1)
+                : 'unknown';
+            if (msg === 'unknown' && env.DEV) {
+                console.error(e);
+            }
+            return res.status(400).json({ errors: { root: msg } });
+        } else {
+            return res.status(400).json({ errors: { root: 'unknown' } });
+        }
+    }
 });
 
 postsRouter.get('/:id', async (req, res) => {

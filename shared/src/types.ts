@@ -56,6 +56,7 @@ export type Post = {
     replyCount: number;
     repostCount: number;
     repostedByMe: boolean;
+    savedByMe: boolean;
     parent: Post | null;
     parentId: string | null;
     attachments: Array<PostAttachment>;

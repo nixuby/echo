@@ -25,6 +25,7 @@ import PrivacyPolicyPage from './(info)/privacy/page';
 import ChangePasswordPage from './settings/change-password/page';
 import RequestResetPasswordPage from './(auth)/reset-password/page';
 import ResetPasswordPage from './(auth)/reset-password/[token]/page';
+import SavedPostsPage from './saved/page';
 
 const router = createBrowserRouter([
     {
@@ -110,6 +111,10 @@ const router = createBrowserRouter([
             {
                 path: 'post/:id',
                 Component: PostPage,
+            },
+            {
+                path: 'saved',
+                Component: SavedPostsPage,
             },
             {
                 path: 'verify-email/:token',

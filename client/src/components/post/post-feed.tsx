@@ -15,6 +15,8 @@ export default function PostFeed({ query }: PostFeedProps) {
         useGetPostFeedInfiniteQuery(query);
     const posts = data ? data.pages.flat() : [];
 
+    console.log(posts);
+
     useEffect(() => {
         if (!loadMoreRef.current) return;
 

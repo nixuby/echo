@@ -1,13 +1,13 @@
 import {
     useLikePostMutation,
     useRepostPostMutation,
+    useSavePostMutation,
 } from '@/redux/posts/posts-api';
 import clsx from 'clsx/lite';
 import {
     ArrowPathRoundedSquareIcon,
     BookmarkIcon,
     ChatBubbleLeftIcon,
-    EllipsisHorizontalIcon,
     HeartIcon,
 } from '@heroicons/react/20/solid';
 import { useNavigate } from 'react-router';
@@ -24,6 +24,7 @@ export default function PostControls({ id, post }: PostControlsProps) {
     const navigate = useNavigate();
     const [likePost] = useLikePostMutation();
     const [repostPost] = useRepostPostMutation();
+    const [savePost] = useSavePostMutation();
     const user = useAppSelector((state) => state.auth.user);
 
     function handleLike(ev: React.MouseEvent<HTMLButtonElement>) {
@@ -53,13 +54,13 @@ export default function PostControls({ id, post }: PostControlsProps) {
         repostPost({ id: post.id });
     }
 
-    function handleBookmark(ev: React.MouseEvent<HTMLButtonElement>) {
+    function handleSave(ev: React.MouseEvent<HTMLButtonElement>) {
         ev.stopPropagation();
-        console.log('Bookmark');
-    }
-
-    function handleMenu(ev: React.MouseEvent<HTMLButtonElement>) {
-        ev.stopPropagation();
+        if (!user) return;
+        if (!post.savedByMe) {
+            playButtonAnimation(id, '.__save-btn-container', 'bg-yellow-500');
+        }
+        savePost({ id: post.id });
     }
 
     return (
@@ -106,17 +107,13 @@ export default function PostControls({ id, post }: PostControlsProps) {
             <div className='flex items-center justify-end gap-1'>
                 <button
                     type='button'
-                    onClick={handleBookmark}
-                    className='cursor-pointer transition hover:text-indigo-300'
+                    onClick={handleSave}
+                    className={clsx(
+                        '__save-btn-container relative -mx-2 -my-1 cursor-pointer px-2 py-1 transition hover:text-indigo-300',
+                        post.savedByMe && 'text-yellow-500',
+                    )}
                 >
                     <BookmarkIcon className='size-5' />
-                </button>
-                <button
-                    type='button'
-                    onClick={handleMenu}
-                    className='cursor-pointer transition hover:text-indigo-300'
-                >
-                    <EllipsisHorizontalIcon className='size-5' />
                 </button>
             </div>
         </div>
