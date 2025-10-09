@@ -1,31 +1,49 @@
 import { createBrowserRouter } from 'react-router';
-import SignInPage from './(auth)/sign-in/page';
-import HomePage from './page';
-import CreateAccountPage from './(auth)/create-account/page';
-import Error404Page from './error404';
-import PostPage from './post/[id]/page';
-import SettingsPage from './settings/page';
-import SignOutPage from './(auth)/sign-out/page';
-import AccountInfoPage from './settings/account-info/page';
-import UsernamePage from './settings/account-info/username/page';
-import EmailPage from './settings/account-info/email/page';
-import NamePage from './settings/account-info/name/page';
-import UserProfilePage from './[id]/page';
-import NotificationsPage from './notifications/page';
-import NotificationsSettingsPage from './settings/notifications/page';
-import MessagePage from './message/page';
-import NewChatPage from './message/new/page';
-import ChatPage from './chat/[id]';
-import RootLayout from './root-layout';
-import VerifyEmailPage from './verify-email/[token]/page';
-import LanguagePage from './settings/language/page';
-import GoogleOAuthPage from './(auth)/oauth/google/page';
-import TosPage from './(info)/tos/page';
-import PrivacyPolicyPage from './(info)/privacy/page';
-import ChangePasswordPage from './settings/change-password/page';
-import RequestResetPasswordPage from './(auth)/reset-password/page';
-import ResetPasswordPage from './(auth)/reset-password/[token]/page';
-import SavedPostsPage from './saved/page';
+import React from 'react';
+
+const SignInPage = React.lazy(() => import('./(auth)/sign-in/page'));
+const HomePage = React.lazy(() => import('./page'));
+const CreateAccountPage = React.lazy(
+    () => import('./(auth)/create-account/page'),
+);
+const Error404Page = React.lazy(() => import('./error404'));
+const PostPage = React.lazy(() => import('./post/[id]/page'));
+const SettingsPage = React.lazy(() => import('./settings/page'));
+const SignOutPage = React.lazy(() => import('./(auth)/sign-out/page'));
+const AccountInfoPage = React.lazy(
+    () => import('./settings/account-info/page'),
+);
+const UsernamePage = React.lazy(
+    () => import('./settings/account-info/username/page'),
+);
+const EmailPage = React.lazy(
+    () => import('./settings/account-info/email/page'),
+);
+const NamePage = React.lazy(() => import('./settings/account-info/name/page'));
+const UserProfilePage = React.lazy(() => import('./[id]/page'));
+const NotificationsPage = React.lazy(() => import('./notifications/page'));
+const NotificationsSettingsPage = React.lazy(
+    () => import('./settings/notifications/page'),
+);
+const MessagePage = React.lazy(() => import('./message/page'));
+const NewChatPage = React.lazy(() => import('./message/new/page'));
+const ChatPage = React.lazy(() => import('./chat/[id]'));
+const RootLayout = React.lazy(() => import('./root-layout'));
+const VerifyEmailPage = React.lazy(() => import('./verify-email/[token]/page'));
+const LanguagePage = React.lazy(() => import('./settings/language/page'));
+const GoogleOAuthPage = React.lazy(() => import('./(auth)/oauth/google/page'));
+const TosPage = React.lazy(() => import('./(info)/tos/page'));
+const PrivacyPolicyPage = React.lazy(() => import('./(info)/privacy/page'));
+const ChangePasswordPage = React.lazy(
+    () => import('./settings/change-password/page'),
+);
+const RequestResetPasswordPage = React.lazy(
+    () => import('./(auth)/reset-password/page'),
+);
+const ResetPasswordPage = React.lazy(
+    () => import('./(auth)/reset-password/[token]/page'),
+);
+const SavedPostsPage = React.lazy(() => import('./saved/page'));
 
 const router = createBrowserRouter([
     {
