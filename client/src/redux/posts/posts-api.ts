@@ -127,7 +127,7 @@ export const postsApi = createApi({
                     ...queryArg,
                 },
             }),
-            providesTags: (result, _error, arg) => [
+            providesTags: (_result, _error, arg) => [
                 { type: 'PostFeed', id: arg.type },
             ],
         }),
