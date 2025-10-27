@@ -6,6 +6,7 @@ import passport from './auth/passport.js';
 import helmet from 'helmet';
 import fileStore from 'session-file-store';
 import apiRouter from './api/router.js';
+import path from 'node:path';
 
 console.log('Environment variables:', env);
 
@@ -77,6 +78,14 @@ if (env.DEV) {
 
 console.log('Setting up routes');
 app.use('/api', apiRouter);
+
+app.get('/assets/:file', (req, res) => {
+    res.sendFile(path.resolve(`../client/dist/assets/${req.params.file}`));
+});
+
+app.get('*file', (_, res) => {
+    res.sendFile(path.resolve('../client/dist/index.html'));
+});
 
 app.listen(env.PORT, env.HOST, (error) => {
     console.log('Starting server');
