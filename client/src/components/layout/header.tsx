@@ -1,6 +1,7 @@
 import { LanguageIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
 import HeaderSearchBar from './header-search';
+import EchoIcon from '../icon/echo-icon';
 
 export default function Header() {
     return (
@@ -9,7 +10,7 @@ export default function Header() {
                 to='/'
                 className='flex items-center gap-2 px-4 font-bold transition-colors hover:bg-gray-900'
             >
-                <img src='/echo.svg' alt='Logo' className='size-6' />
+                <EchoIcon className='size-6' />
                 <h1>Echo</h1>
             </Link>
             <HeaderSearchBar />

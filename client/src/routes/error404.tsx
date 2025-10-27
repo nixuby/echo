@@ -1,3 +1,4 @@
+import EchoIcon from '@/components/icon/echo-icon';
 import { t } from '@/i18next';
 import { Link } from 'react-router';
 
@@ -9,7 +10,7 @@ export default function Error404Page() {
                 <header>
                     <Link to='/'>
                         <h1 className='flex items-center gap-2 font-bold'>
-                            <img src='/echo.svg' className='size-8' />
+                            <EchoIcon className='size-8' />
                             <span>Echo</span>
                         </h1>
                     </Link>

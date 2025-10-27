@@ -1,6 +1,7 @@
 import { t } from '@/i18next';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { Link } from 'react-router';
+import EchoIcon from '../icon/echo-icon';
 
 export type AuthLayoutProps = {
     noclose?: boolean;
@@ -20,7 +21,7 @@ export default function AuthLayout({
                 <header>
                     <Link to='/'>
                         <h1 className='flex items-center gap-2 font-bold'>
-                            <img src='/echo.svg' className='size-8' />
+                            <EchoIcon className='size-8' />
                             <span>Echo</span>
                         </h1>
                     </Link>
